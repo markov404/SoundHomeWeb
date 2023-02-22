@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@200&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@200&family=Work+Sans:ital,wght@1,300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Mynerve&family=Nunito:wght@200&family=Work+Sans:ital,wght@1,300&display=swap');
+
+.nav-item {
+    padding: 50px;
+    font-family: 'Nunito', sans-serif;
+}
+
+.form-element {
+    margin-top: 150px;
+    font-family: 'Nunito', sans-serif;
+}
+
+.btn.btn-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.slogan {
+    font-family: 'Work Sans', sans-serif;
+}
+
+.about-company {
+    font-family: 'Mynerve', cursive;
+    font-size: 10px;
+}
