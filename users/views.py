@@ -1,9 +1,11 @@
 
 from django.http import HttpResponse
+
+from django.shortcuts import redirect
 from django.core.handlers.wsgi import WSGIRequest
 from django.views.decorators.http import require_http_methods
 
-from .wrappers.wrappers import not_logged_in_user_only
+from utils.wrappers import not_logged_in_user_only, logged_in_user_only
 from .components.authentification import Authentification
 from .components.authorisation import Authorisation
 
@@ -26,8 +28,17 @@ def auth(request: WSGIRequest):
             del authe
             del autho
 
-            return HttpResponse("Ты залогинился")
+            return redirect("profile_page")
         else:
             return HttpResponse("Не правильный пароль")
     else:
         return HttpResponse("Нет такого емайла")        
+
+
+@require_http_methods(["GET"])
+@logged_in_user_only()
+def logout(request: WSGIRequest):
+    autho = Authorisation()
+    autho.logout(request)
+
+    return redirect("index_page")
