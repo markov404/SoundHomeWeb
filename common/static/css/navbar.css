@@ -7,11 +7,6 @@
     font-family: 'Nunito', sans-serif;
 }
 
-.form-element {
-    margin-top: 150px;
-    font-family: 'Nunito', sans-serif;
-}
-
 .btn.btn-link {
     text-decoration: none;
     color: inherit;
@@ -23,5 +18,5 @@
 
 .about-company {
     font-family: 'Mynerve', cursive;
-    font-size: 10px;
+    font-size: 20px;
 }

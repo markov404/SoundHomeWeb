@@ -12,6 +12,8 @@
     {% load static %}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/footer.css' %}">
+    <link rel="stylesheet" href="{% static 'css/login_form.css' %}">
     {% endblock media %}
 
 {% endblock headers %}
@@ -38,7 +40,9 @@
                 <img src="{% static 'images/slogan.jpg' %}" alt="Logo" width="250px" class="logo-image">
                 </div>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Cheers <span class="sr-only"></span></a>
+                    <button type="button" class="btn btn-link">
+                        Cheers
+                    </button>  
                 </li>
             </ul>
         </div>
@@ -54,13 +58,13 @@
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body about-company" id="text_about">
-                    1. We are a non-profit organization that allows users to upload music to the web. </br> </br>
-                    2. We are not responsible for any copyright infringement. </br> </br>
-                    3. If you violate any copyrights, please email support@musicalnet.ru. </br> </br>
-                    4. All of the files on this site are provided for reference only. </br> </br>
-                    5. Also, we are not responsible for the quality of the downloaded files. </br> </br>
-                    6. We are not music publishers and have nothing to do with music licenses. </br> </br>
-                    7. If your health is bad, go to the hospital. </br> </br>
+                    1 - We are a non-profit organization that allows users to upload music to the web. </br> </br>
+                    2 - We are not responsible for any copyright infringement. </br> </br>
+                    3 - If you violate any copyrights, please email support@musicalnet.ru. </br> </br>
+                    4 - All of the files on this site are provided for reference only. </br> </br>
+                    5 - Also, we are not responsible for the quality of the downloaded files. </br> </br>
+                    6 - We are not music publishers and have nothing to do with music licenses. </br> </br>
+                    7 - If your health is bad, go to the hospital. </br> </br>
                 </div>
               </div>
             </div>
@@ -105,21 +109,45 @@
       </div>
 
     {% endblock content %}
+    
+    {% block footer %}
+    <footer class="bg-light text-center text-lg-start mt-auto my-foot">
+      <!-- Copyright -->
+      <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+        © 2023 Copyright:
+        <a class="text-dark" href="https://mdbootstrap.com/">MDBootstrap.com</a>
+      </div>
+      <!-- Copyright -->
+    </footer>
+    {% endblock footer %}
+
+
 
     {% block scripts %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
 
-    {% comment %} <script>
+    <script>
+        let colors = ["#ff0000", "#ffa500", "#ffff00", "#008000", "#0000ff", "#4b0082", "#ee82ee"]
+
         let a = $('#text_about').text()
         let words = a.split(" ")
         let new_text = ""
         words.forEach((word, i) => {
-            t = `<span style="color:red">` + word + `</span>`
+          if (word.charAt(word.length-1) == '.') {
+            t = `<span style="color:${colors[Math.floor(Math.random()*colors.length)]}"> ` + word + ` </span> </br> </br>`
             new_text = new_text + t
+          } else {
+            t = `<span style="color:${colors[Math.floor(Math.random()*colors.length)]}"> ` + word + ` </span>`
+            new_text = new_text + t
+          }
+
         })
 
-    </script> {% endcomment %}
+        let about = document.getElementById('text_about')
+        about.innerHTML = new_text
+
+    </script>
     {% endblock scripts %}
 
 {% endblock body %}
