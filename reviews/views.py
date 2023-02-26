@@ -12,6 +12,27 @@ from .components.reviews_page import ReviewsPage
 # Create your views here.
 
 @logged_in_user_only()
-def index_reviews(request: WSGIRequest): 
+def index_reviews(request: WSGIRequest, pk: int): 
+    data = ReviewsPage().get_review_by_id(pk)
+
+    next_id = 0
+    prev_id = 0
+    last_id = ReviewsPage().get_latest_id()
+    print(last_id)
+    if data['id'] == last_id:
+        next_id = 1
+        prev_id = data['id'] - 1
+    elif data['id'] == 1:
+        next_id = data['id'] + 1
+        prev_id = last_id
+    else:
+        next_id = data['id'] + 1
+        prev_id = data['id'] - 1
+
+    return render(request, 'reviews/review.html', context={'data': data, 'additional_info': {'next_id': next_id, 'prev_id': prev_id}})
+
+@logged_in_user_only()
+def all_reviews(request: WSGIRequest):
     data = ReviewsPage().get_all_reviews_data()
-    return render(request, 'reviews/reviews.html', context={'data': data[0]})
+
+    return render(request, 'reviews/all_reviews.html', context={'data': data})

@@ -6,7 +6,7 @@
     {{ block.super }}
 
     {% block title %}
-    <title>SH Reviews</title>
+    <title> {{ data.album_title }} </title>
     {% endblock title %}
 
     {% block media %}
@@ -28,22 +28,28 @@
         {{ block.super }}
     {% endblock navbar %}
 
-    {% comment %} {% block review_navbar %}
-    <div class="container">
+    {% block review_navbar %}
+    <div class="container ReviewNav">
         <div class="row">
             <div class="col">
 
             </div>
             <div class="col">
-                <img src="https://img.icons8.com/neon/96/null/circled-chevron-left.png"/>
-                <img src="https://img.icons8.com/neon/96/null/circled-chevron-right.png"/>
+                <div class="d-flex mb-3">
+                    <div class="p-2">
+                        <a href="{% url 'ceraint_review' additional_info.prev_id %}"  class='lnk_rv_nav' id='lnk_prv'> Prev </a>
+                    </div>
+                    <div class="ms-auto p-2">
+                        <a href="{% url 'ceraint_review' additional_info.next_id %}" class='lnk_rv_nav' id='lnk_nxt'> Next </a>
+                    </div>
+                </div>
             </div>
             <div class="col">
 
             </div>
         </div>
     </div>
-    {% endblock review_navbar %} {% endcomment %}
+    {% endblock review_navbar %}
 
     {% block content %}
 

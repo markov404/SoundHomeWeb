@@ -1,5 +1,18 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Lato&family=Ubuntu:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@1,200');
+
+.ReviewNav {
+    margin-top: 100px;
+}
+
+.lnk_rv_nav {
+    display: inline-block;
+    text-decoration: none;
+    color: inherit;
+    font-family: 'Raleway', sans-serif;
+    font-size: 20px;
+}
 
 #review {
     margin-top: 150px;
@@ -10,6 +23,7 @@
     padding-left: 100px;
     border-radius: 10px;
     box-shadow: 60px -16px teal;
+    height: 800px;
 }
 
 .ReviewAlbNdScore {

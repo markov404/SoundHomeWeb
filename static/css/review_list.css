@@ -1,0 +1,39 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Lato&family=Raleway:ital,wght@1,200&family=Roboto:wght@300&family=Ubuntu:wght@300&display=swap');
+
+.ReviewsList {
+    margin-top: 150px;
+    margin-bottom: 150px;
+}
+
+.ReviewList:not(:hover) {
+    background-color: aqua;
+}
+
+#rvw_list:not(:hover) #rvw2 {
+    box-shadow: 0 0 11px rgba(33,33,33,.2);
+}
+
+.ReviewListItem {
+    margin-bottom: 50px;
+    height: 100px;
+    line-height: 100px;
+}
+
+.ReviewListItem:hover {
+    box-shadow: 0 0 11px rgba(33,33,33,.2); 
+}
+
+#alb_ttl {
+    font-family: 'Lato', sans-serif;
+    font-size: 18px;
+}
+
+#alb_auth {
+    font-family: 'Roboto', sans-serif;
+}
+
+#alb_score {
+    font-family: 'Gamja Flower', cursive;
+    font-size: 23px;
+}

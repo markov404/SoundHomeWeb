@@ -30,11 +30,14 @@
         <div class="сollapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mx-auto">
                 {% if member %}
-                <li class="nav-item">
-                  <button type="button" class="btn btn-link">
-                      <a href="{% url 'index_reviews' %}" class="lnk">Reviews</a>
-                      <!-- Reviews -->
-                  </button>  
+                <li class="nav-item dropdown">
+                  <button type="button" class="dropdown-toggle btn btn-link" data-bs-toggle="dropdown">
+                    Reviews
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li> <a href="{% url 'all_reviews' %}" class="dropdown-item"> All reviews </a> </li>
+                    <li> <a href="{% url 'ceraint_review' 1 %}" class="dropdown-item"> Latest review </a> </li>
+                  </ul>
                 </li>
                 {% endif %}
                 <li class="nav-item">
