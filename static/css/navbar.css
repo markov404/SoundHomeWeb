@@ -9,6 +9,11 @@
     font-weight: 500;
 }
 
+.lnk {
+    text-decoration: none;
+    color: inherit;
+}
+
 .btn.btn-link {
     text-decoration: none;
     color: inherit;

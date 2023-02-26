@@ -1,0 +1,41 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Lato&family=Ubuntu:wght@300&display=swap');
+
+#review {
+    margin-top: 150px;
+    margin-bottom: 150px;
+}
+
+.ReviewShort {
+    padding-left: 100px;
+    border-radius: 10px;
+    box-shadow: 60px -16px teal;
+}
+
+.ReviewAlbNdScore {
+    height: 180px;
+    margin-bottom: 50px;
+}
+
+#alb_ttl {
+    font-family: Futura;
+}
+
+#alb_score {
+    display: inline-block;
+}
+
+#alb_year {
+    display: inline-block;
+}
+
+.ReviewTitle {
+    margin-bottom: 50px;
+    font-family: 'Lato', sans-serif;
+    height: 180px;
+}
+
+.ReviewText {
+    color: black;
+    font-family: 'Ubuntu', sans-serif;
+}

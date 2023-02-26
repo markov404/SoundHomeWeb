@@ -1,8 +1,10 @@
 
 import hashlib
+from .interfaces.i_authentific import IAuthentificationBase
 from ..models import SoundHomeUsers
 
-class Authentification:
+
+class Authentification(IAuthentificationBase):
     def is_user_exists(self, email):
         u = SoundHomeUsers.objects.get(email=email)
 

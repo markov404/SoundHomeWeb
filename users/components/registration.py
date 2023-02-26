@@ -3,7 +3,9 @@ from ..models import SoundHomeUsers
 from schema import Schema
 import re
 
-class Registration:
+from .interfaces.i_registration import IRegistrationBase
+
+class Registration(IRegistrationBase):
     email_pattern = re.compile(r"[^@]+@[^@]+\.[^@]+")
 
     def create_user(self, email, password):

@@ -29,6 +29,14 @@
         </button>
         <div class="сollapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mx-auto">
+                {% if member %}
+                <li class="nav-item">
+                  <button type="button" class="btn btn-link">
+                      <a href="{% url 'index_reviews' %}" class="lnk">Reviews</a>
+                      <!-- Reviews -->
+                  </button>  
+                </li>
+                {% endif %}
                 <li class="nav-item">
                     <!--<a class="nav-link" href="#">About <span class="sr-only"></span></a>-->
                     <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -44,6 +52,13 @@
                         Cheers
                     </button>  
                 </li>
+                {% if member %}
+                <li class="nav-item">
+                  <button type="button" class="btn btn-link">
+                      Profile
+                  </button>  
+                </li>
+                {% endif %}
             </ul>
         </div>
     </nav>

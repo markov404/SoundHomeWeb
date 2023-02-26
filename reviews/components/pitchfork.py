@@ -34,12 +34,12 @@ class PitchForkScruber(IScruber):
         self.__clear_buffer()
 
         self.__driver.go_to_page(self.__home_path)
-        review_cards = self.__driver.get_all_elements((By.CLASS_NAME, "review"))[:12]
-
+        review_cards = self.__driver.get_all_elements((By.CLASS_NAME, "review"))[:4]
+        
         self.__update_all_links(review_cards)
         self.__get_all_information_about_each_review()
 
-        print(self.__buffer["data"][0])
+        return self.__buffer
 
     def get_actual_data(self):
         pass
@@ -90,8 +90,6 @@ class PitchForkScruber(IScruber):
                 data.update(self.__get_title_of_review(title_of_review))
                 data.update(self.__get_review_text(actual_review_text))
                 self.__buffer["data"].append(data)
-                # print(data)
-                # print("fuck")
     
     def __get_text_data_of_review(self, html: str) -> dict:
         soup = BeautifulSoup(html, features="html.parser")
@@ -101,7 +99,7 @@ class PitchForkScruber(IScruber):
         year = soup.contents[0].contents[3].contents[0]
         del soup
 
-        return {"title": album_title, "author": author, "year": year}
+        return {"album_title": album_title, "album_author": author, "album_year": year}
     
     def __get_image_of_review(self, html: str) -> dict:
         soup = BeautifulSoup(html, features="html.parser")
