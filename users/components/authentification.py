@@ -6,7 +6,10 @@ from ..models import SoundHomeUsers
 
 class Authentification(IAuthentificationBase):
     def is_user_exists(self, email):
-        u = SoundHomeUsers.objects.get(email=email)
+        try:
+            u = SoundHomeUsers.objects.get(email=email)
+        except:
+            u = None
 
         if u is not None:
             return u.pk
