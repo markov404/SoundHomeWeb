@@ -12,4 +12,3 @@ class Review(models.Model):
 
     review_title = models.TextField(max_length=500)
     review_text = models.TextField(max_length=10_000)
-    

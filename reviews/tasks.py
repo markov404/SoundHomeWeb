@@ -1,16 +1,12 @@
+
 from __future__ import absolute_import, unicode_literals
-
-from .components.driver import SeleniumClient
-from .components.pitchfork import PitchForkScruber
-from selenium.webdriver import Chrome
-from .models import Review
-
 from celery import shared_task
 
+from selenium.webdriver import Chrome
+from .components.driver import SeleniumClient
+from .components.pitchfork import PitchForkScruber
+from .models import Review
 
-@shared_task
-def add(x, y):
-    return x + y
 
 @shared_task
 def update():
