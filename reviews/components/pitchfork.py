@@ -34,7 +34,7 @@ class PitchForkScruber(IScruber):
         self.__clear_buffer()
 
         self.__driver.go_to_page(self.__home_path)
-        review_cards = self.__driver.get_all_elements((By.CLASS_NAME, "review"))[:4]
+        review_cards = self.__driver.get_all_elements((By.CLASS_NAME, "review"))[:12]
         
         self.__update_all_links(review_cards)
         self.__get_all_information_about_each_review()

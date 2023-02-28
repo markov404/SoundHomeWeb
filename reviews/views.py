@@ -38,18 +38,3 @@ def all_reviews(request: WSGIRequest):
     data = ReviewsPage().get_all_reviews_data()
 
     return render(request, 'reviews/all_reviews.html', context={'data': data})
-
-def update(req):
-    PITCHFORK_URL = "https://pitchfork.com/reviews/albums/?page=1"
-    browser = SeleniumClient(Chrome())
-    scrubber = PitchForkScruber(browser, PITCHFORK_URL)
-    data = scrubber.update_data()
-
-    for case in data["data"]:
-        try:
-            record = Review(**case)
-            record.save()
-        except: 
-            pass
-    
-    return HttpResponse('fuck')
