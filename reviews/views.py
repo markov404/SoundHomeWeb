@@ -36,5 +36,9 @@ def index_reviews(request: WSGIRequest, pk: int):
 @logged_in_user_only()
 def all_reviews(request: WSGIRequest):
     data = ReviewsPage().get_all_reviews_data()
-
-    return render(request, 'reviews/all_reviews.html', context={'data': data})
+    if data is None:
+        status = 'error'
+    else:
+        status = 'success'
+        
+    return render(request, 'reviews/all_reviews.html', context={'data': data, 'status': status})

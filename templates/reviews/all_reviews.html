@@ -26,6 +26,7 @@
     {% endblock navbar %}
 
     {% block content %}
+        {% if status == 'success' %}
         <div class="container ReviewsList" id="rvw_list">
         {% for rev in data %}
             <div class="row text-center ReviewListItem" id="rvw{{rev.id}}" data-url="{% url 'ceraint_review' rev.id %}" onclick="change_url('{% url 'ceraint_review' rev.id %}')">
@@ -50,6 +51,35 @@
             </div>
         {% endfor %}
         </div>
+        {% else %}
+        <div class="container-fluid ErrorMessageContainer">
+            <div class="row text-center">
+                <div class="col">
+                </div>
+                <div class="col">
+                    <p id="error_message">
+                    Unfortunately there is no reviews yet ;)
+                    </p>
+                    <p style="font-size:48px" id="emogies">
+                        <span class="emog">
+                            &#128512; 
+                        </span>
+                        <span class="emog">
+                            &#128516; 
+                        </span>
+                        <span class="emog">
+                            &#128525; 
+                        </span>
+                        <span class="emog">
+                            &#128151;
+                        </span>
+                    </p>
+                </div>
+                <div class="col">
+                </div>
+            </div>
+        </div>
+        {% endif %}
     {% endblock content %}
     
     {% block footer %}

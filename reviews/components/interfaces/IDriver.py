@@ -1,7 +1,7 @@
 
 from abc import ABC, abstractmethod
 
-class IDriver(ABC):
+class IDriverAdapter(ABC):
 
     @abstractmethod
     def get_element():

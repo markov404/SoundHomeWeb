@@ -6,13 +6,13 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.common.by import By
 
 from .interfaces.IScruber import IScruber
-from .interfaces.IDriver import IDriver
+from .interfaces.IDriver import IDriverAdapter
 from .driver import SeleniumClient
 
 
 class PitchForkScruber(IScruber):
     def __init__(self, driver: SeleniumClient, home_url: str = None) -> None:
-        if not isinstance(driver, IDriver):
+        if not isinstance(driver, IDriverAdapter):
             raise TypeError("driver should have IDriver interface")
         
         if home_url is not None:
@@ -39,10 +39,8 @@ class PitchForkScruber(IScruber):
         self.__update_all_links(review_cards)
         self.__get_all_information_about_each_review()
 
-        return self.__buffer
-
     def get_actual_data(self):
-        pass
+        return self.__buffer
 
     def __clear_buffer(self):
         self.__buffer.clear()
