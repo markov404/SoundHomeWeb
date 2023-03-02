@@ -68,7 +68,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                
                 'users.context_processors.user_context.is_logged_in',
+                'reviews.context_processors.latest_review_index.latest_review_index',
             ],
         },
     },
@@ -135,13 +137,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Celery stuff
 # below...
-
-# CELERY_BEAT_SCHEDULE = {
-#     "update": {
-#         "task": "reviews.tasks.update",
-#         "schedule": crontab(minute="*/5"),
-#     },
-# }
 
 # Media paths
 # below...

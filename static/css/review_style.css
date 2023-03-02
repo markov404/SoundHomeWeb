@@ -53,3 +53,11 @@
     color: black;
     font-family: 'Ubuntu', sans-serif;
 }
+
+.ReviewImg {
+    margin-bottom: 50px;
+}
+
+.ReviewOptions {
+    width: 350px;
+}

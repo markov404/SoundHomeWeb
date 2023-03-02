@@ -36,7 +36,7 @@
                   </button>
                   <ul class="dropdown-menu dropdown-menu-end">
                     <li> <a href="{% url 'all_reviews' %}" class="dropdown-item"> All reviews </a> </li>
-                    <li> <a href="{% url 'ceraint_review' 1 %}" class="dropdown-item"> Latest review </a> </li>
+                    <li> <a href="{% url 'ceraint_review' latest_review %}" class="dropdown-item"> Latest review </a> </li>
                   </ul>
                 </li>
                 {% endif %}

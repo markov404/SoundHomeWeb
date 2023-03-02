@@ -1,41 +1,33 @@
 
-from django.http import HttpResponse
+
 from django.shortcuts import render
 from django.core.handlers.wsgi import WSGIRequest
 from utils.wrappers import logged_in_user_only
 
-from selenium.webdriver import Chrome
-from .components.driver import SeleniumClient
-from .components.pitchfork import PitchForkScruber
-from .models import Review
-
-from .components.reviews_page import ReviewsPage
+from reviews.services.all_reviews_page_service import AllReviewsPageSerive
+from reviews.services.certain_review_page_service import CertainReviewPageService
 
 # Create your views here.
 
 @logged_in_user_only()
-def index_reviews(request: WSGIRequest, pk: int): 
-    data = ReviewsPage().get_review_by_id(pk)
+def index_reviews(request: WSGIRequest, pk: int):
+    response = CertainReviewPageService().execute(pk)
+    
+    data = response['data']
+    translation = response['translation']
+    next_id = response['next_id']
+    prev_id = response['prev_id']
 
-    next_id = 0
-    prev_id = 0
-    last_id = ReviewsPage().get_latest_id()
-    print(last_id)
-    if data['id'] == last_id:
-        next_id = 1
-        prev_id = data['id'] - 1
-    elif data['id'] == 1:
-        next_id = data['id'] + 1
-        prev_id = last_id
-    else:
-        next_id = data['id'] + 1
-        prev_id = data['id'] - 1
-
-    return render(request, 'reviews/review.html', context={'data': data, 'additional_info': {'next_id': next_id, 'prev_id': prev_id}})
+    return render(
+        request, 'reviews/review.html', 
+        context={
+            'data': data, 
+            'additional_info': {'next_id': next_id, 'prev_id': prev_id}, 
+            'translation': translation})
 
 @logged_in_user_only()
 def all_reviews(request: WSGIRequest):
-    data = ReviewsPage().get_all_reviews_data()
+    data = AllReviewsPageSerive().execute()
     if data is None:
         status = 'error'
     else:

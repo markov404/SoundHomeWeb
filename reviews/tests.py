@@ -1,36 +1,39 @@
-from django.test import TestCase
+# from django.test import TestCase
 
-# Create your tests here.
+# # Create your tests here.
 
-import pytest
-from django.test import TestCase
+# import pytest
+# from django.test import TestCase
 
-from bs4 import BeautifulSoup
-from selenium.webdriver import Chrome
+# from bs4 import BeautifulSoup
+# from selenium.webdriver import Chrome
 
-from .components.driver import SeleniumClient
-from .components.pitchfork import PitchForkScruber
+# # Create your tests here.
 
-from .models import Review
-
-# Create your tests here.
-
-PITCHFORK_URL = "https://pitchfork.com/reviews/albums/?page=1"
+# PITCHFORK_URL = "https://pitchfork.com/reviews/albums/?page=1"
 
 
-def test_making():
-    browser = SeleniumClient(Chrome())
-    scrubber = PitchForkScruber(browser, PITCHFORK_URL)
-    data = scrubber.update_data()
+# def test_making():
+#     browser = SeleniumClient(Chrome())
+#     scrubber = PitchForkScruber(browser, PITCHFORK_URL)
+#     data = scrubber.update_data()
 
-    for case in data["data"]:
-        try:
-            record = Review(**case)
-            record.save()
-        except: 
-            pass
+#     for case in data["data"]:
+#         try:
+#             record = Review(**case)
+#             record.save()
+#         except: 
+#             pass
 
+# def test_rv_audio():
+#     ta_converter = AudioMaker()
+#     txt = "Fucking hell"
+#     audio_object = ta_converter.get_audio_object(txt)
 
+#     pk =  ReviewsPage().get_latest_id()
+#     record = ReviewsPage().get_record_by_pk(pk)
+#     motherfuckr = ReviewAudio(review=record)
+#     motherfuckr.save(audio=audio_object, name=pk)
 
 # def test_one_positive():
 #     browser = SeleniumClient(Chrome())

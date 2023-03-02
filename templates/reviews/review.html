@@ -6,7 +6,7 @@
     {{ block.super }}
 
     {% block title %}
-    <title> {{ data.album_title }} </title>
+    <title> {{ data.album_title }} - Reviews </title>
     {% endblock title %}
 
     {% block media %}
@@ -68,15 +68,32 @@
                     <div class="ReviewImg">
                     <img id="alb_img" src='{{ data.image_src }}' width="350px"/>
                     </div>
+                    {% comment %} <div class="ReviewOptions">
+                    <div class="row">
+                        <div class="col">
+                            <button type="button" class="btn btn-info">Ru</button>
+                        </div>
+                        <div class="col">
+                            
+                        </div>
+                        <div class="col">
+                            
+                        </div>
+                    </div>
+                    </div> {% endcomment %}
                 </div>
                 
                 <div class="ReviewTitle">
                     <h2> {{ data.review_title }} </h2> 
                 </div>
-
+                
                 <div class="ReviewText">
                     <p id="rvw_txt"> 
+                    {% if translation != None %}
+                        {{ translation }}
+                    {% else %}
                         {{ data.review_text }}
+                    {% endif %}
                     </p>
                 </div>
 

@@ -1,3 +1,4 @@
+
 from django.db import models
 
 # Create your models here.
@@ -17,8 +18,11 @@ class Review(models.Model):
 
 class ReviewTranslation(models.Model):
     review = models.OneToOneField(Review, on_delete=models.CASCADE, primary_key=True)
-    translated_review_text = models.TextField("Translation", max_length=20_000, null=True, blank=True)
+    
+    translated_review_text = models.TextField("Translation", max_length=50_000, null=True, blank=True)
 
 class ReviewAudio(models.Model):
     review = models.OneToOneField(Review, on_delete=models.CASCADE, primary_key=True)
-    audio_review = models.FileField("Audio Review", upload_to='audio_reviews', null=True, blank=True)
+    
+    name = models.CharField(max_length=50, blank=False, null=False, default="empty_rev")
+    audio_review = models.FileField("Audio Review", upload_to='audio_reviews/', null=True, blank=True)
