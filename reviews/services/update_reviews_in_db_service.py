@@ -28,6 +28,8 @@ class UpdateReviewsInDBService(ICommand):
         data = scruber.get_actual_data()
         scruber.quit_driver()
 
+        del scruber
+
         return data
 
     def _translate_reviews(self, data: list[dict]) -> None:
@@ -36,6 +38,8 @@ class UpdateReviewsInDBService(ICommand):
             text = point['record_data']['review_text']
             translated = trns.translate(text)
             point['translation'] = translated
+
+        del trns
     
     def _make_audio_revs(self, data: list[dict]) -> None:
         spchr = Speecher()
@@ -43,6 +47,8 @@ class UpdateReviewsInDBService(ICommand):
             text = point['translation']
             file = spchr.get_speech_file_object(text)
             point['audio_bytes'] = file
+
+        del spchr
 
     def _update_database(self, data: list[dict]) -> None:
         

@@ -1,66 +1,53 @@
-# from django.test import TestCase
+import pytest
+import time
+import timeit
+from django.test import TestCase
+from io import BytesIO
 
-# # Create your tests here.
+# Create your tests here.
 
-# import pytest
-# from django.test import TestCase
+from reviews.components.translator import Translator
+from reviews.components.speecher import Speecher
 
-# from bs4 import BeautifulSoup
-# from selenium.webdriver import Chrome
+@pytest.fixture
+def review_text() -> str:
+    t_inp = """Burnin’ upends many myths orbiting John Lee Hooker ,
+one of the iconic blues musicians of the 20th century. Whether you know either his name or his records, you know his heavy-footed boogie, a rollicking rhythm absorbed and assimilated by such acolytes as George Thorogood and ZZ Top , who once faced a lawsuit from the copyright holder of Hooker’s 1948 breakthrough hit “Boogie Chillen,” claiming the Texas trio ripped off Hooker with their 1973 single “La Grange.” Trending Now The 10 Best Dream Pop Albums ZZ Top won the lawsuit with the court claiming that the rhythm is in the public domain, a ruling that in a perverse way proves how deeply entrenched Hooker’s music is in popular music: It’s impossible to imagine rock’n’roll would sound without him. Hooker’s boogie is so endless, it not only survives long after his death but seemed to exist prior to “Boogie Chillen.” Critics picked up on this eternal essence early in Hooker’s career. Charles Shaar Murray, the author of the definitive John Lee Hooker biography Boogie Man: The Adventures of John Lee Hooker in the American 20th Century , cites the French blues critic Jacques Lemetre as the first to describe the bluesman as “one of the most primitive (from a musical point of view) and, I would say, one of the most African of blues singers” back in 1964, a framing that’s echoed through the years. Calling Hooker’s music primitive obscures a crucial trait, one as essential to understanding his art as his slippery sense of timing: He was a modernist, not a traditionalist. He wasn’t anchored to his birth state of Mississippi: He hightailed it up north as soon as he could, settling in Detroit where he played an electrified update of Delta blues for factory workers in the 1940s. “Boogie Chillen” captured how Hooker played not for a rural audience but for city folk: He bent the bars of a blues vamp, extending the groove to gin up the energy in the room. He didn’t sing laments; he played dance music. This essential distinction comes into sharp relief on 1962’s Burnin’ , a record released in the thick of the folk-blues revolution. In Boogie Man , Murray argues that the 1960 Newport Jazz Festival—the one headlined by Muddy Waters , in a performance distilled on a Chess LP that year—is the point where blues was formally accepted by the “(mainly white) jazz and folk establishments, and its passing as the indigenous voice of the ghetto.” Hooker was hardly above pandering to this trend. Vee-Jay released
+an album called The Folk Lore of John Lee Hooker in 1961 and he’d later issue an installment in Chess’ ongoing The Real Folk Blues series in 1966. This isn’t a reflection of Hooker\'s folk roots—indeed, when Riverside approached him to record an album dedicated to Lead Belly , it became clear the bluesman didn’t know the subject of his intended tribute—but rather how he’d go wherever the audience went.To an extent, that\'s what happened with Burnin’ , the fourth album he released on Vee-Jay. Unlike its Windy City rival Chess, Vee-Jay wasn’t primarily known for blues. They specialized in harmony groups, gospel, jazz, and soul, finally landing a major blues artist when the lackadaisical bluesman Jimmy Reed started racking up big hits for the label in the late 1950s. Reed opened the door for Hooker,
+whose rambling 1958 hit “I Love You Honey” and lazy 1960 stroll “No Shoes” both demonstrate a clear debt. That’s not the case with Burnin’ . For this session, Vee-Jay hired a group of Detroit musicians
+who were toiling away at the various imprints helmed by Berry Gordy, Jr., the impresario who was working hard to keep his Motown label afloat in the early ’60s. Many years later, these musicians would be called the Funk Brothers , a group immortalized in the 2002 documentary Standing in the Shadows of
+Motown , but back in 1961 they were struggling to make ends meet, so they were happy to head to Chicago to make a bit more money than they would in Detroit. Hooker had a connection to the Funk Brothers
+through Joe Hunter, a pianist who worked the same Motor City circuit as Hooker. This familiarity let
+Hooker ease into the rhythms laid down by drummer Benny Benjamin and bassist James Jamerson. The grooves were streamlined when compared to the idiosyncratic beat Hooker played on his own, but they felt
+vibrant and vital, pitched halfway between contemporary R&B and the dwindling urban blues market. On
+this 60th anniversary reissue, Burnin’ has been remastered by Kevin Gray from the original analog tapes; there’s an audiophile vinyl edition of the stereo mix, along with a CD that has both stereo and mono mixes, plus an alternate of the lively shuffle “Thelma.” Listening now, it’s striking how mid-century modern the album seems. Jamerson and Benjamin keep the beat bouncing, Hunter decorates the margins with runs that also push the rhythm, and guitarist Larry Veeder adds texture and color to Hooker’s bedrock boogie, while Hank Cosby and Andrew “Mike” Terry punctuate riffs, rhythms, and melodies with their greasy saxophone. All the extra instrumentation doesn’t allow Hooker to burrow deep into his grooves, a loss that doesn’t seem especially painful while Burnin’ spins. These club-tested musicians
+allow Hooker to take such unexpected detours as vamping on the riff to the Champs’ “Tequila” on “Keep Your Hands to Yourself (She\'s Mine),” which in turn allows him to sing about all manners of eccentricities: He gripes about women processing their hair, swears he’s about to turn over a new leaf now that it’s 1962, implores a paramour “Let’s Make It,” then runs down a list of his domestic needs on “Drug Store Woman,” claiming he’d rather have bathwater waiting than a woman “wearing lipstick and powder, her hair all fixed up.” Anchoring the whole affair is “Boom Boom,” which wasn’t merely his last big hit—it was arguably his greatest. The Funk Brothers help keep his three-chord stomp lean, so slinky and hooky that it reads not as backwoods blues but downtown pop. “Boom Boom” became his only crossover Billboard hit—it peaked at 60, compared to 16 on the R&B chart—eventually making its way to both
+the Grammy Hall of Fame and the Rock and Roll Hall of Fame, a position assisted by its embrace by such British Invasion blues-rockers as the Animals and the Yardbirds. ZZ Top surely heard it too: With its “aw-haw-haw-haw” refrain, it’s more clearly an antecedent to “La Grange” than “Boogie Chillen” itself. As pivotal as “Boom Boom” is, Burnin’ isn\'t merely a single surrounded by agreeable also-rans.
+The Funk Brothers helped Hooker hone into his modernity, letting him play off contemporary trends in
+a way that accentuates how he always existed within the moment, letting the times take shape around his elemental boogie."""
+    return t_inp
 
-# # Create your tests here.
+@pytest.fixture
+def revew_text_translated(review_text) -> str:
+    trnst = Translator()
 
-# PITCHFORK_URL = "https://pitchfork.com/reviews/albums/?page=1"
+    return trnst.translate(review_text)
 
 
-# def test_making():
-#     browser = SeleniumClient(Chrome())
-#     scrubber = PitchForkScruber(browser, PITCHFORK_URL)
-#     data = scrubber.update_data()
-
-#     for case in data["data"]:
-#         try:
-#             record = Review(**case)
-#             record.save()
-#         except: 
-#             pass
-
-# def test_rv_audio():
-#     ta_converter = AudioMaker()
-#     txt = "Fucking hell"
-#     audio_object = ta_converter.get_audio_object(txt)
-
-#     pk =  ReviewsPage().get_latest_id()
-#     record = ReviewsPage().get_record_by_pk(pk)
-#     motherfuckr = ReviewAudio(review=record)
-#     motherfuckr.save(audio=audio_object, name=pk)
-
-# def test_one_positive():
-#     browser = SeleniumClient(Chrome())
+def test_translator(review_text):
+    trnst = Translator()
     
-#     scrubber = PitchForkScruber(browser, PITCHFORK_URL)
-#     scrubber.update_data()
+    assert len(review_text) > 5000
+    assert isinstance(trnst.translate(review_text), str)
 
 
-# def test_two_positive():
-#     html = """<div class="SplitScreenContentHeaderTitleBlock-hkbQxz kmTHjj"><div data-testid="ContentHeaderRubric"><div class="RubricWrapper-cSwECA brBvdr rubric SplitScreenContentHeaderRubric-lcYYrD iengFe"><a class="RubricLink-DDpgX kanVZ rubric__link" href="/reviews/albums/" data-uri="82c7aea0401905b54e2265f312358463"><span class="RubricName-eXGqmo bHYiSS">Albums</span></a></div></div><h1 data-testid="ContentHeaderHed" class="BaseWrap-sc-UrHlS BaseText-fFrHpW SplitScreenContentHeaderHed-fyeLMD boMZdO ZveqB jKrbpd"><em>Food for Worms</em></h1><ul class="SplitScreenContentHeaderArtistWrapper-hpQdA gOjUjm"><a href="/artists/34225-shame/" class="BaseWrap-sc-UrHlS BaseText-fFrHpW BaseLink-ha-DYir SplitScreenContentHeaderArtistLink-bpJROv boMZdO caZQdM fkewAw dYpzNU" data-uri="ae5290f138bc8d89f4f4036acad8ef27"><div class="BaseWrap-sc-UrHlS BaseText-fFrHpW SplitScreenContentHeaderArtist-lfLzFP boMZdO eLfbIf jePiWC">Shame</div></a></ul><time data-testid="SplitScreenContentHeaderReleaseYear" class="SplitScreenContentHeaderReleaseYear-gTFXAs pnGip">2023</time><div class="SocialIconsWrapper-ixiuvW ikVcrF social-icons social-icons--standard SplitScreenContentHeaderSocialShare-liOabM lbFlHr" data-event-boundary="click" data-event-click="{&quot;pattern&quot;:&quot;SocialIcons&quot;}" data-in-view="{&quot;pattern&quot;:&quot;SocialIcons&quot;}" data-include-experiments="true"><ul data-testid="socialIconslist" class="SocialIconsList-Nwcjr bFHhOT social-icons__list"><li class="SocialIconsListItem-hZqgEy ihqfrw social-icons__list-item social-icons__list-item--facebook social-icons__list-item--standard"><a aria-label="Share on Facebook" class="external-link SocialIconExternalLink-guTSJT kyIAYO social-icons__link social-icons__link--facebook" data-event-click="{&quot;element&quot;:&quot;ExternalLink&quot;,&quot;outgoingURL&quot;:&quot;https://www.facebook.com/dialog/feed?&amp;display=popup&amp;caption=Shame%3A%20Food%20for%20Worms&amp;app_id=207089362687909&amp;link=https%3A%2F%2Fpitchfork.com%2Freviews%2Falbums%2Fshame-food-for-worms%2F%3Futm_source%3Dfacebook%26utm_medium%3Dsocial%26utm_campaign%3Donsite-share%26utm_brand%3Dpitchfork%26utm_social-type%3Dearned&quot;}" href="https://www.facebook.com/dialog/feed?&amp;display=popup&amp;caption=Shame%3A%20Food%20for%20Worms&amp;app_id=207089362687909&amp;link=https%3A%2F%2Fpitchfork.com%2Freviews%2Falbums%2Fshame-food-for-worms%2F%3Futm_source%3Dfacebook%26utm_medium%3Dsocial%26utm_campaign%3Donsite-share%26utm_brand%3Dpitchfork%26utm_social-type%3Dearned" rel="nofollow noopener" target="_blank" data-uri="731aff0d1f7e8fdb1ff95469f75ee246"><div class="SocialIconContainer-fbpuVh gFIcvv social-icons__icon-container"><svg class="SocialIconNetworkIconComponent-krIrVs rrIrT icon icon-facebook" focusable="false" viewBox="0 0 32 32" width="32" height="32" fill="none" xmlns="http://www.w3.org/2000/svg"><title>Facebook</title><path d="M13.621 11.099V13.302H12V15.995H13.621V24H16.951V15.995H19.186C19.186 15.995 19.395 14.704 19.496 13.292H16.964V11.45C16.964 11.175 17.327 10.804 17.686 10.804H19.5V8H17.033C13.539 8 13.621 10.696 13.621 11.099Z" fill="black"></path></svg></div></a></li><li class="SocialIconsListItem-hZqgEy ihqfrw social-icons__list-item social-icons__list-item--email social-icons__list-item--standard"><a aria-label="Share via Email" class="external-link SocialIconExternalLink-guTSJT kyIAYO social-icons__link social-icons__link--email" data-event-click="{&quot;element&quot;:&quot;ExternalLink&quot;,&quot;outgoingURL&quot;:&quot;mailto:?subject=Shame%3A%20Food%20for%20Worms&amp;body=https%3A%2F%2Fpitchfork.com%2Freviews%2Falbums%2Fshame-food-for-worms%2F%3Futm_source%3Donsite-share%26utm_medium%3Demail%26utm_campaign%3Donsite-share%26utm_brand%3Dpitchfork&quot;}" href="mailto:?subject=Shame%3A%20Food%20for%20Worms&amp;body=https%3A%2F%2Fpitchfork.com%2Freviews%2Falbums%2Fshame-food-for-worms%2F%3Futm_source%3Donsite-share%26utm_medium%3Demail%26utm_campaign%3Donsite-share%26utm_brand%3Dpitchfork" rel="nofollow noopener" target="_blank" data-uri="6e56e37974096ec48d0c18e4243fae03"><div class="SocialIconContainer-fbpuVh gFIcvv social-icons__icon-container"><svg class="icon icon-email" focusable="false" viewBox="0 0 32 32" width="32" height="32" xmlns="http://www.w3.org/2000/svg"><title>Email</title><path d="M6 23h20V9H6v14zm3.631-12H22.37l-6.368 5.661L9.631 11zM24 12.227V21H8v-8.773l8.002 7.109L24 12.227z" fill-rule="evenodd"></path></svg></div></a></li><li class="SocialIconsListItem-hZqgEy ihqfrw social-icons__list-item social-icons__list-item--pinterest social-icons__list-item--standard"><a aria-label="Share on Pinterest" data-pin-do="nothing" class="external-link SocialIconExternalLink-guTSJT kyIAYO social-icons__link social-icons__link--pinterest" data-event-click="{&quot;element&quot;:&quot;ExternalLink&quot;,&quot;outgoingURL&quot;:&quot;https://www.pinterest.com/pin/create/button/?url=https%3A%2F%2Fpitchfork.com%2Freviews%2Falbums%2Fshame-food-for-worms%2F%3Futm_source%3Dpinterest%26utm_medium%3Dsocial%26utm_campaign%3Donsite-share%26utm_brand%3Dpitchfork%26utm_social-type%3Dearned&amp;media=https://media.pitchfork.com/photos/6373dd0f6d88ac716c39d529/1:1/w_360,c_limit/Food%20for%20Worms%20digital%20art.jpg&quot;}" href="https://www.pinterest.com/pin/create/button/?url=https%3A%2F%2Fpitchfork.com%2Freviews%2Falbums%2Fshame-food-for-worms%2F%3Futm_source%3Dpinterest%26utm_medium%3Dsocial%26utm_campaign%3Donsite-share%26utm_brand%3Dpitchfork%26utm_social-type%3Dearned&amp;media=https://media.pitchfork.com/photos/6373dd0f6d88ac716c39d529/1:1/w_360,c_limit/Food%20for%20Worms%20digital%20art.jpg" rel="nofollow noopener" target="_blank" data-uri="f0001c049e1d532af45c78f36fc649db"><div class="SocialIconContainer-fbpuVh gFIcvv social-icons__icon-container"><svg class="SocialIconNetworkIconComponent-krIrVs rrIrT icon icon-pinterest" focusable="false" viewBox="0 0 32 32" width="32" height="32" fill="none" xmlns="http://www.w3.org/2000/svg"><title>Pinterest</title><path d="M15.169 18.448C14.793 20.093 14.425 21.678 13.623 22.928C13.377 23.311 13.13 23.793 12.71 24C12.09 20.807 13.387 18.12 13.899 15.436C13.246 14.103 13.652 11.846 15.051 11.59C17.077 11.22 16.543 13.664 16.2 14.8C16.01 15.424 15.671 16.021 15.722 16.705C15.835 18.146 17.648 18.24 18.577 17.497C19.909 16.436 20.295 14.385 20.164 12.7C19.967 10.135 17.062 8.85997 14.496 9.88497C13.173 10.413 11.973 11.628 11.799 13.413C11.709 14.353 11.906 15.104 12.276 15.634C12.331 15.715 12.523 15.857 12.552 16.072C12.61 16.506 12.352 16.974 12.116 17.298C10.802 16.92 10.124 15.741 10.016 14.248C9.76596 10.848 12.558 8.26397 15.841 8.02197C19.348 7.76497 22.126 9.78896 22.384 12.74C22.576 14.933 21.797 17.14 20.561 18.329C19.631 19.221 17.656 20.096 16.041 19.242C15.684 19.052 15.524 18.82 15.169 18.448Z" fill="black"></path></svg></div></a></li></ul></div></div>"""
+def test_speecher(revew_text_translated):
+    spchr = Speecher()
 
-#     browser = SeleniumClient()
-#     scrubber = PitchForkScruber(browser, PITCHFORK_URL)
+    t0 = time.time()
+    file = spchr.get_speech_file_object(revew_text_translated)
+    t1 = time.time()
+    total = t1 - t0
 
-#     assert scrubber._get_text_data_of_review(html) == {"title": "Food for Worms", "author": "Shame", "year": "2023"}
-
-
-# def test_three_positive():
-#     html = """<div class="SplitScreenContentHeaderLeadWrapper-hRNksR eEPSno"><div data-testid="ContentHeaderLeadAsset" class="SplitScreenContentHeaderLedeBlock-gzOQYf ipXZGD"><span class="SpanWrapper-kGOugJ QEGhz responsive-asset SplitScreenContentHeaderLede-dguJnW VhKZz"><picture class="ResponsiveImagePicture-jJyKit mrcDn SplitScreenContentHeaderLede-dguJnW VhKZz responsive-image"><source media="(max-width: 767px)" srcset="https://media.pitchfork.com/photos/6373dd0f6d88ac716c39d529/1:1/w_120,c_limit/Food%20for%20Worms%20digital%20art.jpg 120w, https://media.pitchfork.com/photos/6373dd0f6d88ac716c39d529/1:1/w_240,c_limit/Food%20for%20Worms%20digital%20art.jpg 240w, https://media.pitchfork.com/photos/6373dd0f6d88ac716c39d529/1:1/w_320,c_limit/Food%20for%20Worms%20digital%20art.jpg 320w" sizes="100vw"><source media="(min-width: 768px)" srcset="https://media.pitchfork.com/photos/6373dd0f6d88ac716c39d529/1:1/w_120,c_limit/Food%20for%20Worms%20digital%20art.jpg 120w, https://media.pitchfork.com/photos/6373dd0f6d88ac716c39d529/1:1/w_240,c_limit/Food%20for%20Worms%20digital%20art.jpg 240w, https://media.pitchfork.com/photos/6373dd0f6d88ac716c39d529/1:1/w_320,c_limit/Food%20for%20Worms%20digital%20art.jpg 320w" sizes="100vw"><img alt="Shame Food for Worms" class="ResponsiveImageContainer-dmlCKO hWKgYV responsive-image__image" src="https://media.pitchfork.com/photos/6373dd0f6d88ac716c39d529/1:1/w_450%2Cc_limit/Food%2520for%2520Worms%2520digital%2520art.jpg"></picture></span></div><div class="SplitScreenContentHeaderScoreBox-eOKJab gUzFzM"><div class="ScoreBoxWrapper-cqxrzg hvtCii"><div class="ScoreCircle-cIILhI hUIQbu"><p class="BaseWrap-sc-UrHlS BaseText-fFrHpW Rating-cIWDua boMZdO ehZJoO bGSqyX">7.7</p></div></div></div></div>"""
-
-#     browser = SeleniumClient()
-#     scrubber = PitchForkScruber(browser)
-#     output_image_src ="https://media.pitchfork.com/photos/6373dd0f6d88ac716c39d529/1:1/w_450%2Cc_limit/Food%2520for%2520Worms%2520digital%2520art.jpg"
-
-#     assert scrubber._get_image_of_review(html) == {"image_src": output_image_src, "album_score": "7.7"}
-
-# def test_four_positive():
-#     browser = SeleniumClient()
-#     scrubber = PitchForkScruber(browser)
-#     scrubber._test_shit()
+    assert total < float(100)
+    assert isinstance(file, BytesIO)

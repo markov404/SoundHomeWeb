@@ -14,4 +14,4 @@ class LatestReviewId(ICommand):
         except:
             latest = None
 
-        return latest    
+        return latest

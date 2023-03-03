@@ -1,4 +1,6 @@
 
+import textwrap
+
 from deep_translator import GoogleTranslator
 from reviews.components.interfaces.ITranslator import ITranslator
 
@@ -12,4 +14,12 @@ class Translator(ITranslator):
             source='english', target=lang)
 
     def translate(self, text: str) -> str:
-        return str(self.__translator.translate(text))
+        chs: list[str] = self._chunks(text)
+        translated_text = ""
+
+        for chunk in chs:
+            translated_text += f' {self.__translator.translate(chunk)}'
+        return translated_text
+
+    def _chunks(self, text: str, s: int = 4999) -> list[str]:
+        return textwrap.wrap(text=text, width=s)

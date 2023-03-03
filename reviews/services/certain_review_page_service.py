@@ -61,9 +61,10 @@ class CertainReviewPageService(ICommand):
 
     def _extract_oldest_and_lastest_pk_of_review(self) -> dict | None:
         try:
-            qs = Review.objects.all().filter(active=True)
-            oldest = qs[0].pk
-            latest = qs.reverse()[0].pk
+            qs1 = Review.objects.all().filter(active=True)
+            oldest = qs1[0].pk
+            qs2 = Review.objects.all().filter(active=True).latest("pk")
+            latest = qs2.pk
 
             output = {'oldest': oldest, 'latest': latest}
         except:
