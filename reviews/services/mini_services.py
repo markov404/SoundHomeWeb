@@ -1,6 +1,6 @@
 
 from reviews.services.interfaces.ICommand import ICommand
-from reviews.models import Review
+from reviews.components.database_requests import get_latest_review_id
 
 class LatestReviewId(ICommand):
     
@@ -8,10 +8,5 @@ class LatestReviewId(ICommand):
         return self._extract_latest_review_id()
 
     def _extract_latest_review_id(self):
-        try:
-            qs = Review.objects.all().filter(active=True)
-            latest = qs.reverse()[0].pk
-        except:
-            latest = None
-
-        return latest
+        return get_latest_review_id()
+        

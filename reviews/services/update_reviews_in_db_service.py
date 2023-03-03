@@ -1,14 +1,13 @@
 import threading
 
-from django.db import transaction
-from django.core.files import File
-
-from reviews.models import Review, ReviewAudio, ReviewTranslation
-
 from reviews.services.interfaces.ICommand import ICommand
 from reviews.components.pitchf_scruber_builder import PitchFScrubberBuilder
 from reviews.components.translator import Translator
 from reviews.components.speecher import SpeecherModifiedForAsync
+
+from reviews.components.database_requests import (
+    delete_all_active_review_objects,
+    create_new_review_and_extends_records)
 
 
 class UpdateReviewsInDBService(ICommand):
@@ -64,28 +63,11 @@ class UpdateReviewsInDBService(ICommand):
 
     def _update_database(self, data: list[dict]) -> None:
         
-        try:
-            active_reviews = Review.objects.all().filter(active=True)
-            active_reviews.delete()
-        except:
-            pass
+        delete_all_active_review_objects()
 
         for point in data:
             try:
-                with transaction.atomic():
-                    record = Review(**point['record_data'])
-                    record.active = True
-                    record.save()
-
-                    record_audio = ReviewAudio(
-                        review=record, name=f'{record.pk}_rev')
-                    record_audio.audio_review = File(
-                        point['audio_bytes'], name=f'{record.pk}_rev.mp3')
-                    record_audio.save()
-
-                    record_translation = ReviewTranslation(
-                        review=record, translated_review_text=point['translation'])
-                    record_translation.save()
+                create_new_review_and_extends_records(point)
             except:
                 pass
 

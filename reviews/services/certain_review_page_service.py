@@ -1,6 +1,11 @@
 
 from reviews.services.interfaces.ICommand import ICommand
-from reviews.models import Review, ReviewTranslation, ReviewAudio
+
+from reviews.components.database_requests import (
+    get_review_data_by_id,
+    get_translation_text_by_id,
+    get_audio_url_by_id,
+    get_oldest_and_lates_pk_of_review)
 
 class CertainReviewPageService(ICommand):
 
@@ -36,40 +41,13 @@ class CertainReviewPageService(ICommand):
             'next_id': next_id, 'prev_id': prev_id, 'audio_url': audio_url}
 
     def _extract_review_data_by_id(self, id: int) -> dict | None:
-        try:
-            record = Review.objects.get(pk=id)
-        except:
-            record = None
-        
-        return record.__dict__
+        return get_review_data_by_id(id)
 
-    def _extract_translation_data_by_id(self, id: int) -> dict | None:
-        try:
-            record = ReviewTranslation.objects.get(pk=id)
-            translation = record.translated_review_text
-        except:
-            translation = None
-        
-        return translation
+    def _extract_translation_data_by_id(self, id: int) -> str | None:
+        return get_translation_text_by_id(id)
 
     def _extract_audio_url_by_id(self, id: int) -> dict | None:
-        try:
-            record = ReviewAudio.objects.get(pk=id)
-            audio_url = record.audio_review.url
-        except:
-            audio_url = None
-        
-        return audio_url
+        return get_audio_url_by_id(id)
 
     def _extract_oldest_and_lastest_pk_of_review(self) -> dict | None:
-        try:
-            qs1 = Review.objects.all().filter(active=True)
-            oldest = qs1[0].pk
-            qs2 = Review.objects.all().filter(active=True).latest("pk")
-            latest = qs2.pk
-
-            output = {'oldest': oldest, 'latest': latest}
-        except:
-            output = None
-        
-        return output
+        return get_oldest_and_lates_pk_of_review()

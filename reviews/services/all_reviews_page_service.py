@@ -1,5 +1,6 @@
 
 from reviews.models import Review
+from reviews.components.database_requests import get_all_reviews_data_list
 from reviews.services.interfaces.ICommand import ICommand
 
 class AllReviewsPageSerive(ICommand):
@@ -9,15 +10,4 @@ class AllReviewsPageSerive(ICommand):
         return data
 
     def _extract_all_reviews_data_list(self) -> list[dict]:
-        output = []
-        try:
-            records = Review.objects.all().filter(active=True)
-            for record in records:
-                output.append(record.__dict__)
-
-            if len(output) == 0:
-                output = None
-        except:
-            output = None
-        
-        return output
+        return get_all_reviews_data_list()

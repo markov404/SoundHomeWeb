@@ -1,7 +1,5 @@
 
-from django.http import HttpResponse
-
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render, HttpResponse
 from django.core.handlers.wsgi import WSGIRequest
 from django.views.decorators.http import require_http_methods
 
@@ -29,3 +27,8 @@ def auth(request: WSGIRequest):
 def logout(request: WSGIRequest):
     DeleteUserFromSessionService().execute(request)
     return redirect("index_page")
+
+
+@logged_in_user_only()
+def profile_page(request: WSGIRequest):
+    return render(request, 'users/profile.html')
