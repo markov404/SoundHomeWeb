@@ -69,7 +69,7 @@ def get_latest_review_id() -> int | None:
         latest = None
 
     return latest
-
+    
 
 def delete_all_active_review_objects() -> None:
     try:
