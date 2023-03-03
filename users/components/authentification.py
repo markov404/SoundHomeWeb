@@ -16,11 +16,11 @@ class Authentification(IAuthentificationBase):
         else:
             return None
     
-    def is_password_right(self, pk, password):
+    def is_password_right(self, pk, password) -> bool:
         u = SoundHomeUsers.objects.get(pk=pk)
 
         return u.password == self.__passw_hex(password)
     
-    def __passw_hex(self, password: str):
+    def __passw_hex(self, password: str) -> str:
         return hashlib.sha256(password.encode()).hexdigest()
 

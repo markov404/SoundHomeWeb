@@ -1,21 +1,14 @@
 
 from reviews.services.interfaces.ICommand import ICommand
-from reviews.models import Review, ReviewTranslation
+from reviews.models import Review, ReviewTranslation, ReviewAudio
 
 class CertainReviewPageService(ICommand):
 
     def execute(self, id: int) -> dict:
-        response = self._extract_review_data_by_id(id)
-        if response is not None:
-            data: dict = response
-        else:
-            data = None
-        
-        response = self._exetract_translation_data_by_id(id)
-        if response is not None:
-            translation: str = response
-        else:
-            translation = None
+        data = self._extract_review_data_by_id(id)        
+        translation = self._extract_translation_data_by_id(id)
+        audio_url = self._extract_audio_url_by_id(id)
+
 
         response = self._extract_oldest_and_lastest_pk_of_review()
         if response is not None:
@@ -40,7 +33,7 @@ class CertainReviewPageService(ICommand):
 
         return {
             'data': data, 'translation': translation, 
-            'next_id': next_id, 'prev_id': prev_id}
+            'next_id': next_id, 'prev_id': prev_id, 'audio_url': audio_url}
 
     def _extract_review_data_by_id(self, id: int) -> dict | None:
         try:
@@ -50,7 +43,7 @@ class CertainReviewPageService(ICommand):
         
         return record.__dict__
 
-    def _exetract_translation_data_by_id(self, id: int) -> dict | None:
+    def _extract_translation_data_by_id(self, id: int) -> dict | None:
         try:
             record = ReviewTranslation.objects.get(pk=id)
             translation = record.translated_review_text
@@ -58,6 +51,15 @@ class CertainReviewPageService(ICommand):
             translation = None
         
         return translation
+
+    def _extract_audio_url_by_id(self, id: int) -> dict | None:
+        try:
+            record = ReviewAudio.objects.get(pk=id)
+            audio_url = record.audio_review.url
+        except:
+            audio_url = None
+        
+        return audio_url
 
     def _extract_oldest_and_lastest_pk_of_review(self) -> dict | None:
         try:

@@ -17,13 +17,14 @@ def index_reviews(request: WSGIRequest, pk: int):
     translation = response['translation']
     next_id = response['next_id']
     prev_id = response['prev_id']
+    audio_url = response['audio_url']
 
     return render(
         request, 'reviews/review.html', 
         context={
             'data': data, 
             'additional_info': {'next_id': next_id, 'prev_id': prev_id}, 
-            'translation': translation})
+            'translation': translation, 'audio_url': audio_url})
 
 @logged_in_user_only()
 def all_reviews(request: WSGIRequest):
