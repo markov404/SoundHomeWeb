@@ -1,4 +1,4 @@
-
+import threading
 
 from django.db import transaction
 from django.core.files import File
@@ -8,7 +8,7 @@ from reviews.models import Review, ReviewAudio, ReviewTranslation
 from reviews.services.interfaces.ICommand import ICommand
 from reviews.components.pitchf_scruber_builder import PitchFScrubberBuilder
 from reviews.components.translator import Translator
-from reviews.components.speecher import Speecher
+from reviews.components.speecher import SpeecherModifiedForAsync
 
 
 class UpdateReviewsInDBService(ICommand):
@@ -42,13 +42,25 @@ class UpdateReviewsInDBService(ICommand):
         del trns
     
     def _make_audio_revs(self, data: list[dict]) -> None:
-        spchr = Speecher()
-        for point in data:
+        spchr = SpeecherModifiedForAsync()
+        threads = []
+        results = [{} for x in data]
+        for i, point in enumerate(data):
             text = point['translation']
-            file = spchr.get_speech_file_object(text)
-            point['audio_bytes'] = file
+            nt = threading.Thread(
+                target=spchr.get_speech_file_object, 
+                args=(text, i, results)
+                )
+            nt.start()
+            threads.append(nt)
+
+        for process in threads:
+            process.join()
 
         del spchr
+        
+        for rslt, point in zip(results, data):
+            point['audio_bytes'] = rslt
 
     def _update_database(self, data: list[dict]) -> None:
         

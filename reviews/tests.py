@@ -49,5 +49,6 @@ def test_speecher(revew_text_translated):
     t1 = time.time()
     total = t1 - t0
 
+    print(f'time - {total}')
     assert total < float(100)
     assert isinstance(file, BytesIO)
