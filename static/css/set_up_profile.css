@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Mynerve&family=Nunito:wght@200&family=Work+Sans:ital,wght@1,300&display=swap');
+
+
+.separator {
+    border-right: 1px solid #dfdfe0; 
+}
+
+.input-group {
+    margin-bottom:10px; 
+}
+
+.btn-save-label {
+    position: relative;
+    left: -12px;
+    display: inline-block;
+    padding: 6px 12px;
+    background: rgba(0,0,0,0.15);
+    border-radius: 3px 0 0 3px;
+}
+
+.SetUpWrapper {
+    margin-top: 150px;
+    margin-bottom: 250px;
+}
+
+.form-label {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 100;
+}
+
+#panel_heading {
+    margin-bottom: 100px;
+    font-family: 'Faster One', cursive;
+}
+
+.form-control {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 600;
+}

@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render, HttpResponse
 from django.core.handlers.wsgi import WSGIRequest
 from django.views.decorators.http import require_http_methods
 
-from utils.wrappers import not_logged_in_user_only, logged_in_user_only
+from utils.wrappers import not_logged_in_user_only, logged_in_user_only, active_user_only, non_active_user_only
 from utils.sesssion import user_id
 
 from users.services.delete_user_from_session_service import DeleteUserFromSessionService
@@ -33,10 +33,17 @@ def logout(request: WSGIRequest):
 
 
 @logged_in_user_only()
+@active_user_only()
 def profile_page(request: WSGIRequest):
     response = UserBasicDataService().execute(user_id(request))
     if response['status'] == 'error':
         return HttpResponse('baad')
 
-    print(response['data'])
     return render(request, 'users/profile.html', context=response['data'])
+
+
+@logged_in_user_only()
+@non_active_user_only()
+def set_up_profile(request: WSGIRequest):
+    return render(request, 'users/set_up_profile.html', context={})
+    

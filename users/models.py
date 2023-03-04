@@ -9,9 +9,11 @@ class SoundHomeUsers(models.Model):
 
 
 class SoundHomeUsersAdditionalInfo(models.Model):
-    image = models.OneToOneField(
-        SoundHomeUsers, on_delete=models.CASCADE, 
-        primary_key=True, verbose_name="Autar")
+    user = models.OneToOneField(
+        SoundHomeUsers, on_delete=models.CASCADE, primary_key=True)
+
+    image = models.ImageField("Auatar", upload_to="auatars/", null=True, blank=True)
     nickname = models.CharField(
         "Name", max_length=50, 
-        blank=True, default="Anonim", unique=True)
+        blank=True, default="anonim", unique=True, null=True)
+    active = models.BooleanField("Status", default=False)
