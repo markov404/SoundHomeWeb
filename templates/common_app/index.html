@@ -8,6 +8,10 @@
     <title>SOUNDHOME</title>
     {% endblock title %}
 
+    {% block mediaicons %}
+    <link rel="stylesheet" href="https://kit.fontawesome.com/5509c6393f.css" crossorigin="anonymous">
+    {% endblock mediaicons %}
+
     {% block media %}
     {% load static %}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
@@ -146,7 +150,7 @@
     {% block scripts %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-
+    <script src="https://kit.fontawesome.com/5509c6393f.js" crossorigin="anonymous"></script>
     <script>
       function change_url(url) {
           document.location.href = url
@@ -154,7 +158,7 @@
     </script>
 
     <script>
-        let colors = ["#ff0000", "#ffa500", "#ffff00", "#008000", "#0000ff", "#4b0082", "#ee82ee"]
+        let colors = ["#ff0000", "#ffa500", "#008000", "#0000ff", "#4b0082", "#ee82ee"]
 
         let a = $('#text_about').text()
         let words = a.split(" ")

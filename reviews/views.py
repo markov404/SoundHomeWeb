@@ -2,6 +2,7 @@
 
 from django.shortcuts import render
 from django.core.handlers.wsgi import WSGIRequest
+from django.http import JsonResponse
 from utils.wrappers import logged_in_user_only
 
 from reviews.services.all_reviews_page_service import AllReviewsPageSerive
@@ -35,3 +36,8 @@ def all_reviews(request: WSGIRequest):
         status = 'success'
         
     return render(request, 'reviews/all_reviews.html', context={'data': data, 'status': status})
+
+
+@logged_in_user_only()
+def post_user_review(request: WSGIRequest):
+    return JsonResponse({'data': 'FUCK!'})

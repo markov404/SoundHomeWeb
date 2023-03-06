@@ -37,3 +37,21 @@
     font-family: 'Nunito', sans-serif;
     font-weight: 600;
 }
+
+.Aua {
+    border: none;
+    box-shadow: 0 0 11px rgba(33,33,33,.2);
+}
+
+.Aua:hover {
+    transform: scale(1.1)
+}
+
+.submit-form {
+    margin-top: 75px;
+}
+
+#sbm {
+    font-family: 'Roboto', sans-serif;
+    width: 50%;
+}

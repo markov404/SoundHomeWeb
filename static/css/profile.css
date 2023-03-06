@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Kalam&family=Roboto:wght@300&display=swap');
+
 
 .ProfileWrapper {
     margin-top: 150px;
@@ -6,4 +8,89 @@
 
 .card {
     border: none;
+}
+
+.Texted {
+    background-color: red;
+    height: 350px;
+}
+
+.Activity {
+    box-shadow: 0 0 11px rgba(33,33,33,.2); 
+}
+
+.ActivityHigh {
+    box-shadow: 0 0 11px rgba(33,33,33,.2); 
+}
+
+.Activity:hover {
+    scale: 1.01;
+    box-shadow: 0 0 11px royalblue; 
+}
+
+.ActivityHigh:hover {
+    scale: 1.1;
+    box-shadow: 0 0 11px royalblue; 
+}
+
+.cont {
+    position: relative;
+    text-align: center;
+    font-family: 'Kalam', cursive;
+    font-size: 22px;
+}
+
+.cont:hover #ncm{
+    scale: 1.1;
+}
+
+.centered {
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#ncm {
+    color: #fff;
+    text-shadow:
+    0 0 7px #fff,
+    0 0 10px #fff,
+    0 0 21px #fff,
+    0 0 42px #0fa,
+    0 0 82px #0fa,
+    0 0 92px #0fa,
+    0 0 102px #0fa,
+    0 0 151px #0fa;
+}
+
+#my_name_is {
+    filter: brightness(70%);
+}
+
+#frnd {
+    filter: sepia(50%);
+}
+
+#alb_cov {
+    width: 300px;
+}
+
+.cont2 {
+    position: relative;
+}
+
+#oval {
+    position: absolute;
+    top: -10%;
+    left: 86%;
+    width: 55px;
+    height: 370px;
+    border: 3px solid red;
+    border-radius: 100px / 800px;
+}
+
+.cont2:hover #oval {
+    left: 90%;
+    top: -10%;
 }

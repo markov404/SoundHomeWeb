@@ -42,7 +42,12 @@
                     <div class="panel-body">
                         <div class="row">
                             <div class="col-xs-6 col-sm-6 col-md-6 separator social-login-box"> <br>
-                               <img alt="" class="img-thumbnail" src="{% static 'images/default-av.png' %}" width="250px">                        
+                                <div class="image-upload">
+                                <label for="upload">
+                                <img id="img_upload_btn" class="img-thumbnail Aua" src="{% static 'images/default-av.png' %}" width="250px"/>
+                                </label>
+                                <input type="file" accept="image/png, image/gif, image/jpeg" id="upload" onchange="loadfile(event)" style="display:none">
+                                </div>
                             </div>
                             <div style="margin-top:80px;" class="col-xs-6 col-sm-6 col-md-6 login-box">
                                 <label for="exampleInputNickName" class="form-label">Nickname:</label>
@@ -55,24 +60,23 @@
                             </div>
                         </div>
                     </div>
-                    {% comment %} <div class="panel-footer">
-                        <div class="row">
-                            <div class="col">
-                            </div>
-                            <div class="col-xs-6 col-sm-6 col-md-6">
-                                <button class="btn icon-btn-save btn-success" type="submit">
-                                <span class="btn-save-label"><i class="glyphicon glyphicon-floppy-disk"></i></span>save</button>
-                            </div>
-                            <div class="col">
-                            </div>
-                        </div>
-                    </div> {% endcomment %}
+                    <div id="csrf" style="display:none" data-csrf="{{ csrf_token }}"></div>
                 </div>
             </div>
             <div class="col">
             </div>
         </div>
-    </div>  
+        <div class="row text-center submit-form" data-url="{% url 'profile_set_up_page' %}" id="submit_btn_wrap">
+            <div class="col">
+            </div>
+            <div class="col">
+                <button type="button" class="btn btn-outline-secondary" id="sbm">Submit</button>
+            </div>
+            <div class="col">
+            </div>
+        </div>
+    </div>
+
 
     {% endblock content %}
     
@@ -82,6 +86,68 @@
 
     {% block scripts %}
         {{ block.super }}
+
+        <script>
+            let btn = document.getElementById('submit_btn_wrap')
+            btn.style.visibility='hidden'
+
+            let input_from = document.getElementById('exampleInputNickName')
+
+            var loadfile = function(event) {
+                let image = document.getElementById('img_upload_btn')
+                image.src = URL.createObjectURL(event.target.files[0]);
+
+                var input_from = document.getElementById('exampleInputNickName')
+                if (input_from.value !== "") {
+                    let btn = document.getElementById('submit_btn_wrap')
+                    btn.style.visibility='visible'
+                }
+            }
+
+            input_from.addEventListener('change', function() {
+                var file_input = document.getElementById('upload');
+                if (file_input.value !== "") {
+                    let btn = document.getElementById('submit_btn_wrap')
+                    btn.style.visibility='visible'
+                } 
+            })
+
+
+            var submit_button = document.getElementById('sbm')
+            submit_button.addEventListener('click', function() {
+                let url = document.getElementById('submit_btn_wrap').getAttribute('data-url')
+                var input_from = document.getElementById('exampleInputNickName')
+                var file_input = document.getElementById('upload');
+                let csrf = document.getElementById('csrf').getAttribute('data-csrf');
+
+                if (input_from.value !== "" && file_input.value !== "") {
+                    let photo = file_input.files[0]
+                    let nickname = input_from.value
+
+                    let formData = new FormData()
+                    formData.append("image", photo)
+                    formData.append("nickname", nickname)
+                    formData.append("csrfmiddlewaretoken", csrf)
+
+                    fetch(url, {
+                        method: "POST",
+                        body: formData,
+                        mode: 'cors',
+                        cache: 'default',
+                        credentials: 'include',
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                      console.log("Success:", data);
+                    })
+                    .catch((error) => {
+                      console.error("Error:", error);
+                    });
+                }                
+            })
+
+        </script>
+
     {% endblock scripts %}
 
 

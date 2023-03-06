@@ -7,4 +7,6 @@ urlpatterns = [
     path('authenticate/', view=views.auth, name="authentication_view"),
     path('profile/', view=views.profile_page, name="profile_page"),
     path('set_up_profile/', view=views.set_up_profile, name="profile_set_up_page"),
+    path('set_up_profile/change_image', view=views.change_user_ava, name="chng_usr_image"),
+    path('set_up_profile/change_nickname', view=views.change_user_nickname, name="chng_usr_nickname"),
 ]
