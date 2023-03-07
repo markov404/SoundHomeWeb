@@ -77,3 +77,21 @@ def get_user_additional_nickname(pk: int) -> None:
         nickname = None
     
     return nickname
+
+def update_user_additional_image(pk: int, ava: InMemoryUploadedFile) -> None:
+    try:
+        usr = SoundHomeUsersAdditionalInfo.objects.get(pk=pk)
+        usr.image = File(ava.open(), name=f'{pk}_{ava.name}') 
+        usr.save()
+    except:
+        pass
+
+
+def update_user_additional_nickname(pk: int, text: str) -> None:
+    try:
+        usr = SoundHomeUsersAdditionalInfo.objects.get(pk=pk)
+        usr.nickname = text
+        usr.save()
+    except:
+        pass
+    

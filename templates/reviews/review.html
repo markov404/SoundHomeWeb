@@ -36,12 +36,21 @@
             </div>
             <div class="col">
                 <div class="d-flex mb-3">
+                    {% if PRO %}
                     <div class="p-2">
                         <a href="{% url 'ceraint_review' additional_info.prev_id %}"  class='lnk_rv_nav' id='lnk_prv'> Prev </a>
                     </div>
                     <div class="ms-auto p-2">
                         <a href="{% url 'ceraint_review' additional_info.next_id %}" class='lnk_rv_nav' id='lnk_nxt'> Next </a>
                     </div>
+                    {% else %}
+                    <div class="p-2">
+                        <a href="{% url 'ceraint_user_review' additional_info.prev_id %}"  class='lnk_rv_nav' id='lnk_prv'> Prev </a>
+                    </div>
+                    <div class="ms-auto p-2">
+                        <a href="{% url 'ceraint_user_review' additional_info.next_id %}" class='lnk_rv_nav' id='lnk_nxt'> Next </a>
+                    </div>
+                    {% endif %}                    
                 </div>
             </div>
             <div class="col">
@@ -63,10 +72,18 @@
                     <div class="ReviewAlbNdScore">
                     <h2 id="alb_ttl"> {{ data.album_title }}</h2>
                     <h4 id="alb_athr"> {{ data.album_author }}</h4>
+                    {% if data.album_score %}
                     <h1 id="alb_score"> {{ data.album_score }} </h1> <p id="alb_year"> {{ data.album_year}} </p>
+                    {% else %}
+                    <h1 id="alb_score"> {{ data.score }} </h1> <p id="rev_author"> By: {{ additional_info.nickname }} </p>
+                    {% endif %}
                     </div>
                     <div class="ReviewImg">
+                    {% if data.image_src %}
                     <img id="alb_img" src='{{ data.image_src }}' width="350px"/>
+                    {% else %}
+                    <img id="alb_img" src='{{ data.image }}' width="350px"/>
+                    {% endif %}
                     </div>
                     {% comment %} <div class="ReviewOptions">
                     <div class="row">

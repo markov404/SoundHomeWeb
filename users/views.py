@@ -11,6 +11,8 @@ from users.services.delete_user_from_session_service import DeleteUserFromSessio
 from users.services.authenticate_and_auth_or_registr_user import AuthenticateAndAuthOrRegistrUser
 from users.services.user_data_service import UserBasicDataService
 from users.services.set_up_profile_service import SetUpProfileService
+from users.services.change_user_ava_service import ChangeUserAvaService
+from users.services.change_user_nickname_service import ChangeUserNicknameService
 
 
 # Create your views here.
@@ -61,10 +63,20 @@ def set_up_profile(request: WSGIRequest):
 @logged_in_user_only()
 @active_user_only()
 def change_user_ava(request: WSGIRequest):
-    return JsonResponse('HUIAHUHUHU')
+    data = ChangeUserAvaService().execute(request=request, _id=user_id(request))
+    
+    if data['status'] == 'error':
+        print('fuck')
+    else:
+        return redirect('profile_page')
 
 
 @logged_in_user_only()
 @active_user_only()
 def change_user_nickname(request: WSGIRequest):
-    return JsonResponse('meme')
+    data = ChangeUserNicknameService().execute(request=request, _id=user_id(request))
+    
+    if data['status'] == 'error':
+        print('fuck')
+    else:
+        return redirect('profile_page')

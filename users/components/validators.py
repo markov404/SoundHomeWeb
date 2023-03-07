@@ -3,31 +3,7 @@ import re
 from PIL import Image
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from users.components.interfaces.i_validator import IValidator
-
-
-class ImageValidator(IValidator):
-
-    def is_valid(self, image: InMemoryUploadedFile) -> bool:
-        return self._validate(image)[0]
-    
-    def _validate(self, image: InMemoryUploadedFile) -> list:
-        try:
-            im = Image.open(image)
-            output = True
-        except:
-            im = None
-            output = False
-
-        return [output, im]
-    
-    def exctract_image(self, image: InMemoryUploadedFile):
-        try:
-            im = Image.open(image)
-        except:
-            im = None
-        
-        return im
+from utils.abstractions.abstract_classes.abs_validators import ImageValidator, TextValidator
 
 
 class UserAvaValidator(ImageValidator):
@@ -42,16 +18,6 @@ class UserAvaValidator(ImageValidator):
     def _size_validation(self, image_file: Image):
         width, height = image_file.size
         if width > 1000 and height > 1000:
-            return False
-        return True
-
-
-class TextValidator(IValidator):
-    def is_valid(self, text: str) -> bool:
-        return self._validate(text)
-    
-    def _validate(self, text: str) -> bool:
-        if not isinstance(text, str):
             return False
         return True
 

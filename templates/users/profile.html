@@ -109,7 +109,7 @@
                 <h4 class="modal-title w-100 font-weight-bold">Change AVA ;)</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
-              <form action="{% url 'chng_usr_image' %}" method="post">
+              <form action="{% url 'chng_usr_image' %}" enctype="multipart/form-data" method="post">
                 <div id="csrf_wrapper_form_chng_image">
                   {% csrf_token %}
                 </div>
@@ -170,7 +170,7 @@
                 <h4 class="modal-title w-100 font-weight-bold">Yoo! Review !!!</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
-              <form action="{% url 'post_user_review' %}" method="post">
+              <form action="{% url 'post_user_review' %}" enctype="multipart/form-data" method="post">
                 <div id="csrf_wrapper_form_new_review">
                   {% csrf_token %}
                 </div>
@@ -199,7 +199,7 @@
                     <label data-error="wrong" data-success="right" for="form8">Review Text</label>
                   </div>
                   
-                  <div class="md-form">
+                  <div class="md-form mb-5">
                     <i class="fa-solid fa-image"></i>
                     <div class="alb_cov_wrapper text-center mt-2 mb-3"> 
                     <label for="album_cover" id="alb_cov_label" class="ActivityHigh">
@@ -208,6 +208,12 @@
                     </div>
                     <input type="file" accept="image/png, image/gif, image/jpeg" onchange="load_file_chng_ava(event, 'alb_cov')" id="album_cover" name="album_cover" style="display:none" required>
                     <label data-error="wrong" data-success="right" for="alb_cov_label">Album Cover</label>
+                  </div>
+
+                  <div class="md-form">
+                    <i class="fas fa-pencil prefix grey-text"></i>
+                    <input type="text" id="form1" name="review_score" class="form-control validate" required>
+                    <label data-error="wrong" data-success="right" for="form1">Score</label>
                   </div>
                 </div>
                 <div class="modal-footer d-flex justify-content-center">

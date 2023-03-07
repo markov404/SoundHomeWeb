@@ -5,7 +5,7 @@
     {{ block.super }}
 
     {% block title %}
-    <title> Reviews </title>
+    <title> {{ title }} </title>
     {% endblock title %}
 
     {% block media %}
@@ -29,7 +29,11 @@
         {% if status == 'success' %}
         <div class="container ReviewsList" id="rvw_list">
         {% for rev in data %}
+            {% if PRO %}
             <div class="row text-center ReviewListItem" id="rvw{{rev.id}}" data-url="{% url 'ceraint_review' rev.id %}" onclick="change_url('{% url 'ceraint_review' rev.id %}')">
+            {% else %}
+            <div class="row text-center ReviewListItem" id="rvw{{rev.id}}" data-url="{% url 'ceraint_user_review' rev.id %}" onclick="change_url('{% url 'ceraint_user_review' rev.id %}')">
+            {% endif %}                
                 <div class="col">
                     <p id="alb_auth"> {{ rev.album_author }} </p>
                 </div>
@@ -40,13 +44,25 @@
                     <p id="alb_ttl"> {{ rev.album_title }} </p>
                 </div>
                 <div class="col">
+                    {% if rev.image_src %}
                     <img src='{{ rev.image_src }}' width="100px"/>
+                    {% else %}
+                    <img src='{{ rev.image }}' width="100px"/>
+                    {% endif %}
                 </div>
                 <div class="col">
+                    {% if rev.album_year %}
                     <p id="alb_year"> {{ rev.album_year }} </p>
+                    {% else %}
+                    <p id="alb_year"> By: {{ rev.nickname }} </p>
+                    {% endif %}
                 </div>
                 <div class="col">
-                    <p id="alb_score"> {{ rev.album_score }} <p>
+                    {% if rev.album_score %}
+                        <p id="alb_score"> {{ rev.album_score }} <p>
+                    {% else %}
+                        <p id="alb_score"> {{ rev.score }} <p>
+                    {% endif %}
                 </div>
             </div>
         {% endfor %}

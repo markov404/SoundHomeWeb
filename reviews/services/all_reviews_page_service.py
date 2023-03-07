@@ -9,5 +9,5 @@ class AllReviewsPageSerive(ICommand):
         data = self._extract_all_reviews_data_list()
         return data
 
-    def _extract_all_reviews_data_list(self) -> list[dict]:
+    def _extract_all_reviews_data_list(self) -> list[dict] | None:
         return get_all_reviews_data_list()
