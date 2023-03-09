@@ -2,6 +2,7 @@
 #from utils.abstractions.interfaces.i_command import ICommand
 from utils.abstractions.data_structures.service_errors import ServiceErrors
 from utils.abstractions.data_structures.service_response import ServiceResponse
+from utils.abstractions.types.error_type import Error
 from utils.abstractions.interfaces.i_use_case import IUseCase
 
 class BaseService(IUseCase):
@@ -32,3 +33,7 @@ class BaseService(IUseCase):
     def errors(self) -> ServiceErrors:
         return self._errors
 
+    def get_error(self, value) -> bool:
+        if isinstance(value, Error):
+            return True
+        return False

@@ -1,9 +1,11 @@
 
 from django.db import transaction
+from django.apps import apps
 from django.core.files import File
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from users.models import SoundHomeUsers, SoundHomeUsersAdditionalInfo
+from utils.abstractions.types.error_type import Error
 from logging import getLogger
 
 log = getLogger(__name__)
@@ -14,7 +16,7 @@ def get_user_email_by_pk(pk: int) -> str | bool:
         email = usr.email
     except Exception as E:
         log.warning(f'{E}')
-        return False
+        return Error(f'Queryset error - {E}', code=500)
     else:
         return email
 
@@ -25,18 +27,18 @@ def get_user_additional_info_by_pk(pk: int) -> dict | bool:
         output = data.__dict__
     except Exception as E:
         log.warning(f'{E}')
-        return False
+        return Error(f'Queryset error - {E}', code=500)
     else:
         return output
 
 
-def get_user_additional_active_status(pk: int) -> dict | bool:
+def get_user_additional_active_status(pk: int) -> str | bool:
     try:
         usr, created = SoundHomeUsersAdditionalInfo.objects.get_or_create(pk=pk)
         active = usr.active
     except Exception as E:
         log.warning(f'{E}')
-        return False
+        return Error(f'Queryset error - {E}', code=500)
     else:
         return active
 
@@ -50,7 +52,7 @@ def add_user_ava_and_nickname(pk: int, ava: InMemoryUploadedFile, nickname: str)
             usr.save()
     except Exception as E:
         log.warning(f'{E}')
-        return False
+        return Error(f'Queryset error - {E}', code=500)
     else:
         return True
 
@@ -63,7 +65,7 @@ def change_user_active(pk: int, active: bool) -> bool:
         output = usr
     except Exception as E:
         log.warning(f'{E}')
-        return False
+        return Error(f'Queryset error - {E}', code=500)
     else:
         return output
 
@@ -71,7 +73,7 @@ def change_user_active(pk: int, active: bool) -> bool:
 def add_user_ava_and_nickname_end_set_user_active(
     pk: int, 
     ava: InMemoryUploadedFile,
-    nickname: str) -> bool:
+    nickname: str) -> bool | Error:
     try:
         with transaction.atomic():
             usr, created = SoundHomeUsersAdditionalInfo.objects.get_or_create(pk=pk)
@@ -81,7 +83,7 @@ def add_user_ava_and_nickname_end_set_user_active(
             usr.save()
     except Exception as E:
         log.warning(f'{E}')
-        return False
+        return Error(f'Queryset error - {E}', code=500)
     else:
         return True
 
@@ -92,7 +94,7 @@ def get_user_additional_image_url(pk: int) -> str | bool:
         image_url = usr.image.url
     except Exception as E:
         log.warning(f'{E}')
-        return False
+        return Error(f'Queryset error - {E}', code=500)
     else:
         return image_url
 
@@ -103,7 +105,7 @@ def get_user_additional_nickname(pk: int) -> str | bool:
         nickname = usr.nickname
     except Exception as E:
         log.warning(f'{E}')
-        return False
+        return Error(f'Queryset error - {E}', code=500)
     else:
         return nickname
 
@@ -115,7 +117,7 @@ def update_user_additional_image(pk: int, ava: InMemoryUploadedFile) -> bool:
         usr.save()
     except Exception as E:
         log.warning(f'{E}')
-        return False
+        return Error(f'Queryset error - {E}', code=500)
     else:
         return True
 
@@ -127,7 +129,34 @@ def update_user_additional_nickname(pk: int, text: str) -> bool:
         usr.save()
     except Exception as E:
         log.warning(f'{E}')
-        return False
+        return Error(f'Queryset error - {E}', code=500)
     else:
         return True
-    
+
+
+def get_user_own_review_links(pk: int) -> list:
+    try:
+        usrv = apps.get_model('reviews', 'userreview')
+        output = []
+        qs = usrv.objects.filter(user=pk)
+        for rvw in qs:
+            output.append(rvw.image.url)
+    except Exception as E:
+        log.warning(f'{E}')
+        return Error(f'Queryset error - {E}', code=500)
+
+    return output
+
+
+def get_user_own_review_ids(pk: int) -> list:
+    try:
+        usrv = apps.get_model('reviews', 'userreview')
+        output = []
+        qs = usrv.objects.filter(user=pk)
+        for rvw in qs:
+            output.append(rvw.id)
+    except Exception as E:
+        log.warning(f'{E}')
+        return Error(f'Queryset error - {E}', code=500)
+
+    return output

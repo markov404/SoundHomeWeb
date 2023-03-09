@@ -62,9 +62,9 @@ def profile_page(request: WSGIRequest):
     service.execute(_id=user_id(request))
 
     if service.is_error:
-        return HttpResponseServerError()
+        return HttpResponseServerError(service.errors.as_messages())
     else:
-        return render(request, 'users/profile.html', context=service.response[0])
+        return render(request, 'users/profile.html', context=service.response.as_one_dictionary())
 
 
 @logged_in_user_only()

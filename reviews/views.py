@@ -2,7 +2,7 @@
 
 from django.core.handlers.wsgi import WSGIRequest
 from django.shortcuts import redirect, render
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseServerError
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 
@@ -22,33 +22,47 @@ from reviews.serializers import UserReviewForm
 @require_http_methods(["GET"])
 @logged_in_user_only()
 def index_reviews(request: WSGIRequest, pk: int):
-    response = CertainReviewPageService().execute(pk)
-    
-    data = response['data']
-    translation = response['translation']
-    next_id = response['next_id']
-    prev_id = response['prev_id']
-    audio_url = response['audio_url']
+    service = CertainReviewPageService()
+    service.execute(pk)
 
-    return render(
-        request, 'reviews/review.html', 
-        context={
-            'data': data, 
-            'additional_info': {'next_id': next_id, 'prev_id': prev_id}, 
-            'translation': translation, 'audio_url': audio_url,
-            'PRO': True})
+    if service.is_error:
+        return HttpResponseServerError('500')
+
+    else:
+        response = service.response.as_one_dictionary()
+    
+        data = response['data']
+        translation = response['translation']
+        next_id = response['next_id']
+        prev_id = response['prev_id']
+        audio_url = response['audio_url']
+
+        return render(
+            request, 'reviews/review.html', 
+            context={
+                'data': data, 
+                'additional_info': {'next_id': next_id, 'prev_id': prev_id}, 
+                'translation': translation, 'audio_url': audio_url,
+                'PRO': True})
 
 
 @require_http_methods(["GET"])
 @logged_in_user_only()
 def all_reviews(request: WSGIRequest):
-    data = AllReviewsPageSerive().execute()
-    if data is None:
+    service = AllReviewsPageSerive()
+    service.execute()
+
+    if service.is_error:
         status = 'error'
     else:
         status = 'success'
         
-    return render(request, 'reviews/all_reviews.html', context={'data': data, 'status': status, 'title': 'PRO Reviews', 'PRO': True})
+    return render(
+        request, 
+        'reviews/all_reviews.html', 
+        context={
+            'data': service.response.as_one_dictionary()['data'], 
+            'status': status, 'title': 'PRO Reviews', 'PRO': True})
 
 
 @require_http_methods(["POST"])
@@ -75,26 +89,36 @@ def post_user_review(request: WSGIRequest):
 @require_http_methods(["GET"])
 @logged_in_user_only()
 def all_users_reviews(request: WSGIRequest):
-    data = AllUsersReviewsPageService().execute()
-    if data is None:
+    service = AllUsersReviewsPageService()
+    service.execute()
+
+    if service.is_error:
         status = 'error'
     else:
         status = 'success'
         
-    return render(request, 'reviews/all_reviews.html', context={'data': data, 'status': status, 'title': 'Amateur Reviews'})
+    return render(request, 'reviews/all_reviews.html', 
+    context={'data': service.response.as_one_dictionary()['data'], 'status': status, 'title': 'Amateur Reviews'})
 
 
 @require_http_methods(["GET"])
 @logged_in_user_only()
 def index_user_reviews(request: WSGIRequest, pk: int):
-    response = CertainUserReviewPageService().execute(pk)
-    
-    data = response['data']
-    next_id = response['next_id']
-    prev_id = response['prev_id']
-    nickname = response['author_nickname']
+    service = CertainUserReviewPageService()
+    service.execute(pk)
 
-    return render(
-        request, 'reviews/review.html', 
-        context={'data': data, 
-            'additional_info': {'next_id': next_id, 'prev_id': prev_id, 'nickname': nickname}})
+    if service.is_error:
+        return HttpResponseServerError('500')
+    else:
+        response = service.response.as_one_dictionary()
+
+        data = response['data']
+        next_id = response['next_id']
+        prev_id = response['prev_id']
+        nickname = response['author_nickname']
+
+        return render(
+            request, 'reviews/review.html', 
+            context={'data': data, 
+                'additional_info': {'next_id': next_id, 'prev_id': prev_id, 'nickname': nickname}})
+                

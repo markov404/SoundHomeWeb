@@ -75,26 +75,118 @@
         </div>
       
         <div class="col-lg-4 mb-4 mb-lg-0">
-          <div class="cont2">
-          <label for="mk_rvw_btn">
-          <img
-            src="{% static 'images/empty-list.png' %}"
-            class="w-100 shadow-1-strong rounded mb-4 ActivityHigh"
-            alt="Waves at Sea"
-            id="for_oval"
-          />
-          </label>
-          <button type="button" id="mk_rvw_btn" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#mkrvw_modal"/>
-          <div id="oval">
+          {% if reviews %}
+          {% load static %}
+
+          {% if reviews_type_make %}
+          <div class="row mb-4">
+            <div class="col-lg-6 mb-lg-0 text-center">
+              <label for="tutu">
+              <img src="{% static 'images/books.png' %}" class="Activity VertShitB"></img>
+              </label>
+              <button type="button" id="tutu" class="btn btn-link"/>
+            </div>
+            <div class="col-lg-6 mb-lg-0 text-center">
+              <label for="titi">
+              <img src="{% static 'images/temporary_pasta.png' %}" class="Activity VertShit"></img>
+              </label>
+              <button type="button" id="titi" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#mkrvw_modal"/>
+            </div>
           </div>
+          {% else %}
+
+          {% if reviews_amount == 4 %}
+          <div class="row mb-4">
+            <div class="col-lg-6 mb-lg-0 text-center">
+              <img src="{{reviews.0.image}}"  class="UsrRvwType3 Activity" onclick="change_url(`{% url 'ceraint_user_review' reviews.0.id %}`)"></img>
+              <img src="{{reviews.1.image}}" class="UsrRvwType3 usrrvm Activity" onclick="change_url(`{% url 'ceraint_user_review' reviews.1.id %}`)"></img>
+              <img src="{{reviews.2.image}}" class="UsrRvwType3 usrrvm Activity" onclick="change_url(`{% url 'ceraint_user_review' reviews.2.id %}`)"></img> 
+            </div>
+            <div class="col-lg-6 mb-lg-0 text-center">
+              <img src="{{reviews.3.image}}" class="UsrRvwType3 Activity" onclick="change_url(`{% url 'ceraint_user_review' reviews.3.id %}`)"></img> 
+              <label for="titi">
+              <img src="{% static 'images/temporary_pasta3.png' %}" class="Activity VertShit2"></img>
+              </label>
+              <button type="button" id="titi" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#mkrvw_modal"/>
+            </div>
+          </div>
+          {% endif %}
+          
+          {% if reviews_amount == 3 %}
+               
+          <div class="row mb-4">
+            <div class="col-lg-6 mb-lg-0 text-center">
+              <img src="{{reviews.0.image}}"  class="UsrRvwType3 Activity" onclick="change_url(`{% url 'ceraint_user_review' reviews.0.id %}`)"></img>
+              <img src="{{reviews.1.image}}" class="UsrRvwType3 usrrvm Activity" onclick="change_url(`{% url 'ceraint_user_review' reviews.1.id %}`)"></img>
+              <img src="{{reviews.2.image}}" class="UsrRvwType3 usrrvm Activity" onclick="change_url(`{% url 'ceraint_user_review' reviews.2.id %}`)"></img> 
+            </div>
+            <div class="col-lg-6 mb-lg-0 text-center">
+              <label for="titi">
+              <img src="{% static 'images/temporary_pasta.png' %}" class="Activity VertShit"></img>
+              </label>
+              <button type="button" id="titi" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#mkrvw_modal"/>
+            </div>
           </div>
 
-          <img
-            src="{% static 'images/friends.jpg' %}"
-            class="w-100 shadow-1-strong rounded mb-4 Activity"
-            alt="Yosemite National Park"
-            id="frnd"
-          />
+          {% endif %}
+
+          {% if reviews_amount == 2 %}
+          <div class="row mb-4">
+            <div class="col-lg-6 mb-lg-0 text-center">
+              <img src="{{reviews.0.image}}"  class="UsrRvwType3 Activity" onclick="change_url(`{% url 'ceraint_user_review' reviews.0.id %}`)"></img>
+            </div>
+            <div class="col-lg-6 mb-lg-0 text-center">
+              <img src="{{reviews.1.image}}"  class="UsrRvwType3 Activity" onclick="change_url(`{% url 'ceraint_user_review' reviews.1.id %}`)"></img>
+            </div>
+          </div>
+          <div class="row mb-4">
+            <div class="col-lg-6 mb-lg-0 text-center">
+              <label for="titi">
+                <img src="{% static 'images/temporary_pasta2.png' %}" class="Activity HorShit"></img>
+                </label>
+                <button type="button" id="titi" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#mkrvw_modal"/>
+            </div>
+          </div>
+          {% endif %}
+
+          {% if reviews_amount == 1 %}
+          <div class="row mb-4">
+            <div class="col-lg-6 mb-lg-0 text-center">
+              <img src="{{reviews.0.image}}"  class="UsrRvwType3 Activity" onclick="change_url(`{% url 'ceraint_user_review' reviews.0.id %}`)"></img>
+            </div>
+            <div class="col-lg-6 mb-lg-0 text-center">
+              <label for="titi">
+              <img src="{% static 'images/temporary_pasta.png' %}" class="Activity VertShit"></img>
+              </label>
+              <button type="button" id="titi" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#mkrvw_modal"/>
+            </div>
+          </div>
+          {% endif %}
+          
+          {% endif %}
+
+          {% else %}
+          <div class="cont2">
+            <label for="mk_rvw_btn">
+            <img
+              src="{% static 'images/empty-list.png' %}"
+              class="w-100 shadow-1-strong rounded mb-4 ActivityHigh"
+              alt="Waves at Sea"
+              id="for_oval"
+            />
+            </label>
+            <button type="button" id="mk_rvw_btn" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#mkrvw_modal"/>
+            <div id="oval">
+            </div>
+            </div>
+          {% endif %}
+  
+            <img
+              src="{% static 'images/friends.jpg' %}"
+              class="w-100 shadow-1-strong rounded mb-4 Activity"
+              alt="Yosemite National Park"
+              id="frnd"
+            />
         </div>
       </div>
     </div>
@@ -343,7 +435,9 @@
                       let url = document.getElementById('this_page_info').getAttribute('data-rvwmkpage')                      
                       let made_url = url.replace(/.$/,`${json[0].review_id}`)
                       
-                      change_url(`${made_url}`)
+                      //change_url(`${made_url}`)
+                      window.open(made_url, '_blank').focus();
+                      document.location.reload()
                     } else {
                       document.location.reload()    
                     }

@@ -11,7 +11,8 @@ class UserActiveDataService(BaseService):
 
     def _extract_active_boolean(self, _id):
         status = get_user_additional_active_status(_id)
-        if not status:
+        if self.get_error(status):
             self.errors.append('Query error')
-
+            return
+        
         return status

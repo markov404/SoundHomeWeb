@@ -98,3 +98,106 @@
     left: 90%;
     top: -10%;
 }
+
+@media (min-width: 1400px) { 
+
+    .UsrRvwType3 {
+        height: 126px;
+        width: 196px;
+    }
+    
+    .usrrvm {
+        margin-top: 20px;
+    }
+
+    .HorShit {
+        width: 410px;
+    }
+
+    .VertShit2 {
+        height: 272px;
+        margin-top: 20px;
+    }
+
+    .VertShitB {
+        width: 198px;
+        height: 420px;
+    }
+
+}
+
+@media (min-width: 1200px) and (max-width: 1400px){ 
+
+    .UsrRvwType3 {
+        height: 126px;
+        width: 170px;
+    }
+    
+    .usrrvm {
+        margin-top: 20px;
+    }
+
+    .VertShit {
+        width: 180px;
+        height: 418px;
+    }
+
+    .HorShit {
+        width: 350px;
+    }
+
+    .VertShit2 {
+        height: 272px;
+        width: 170px;
+        margin-top: 20px;
+    }
+
+    .VertShitB {
+        width: 180px;
+        height: 420px;
+    }
+
+}
+
+@media (min-width: 992px) and (max-width: 1200px){ 
+
+    .UsrRvwType3 {
+        height: 126px;
+        width: 145px;
+    }
+    
+    .usrrvm {
+        margin-top: 20px;
+    }
+
+    .VertShit {
+        width: 140px;
+        height: 418px;
+    }
+
+    .HorShit {
+        width: 310px;
+    }
+
+    .VertShit2 {
+        height: 272px;
+        width: 140px;
+        margin-top: 20px;
+    }
+
+    .VertShitB {
+        width: 140px;
+        height: 420px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 992px) { 
+    .UsrRvwType3 {
+        height: 126px;
+        width: 196px;
+    }
+    
+    .usrrvm {
+        margin-top: 20px;
+    }
+}

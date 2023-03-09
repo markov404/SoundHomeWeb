@@ -4,7 +4,7 @@ from django.core.files import File
 from django.apps import apps
 
 from reviews.models import Review, ReviewAudio, ReviewTranslation, UserReview
-
+from utils.abstractions.types.error_type import Error
 from logging import getLogger
 
 log = getLogger(__name__)
@@ -21,7 +21,7 @@ def get_all_reviews_data_list() -> list[dict]:
             output = None
     except Exception as E:
         log.warning(f'{E}')
-        return False
+        return Error(f'{E}', code=500)
     
     return output
 
@@ -39,7 +39,7 @@ def get_all_users_review_data_list() -> list[dict]:
             output = None
     except Exception as E:
         log.warning(f'{E}')
-        return False
+        return Error(f'{E}', code=500)
     
     return output
 
@@ -48,7 +48,7 @@ def get_review_data_by_id(pk: int) -> dict | None:
         record = Review.objects.get(pk=pk)
     except Exception as E:
         log.warning(f'{E}')
-        return False
+        return Error(f'{E}', code=500)
     
     return record.__dict__
 
@@ -59,7 +59,7 @@ def get_translation_text_by_id(pk: int) -> str | None:
         translation = record.translated_review_text
     except Exception as E:
         log.warning(f'{E}')
-        return False
+        return Error(f'{E}', code=500)
     
     return translation
 
@@ -70,7 +70,7 @@ def get_audio_url_by_id(pk: int) -> str | None:
         audio_url = record.audio_review.url
     except Exception as E:
         log.warning(f'{E}')
-        return False
+        return Error(f'{E}', code=500)
     
     return audio_url
 
@@ -85,7 +85,7 @@ def get_oldest_and_lates_pk_of_review() -> dict | None:
         output = {'oldest': oldest, 'latest': latest}
     except Exception as E:
         log.warning(f'{E}')
-        return False
+        return Error(f'{E}', code=500)
     
     return output
 
@@ -96,7 +96,7 @@ def get_latest_review_id() -> int | None:
         latest = qs.reverse()[0].pk
     except Exception as E:
         log.warning(f'{E}')
-        return False
+        return Error(f'{E}', code=500)
 
     return latest
     
@@ -107,7 +107,7 @@ def delete_all_active_review_objects() -> None:
         active_reviews.delete()
     except Exception as E:
         log.warning(f'{E}')
-        return False
+        return Error(f'{E}', code=500)
     
     return True
 
@@ -130,16 +130,16 @@ def create_new_review_and_extends_records(point: dict) -> None:
             record_translation.save()
     except Exception as E:
         log.warning(f'{E}')
-        return False
+        return Error(f'{E}', code=500)
     
     return True
 
 
 def create_user_review_and_get_it_pk(pk, data) -> int | None:
     try:
+        md = apps.get_model('users', 'SoundHomeUsers')
         with transaction.atomic():
             img = data['image']
-            md = apps.get_model('users', 'SoundHomeUsers')
             user = md.objects.get(pk=pk)
 
             rvw = UserReview(
@@ -155,7 +155,7 @@ def create_user_review_and_get_it_pk(pk, data) -> int | None:
             output = rvw.pk
     except Exception as E:
         log.warning(f'{E}')
-        return False
+        return Error(f'{E}', code=500)
 
     return output
 
@@ -167,7 +167,7 @@ def get_user_nickname_by_pk(pk: int) -> str | None:
         output = user.soundhomeusersadditionalinfo.nickname
     except Exception as E:
         log.warning(f'{E}')
-        return False
+        return Error(f'{E}', code=500)
 
     return output
 
@@ -181,7 +181,7 @@ def get_user_review_author_nickname_by_pk_of_review(pk: int) -> str | None:
         output = user.soundhomeusersadditionalinfo.nickname
     except Exception as E:
         log.warning(f'{E}')
-        return False
+        return Error(f'{E}', code=500)
 
     return output
 
@@ -194,7 +194,7 @@ def get_user_review_data_by_id(pk: int) -> dict | None:
         output['image'] = record.image.url
     except Exception as E:
         log.warning(f'{E}')
-        return False
+        return Error(f'{E}', code=500)
     
     return output
 
@@ -209,6 +209,6 @@ def get_oldest_and_lates_pk_of_user_review() -> dict | None:
         output = {'oldest': oldest, 'latest': latest}
     except Exception as E:
         log.warning(f'{E}')
-        return False
+        return Error(f'{E}', code=500)
     
     return output

@@ -11,7 +11,7 @@ class ChangeUserAvaService(BaseService):
         
         image = data['image']
 
-        if not self._update_usr_image(_id=_id, image=image):
+        if self.get_error(self._update_usr_image(_id=_id, image=image)):
             self.errors.append('Data base exception')
 
     def _update_usr_image(self, _id: int, image: InMemoryUploadedFile) -> InMemoryUploadedFile:

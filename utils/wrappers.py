@@ -45,7 +45,7 @@ def active_user_only():
             service.execute(_id=_id)
 
             if service.is_error:
-                return HttpResponseServerError()
+                return HttpResponseServerError('Error - 500')
             else:
                 status = service.response[0]['active']
 
@@ -69,12 +69,15 @@ def non_active_user_only():
             service.execute(_id=_id)
 
             if service.is_error:
-                return HttpResponseServerError()
+                return HttpResponseServerError('Error - 500')
+
             else:                
                 status = service.response[0]['active']
             if status:
+
                 response = redirect("profile_page")
                 return response
+
             return func(request, *args, **kwargs)
 
         return inner

@@ -21,5 +21,11 @@ class ServiceErrors(list):
             return True
         return False
 
-    def as_json(self):
-        return json.dumps(self)       
+    def as_json(self) -> str:
+        return json.dumps(self)
+    
+    def as_messages(self) -> list:
+        output = []
+        for error in self:
+            output.append(error['message'])
+        return output

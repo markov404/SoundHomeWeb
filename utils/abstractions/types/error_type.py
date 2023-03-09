@@ -37,4 +37,10 @@ class Error(dict):
     def __value_validation(cls, value, target_type):
         if not isinstance(value, target_type):
             raise TypeError(f'Validation error - {value} should be {target_type}!')
+
+    def __repr__(self) -> str:
+        return f'[code] - {self["code"]} | [message] - {self["message"]}'
+    
+    def __str__(self) -> str:
+        return f'[code] - {self["code"]} | [message] - {self["message"]}'
             

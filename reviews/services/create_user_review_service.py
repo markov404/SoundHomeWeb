@@ -15,7 +15,7 @@ class CreateUserReviewService(BaseService):
         super().execute(data=data)
 
         review_id = self._make_user_review(data=data, _id=_id)
-        if not review_id:
+        if self.get_error(review_id):
             self.errors.append('Database error')
             return
         

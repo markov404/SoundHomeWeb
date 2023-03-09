@@ -10,7 +10,7 @@ class ChangeUserNicknameService(BaseService):
 
         nickname = data['nickname']
 
-        if not update_user_additional_nickname(pk=_id, text=nickname):
+        if self.get_error(update_user_additional_nickname(pk=_id, text=nickname)):
             self.errors.append('Database error')
 
     def _update_nickname(self, _id: int, nickname: str):
