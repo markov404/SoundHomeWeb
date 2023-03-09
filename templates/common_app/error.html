@@ -1,0 +1,77 @@
+
+{% extends 'patterns/base.html' %}
+
+{% block headers %}
+
+    {{ block.super }}
+
+    {% block title %}
+    <title> Error </title>
+    {% endblock title %}
+
+    {% block mediaicons %}
+    <link rel="stylesheet" href="https://kit.fontawesome.com/5509c6393f.css" crossorigin="anonymous">
+    {% endblock mediaicons %}
+
+    {% block media %}
+    {% load static %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    {% endblock media %}
+
+{% endblock headers %}
+
+
+{% block body %}
+
+    {% block content %}
+        <div class="row">
+            <div class="col">
+            </div>
+            <div class="col text-center" data-code="{{ code }}" {% if message %}data-message="{{message}}"{% endif %} id="img_col">
+                {% load static %}
+                <img src="{% static 'images/restricted-common.jpg' %}" width="500px" style="margin-top: 300px"/>
+            </div>
+            <div class="col">
+            </div>
+        </div>
+    {% endblock content %}
+
+    {% block alertifycdn %}
+        
+    <!-- JavaScript -->
+    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
+    <!-- Default theme -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
+    <!-- Semantic UI theme -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/semantic.min.css"/>
+    <!-- Bootstrap theme -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/bootstrap.min.css"/>
+
+    <!-- 
+        RTL version
+    -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.rtl.min.css"/>
+    <!-- Default theme -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.rtl.min.css"/>
+    <!-- Semantic UI theme -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/semantic.rtl.min.css"/>
+    <!-- Bootstrap theme -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/bootstrap.rtl.min.css"/>
+    {% endblock alertifycdn %} 
+    {% block scripts %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/5509c6393f.js" crossorigin="anonymous"></script>
+
+    <script>
+        let code = document.getElementById('img_col').getAttribute('data-code')
+        let message = document.getElementById('img_col').getAttribute('data-message')
+        alertify.alert(`Server error! - ${code} ; ${message}`)       
+    </script>
+
+    {% endblock scripts %}
+
+{% endblock body %}

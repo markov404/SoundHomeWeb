@@ -109,10 +109,8 @@
                 <h4 class="modal-title w-100 font-weight-bold">Change AVA ;)</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
-              <form action="{% url 'chng_usr_image' %}" enctype="multipart/form-data" method="post">
-                <div id="csrf_wrapper_form_chng_image">
-                  {% csrf_token %}
-                </div>
+              <form data-url="{% url 'chng_usr_image' %}" id="change_user_image_form" enctype="multipart/form-data" method="post">
+                <div id="csrf_wrapper" data-csrf="{{ csrf_token }}" style="display:none"></div>
                 <div class="modal-body mx-3">
                   <div class="md-form">
                     <i class="fa-solid fa-image"></i>
@@ -121,19 +119,17 @@
                       <img src="{% static 'images/ava-def.img' %}" id="usr_ava" />
                     </label>
                     </div>
-                    <input type="file" accept="image/png, image/gif, image/jpeg" id="user_image" onchange="load_file_chng_ava(event, 'usr_ava')" name="user_image" style="display:none" required>
+                    <input type="file" accept="image/png, image/gif, image/jpeg" id="user_image" onchange="load_file_chng_ava(event, 'usr_ava')" name="image" style="display:none" required>
                     <label data-error="wrong" data-success="right" for="alb_cov_label">Your New Ava</label>
                   </div>
                 </div>
                 <div class="modal-footer d-flex justify-content-center">
-                  <button class="btn btn-success">Send<i class="fas fa-paper-plane-o ml-1"></i></button>
+                  <button type="button" onclick="customSubmit('ava')" class="btn btn-success">Send<i class="fas fa-paper-plane-o ml-1"></i></button>
                 </div>
               </form>
             </div>
           </div>
         </div>
-
-        
 
         <div class="modal fade" id="chng_nickname_modal" tabindex="-1" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered">
@@ -142,19 +138,17 @@
                 <h4 class="modal-title w-100 font-weight-bold">Change NickName   ;)</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
-              <form action="{% url 'chng_usr_nickname' %}" method="post">
-                <div id="csrf_wrapper_form_chng_image">
-                  {% csrf_token %}
-                </div>
+              <form data-url="{% url 'chng_usr_nickname' %}" id="change_user_nickname_form" method="post">
+                <div class="csrf_wrapper" data-csrf="{{ csrf_token }}" style="display:none"></div>
                 <div class="modal-body mx-3">
                   <div class="md-form mb-5">
                     <i class="fas fa-pencil prefix grey-text"></i>
-                    <input type="text" id="form34" name="user_nickname" class="form-control validate" required>
-                    <label data-error="wrong" data-success="right" for="form34">New Nickname</label>
+                    <input type="text" id="nickname_input" name="nickname" class="form-control validate" required>
+                    <label data-error="wrong" data-success="right" for="nickname_input">New Nickname</label>
                   </div>
                 </div>
                 <div class="modal-footer d-flex justify-content-center">
-                  <button class="btn btn-success">Send<i class="fas fa-paper-plane-o ml-1"></i></button>
+                  <button type="button" onclick="customSubmit('nickname')" class="btn btn-success">Send<i class="fas fa-paper-plane-o ml-1"></i></button>
                 </div>
               </form>
             </div>
@@ -170,10 +164,8 @@
                 <h4 class="modal-title w-100 font-weight-bold">Yoo! Review !!!</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
-              <form action="{% url 'post_user_review' %}" enctype="multipart/form-data" method="post">
-                <div id="csrf_wrapper_form_new_review">
-                  {% csrf_token %}
-                </div>
+              <form data-url="{% url 'post_user_review' %}" enctype="multipart/form-data" method="post">
+                <div class="csrf_wrapper" data-csrf="{{ csrf_token }}" style="display:none"></div>
                 <div class="modal-body mx-3">
                   <div class="md-form mb-5">
                     <i class="fa-solid fa-music"></i>
@@ -212,12 +204,12 @@
 
                   <div class="md-form">
                     <i class="fas fa-pencil prefix grey-text"></i>
-                    <input type="text" id="form1" name="review_score" class="form-control validate" required>
+                    <input type="text" id="rvw_score" name="review_score" class="form-control validate" required>
                     <label data-error="wrong" data-success="right" for="form1">Score</label>
                   </div>
                 </div>
                 <div class="modal-footer d-flex justify-content-center">
-                  <button class="btn btn-success">Send <i class="fas fa-paper-plane-o ml-1"></i></button>
+                  <button type="button" onclick="customSubmit('review')" class="btn btn-success">Send <i class="fas fa-paper-plane-o ml-1"></i></button>
                 </div>
               </form>
             </div>
@@ -233,14 +225,168 @@
         {{ block.super }}
     {% endblock footer %}
 
+
+    {% block common_info %}
+        {{ block.super }}
+    {% endblock common_info %}
+
+    {% block alertifycdn %}
+        {{ block.super }}
+    {% endblock alertifycdn %}
+
+
     {% block scripts %}
         {{ block.super }}
+        {% block login_form_code %}{% endblock login_form_code %}
 
         <script>
           var load_file_chng_ava = function(event, id) {
             let image = document.getElementById(id)
             image.src = URL.createObjectURL(event.target.files[0]);
           }
+        </script>
+
+        <script>
+
+          function customSubmit(type) {
+            let csrf = document.getElementById('csrf_wrapper').getAttribute('data-csrf');
+            if (type === 'review') {
+
+            } else if (type === 'ava') {
+              let ava_input = document.getElementById('user_image')
+              let url = document.getElementById('change_user_image_form').getAttribute('data-url');
+              let ava = ava_input.files[0]
+
+              if (ava_input.value !== "" ) {
+                let formData = new FormData()
+                formData.append("image", ava)
+                formData.append("csrfmiddlewaretoken", csrf)
+
+                send(url, formData)
+
+              } else {
+                alertify.alert('Fill in empty fields, please.') 
+              }
+
+            } else if (type === 'nickname') {
+                let url = document.getElementById('change_user_nickname_form').getAttribute('data-url');
+                let nickname = document.getElementById('nickname_input').value
+
+                if (nickname !== "" ) {
+                  let formData = new FormData()
+                  formData.append("nickname", nickname)
+                  formData.append("csrfmiddlewaretoken", csrf)
+  
+                  send(url, formData)
+  
+                } else {
+                  alertify.alert('Fill in empty fields, please.') 
+                }
+            }
+
+            function send(url, form) {
+              fetch(url, {
+                method: "POST",
+                body: form,
+                mode: 'cors',
+                cache: 'default',
+                credentials: 'include',
+              })
+              .then((response) => response.json())
+              .then((data) => {
+                console.log("Success:", data);
+                if (data.status === "message") {
+                  let msg = data.info
+                  let json = JSON.parse(data.info); 
+                  let keys = Object.keys(json)
+
+                  alertify.alert(json[0].message)
+                } else if (data.status === "form_validation_error" ) {
+                  let msg = data.info
+                  let json = JSON.parse(data.info); 
+                  let keys = Object.keys(json)
+
+                  alertify.alert(json[keys[0]][0].message)                
+
+                } else if (data.status === "success") {
+                  document.location.reload()
+
+                } else if (data.status === "error") {
+                  let err = data.info
+                  let json = JSON.parse(data.info)
+                  
+                  json.forEach((element) => {
+                    if (element.code >= 500) {
+                      let url = document.getElementById('common_data_div').getAttribute('data-erurl')
+                      change_url(`${url}?code=${element.code}&message=${element.message}`)
+                    }
+                  })
+                }
+              })
+              .catch((error) => {
+                console.error("Error:", error);
+              });
+            }
+
+            /*let email = document.getElementById('exampleInputEmail1').value
+            let password = document.getElementById('exampleInputPassword1').value
+            let csrf = document.getElementsByClassName('csrf_wrapper').getAttribute('data-csrf');
+            let url = document.getElementById('sbm1').getAttribute('data-url')
+            
+            if (( email !== "" ) && ( password !== "" )) {
+              let formData = new FormData()
+              formData.append("email", email)
+              formData.append("password", password)
+              formData.append("csrfmiddlewaretoken", csrf)
+  
+              fetch(url, {
+                  method: "POST",
+                  body: formData,
+                  mode: 'cors',
+                  cache: 'default',
+                  credentials: 'include',
+              })
+              .then((response) => response.json())
+              .then((data) => {
+                console.log("Success:", data);
+                if (data.status === "message") {
+                  let msg = data.info
+                  let json = JSON.parse(data.info); 
+                  let keys = Object.keys(json)
+  
+                  alertify.alert(json[0].message)
+                } else if (data.status === "form_validation_error" ) {
+                  let msg = data.info
+                  let json = JSON.parse(data.info); 
+                  let keys = Object.keys(json)
+  
+                  alertify.alert(json[keys[0]][0].message)                
+  
+                } else if (data.status === "success") {
+                  document.location.reload()
+  
+                } else if (data.status === "error") {
+                  let err = data.info
+                  let json = JSON.parse(data.info)
+                  
+                  json.forEach((element) => {
+                    if (element.code === 500) {
+                      let url = document.getElementById('common_data_div').getAttribute('data-erurl')
+                      change_url(`${url}?code=${element.code}&message=${element.message}`)
+                    }
+                  })
+  
+                }
+              })
+              .catch((error) => {
+                console.error("Error:", error);
+              });
+            } else {
+              alertify.alert('Fill in empty fields, please.') 
+            }*/
+  
+          }
+
         </script>
 
     {% endblock scripts %}

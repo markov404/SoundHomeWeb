@@ -1,25 +1,14 @@
 
-from users.services.interfaces.ICommand import ICommand
-from users.components.validators import UserNicknameValidator
 from users.components.database_requests import update_user_additional_nickname
+from utils.abstractions.abstract_classes.abs_services import BaseService
 
-class ChangeUserNicknameService(ICommand):
+class ChangeUserNicknameService(BaseService):
     
-    def execute(self, request, _id):
-        nickname = self._extract_new_ava(request)
-        if nickname is None:
-            return {"status": "error"}
+    def execute(self, data: dict, _id: int):
+        nickname = data['nickname']
 
-        if not UserNicknameValidator().is_valid(nickname):
-            return {"status": "error"}
+        if not update_user_additional_nickname(pk=_id, text=nickname):
+            self.errors.append('Database error')
 
-        update_user_additional_nickname(pk=_id, text=nickname)
-        return {"status": "success"}
-
-    def _extract_new_ava(self, request) -> str | None:
-        try:
-            nickname = request.POST.get("user_nickname")
-        except:
-            nickname = None
-        
-        return nickname
+    def _update_nickname(self, _id: int, nickname: str):
+        return update_user_additional_nickname(pk=_id, text=nickname)

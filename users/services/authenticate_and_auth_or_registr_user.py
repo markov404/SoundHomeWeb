@@ -1,46 +1,29 @@
 from django.core.handlers.wsgi import WSGIRequest
+from utils.abstractions.abstract_classes.abs_services import BaseService
 
-from users.services.interfaces.ICommand import ICommand
 from users.components.authentification import Authentification
 from users.components.authorisation import Authorisation
 from users.components.registration import Registration
 
 
-class AuthenticateAndAuthOrRegistrUser(ICommand):
+class AuthenticateAndAuthOrRegistrUser(BaseService):
 
-    def execute(self, req: WSGIRequest) -> dict:
-        data = self._extract_email_and_passw(req) 
-        if data is None:
-            return {"status": "error", "message": "Invalid request"}
-        
+    def execute(self, req: WSGIRequest, data) -> dict:
         email = data['email']
         password = data['password']
 
         what_to_do = self._choose_option(email, password)
         if what_to_do['status'] == 'error':
-            return what_to_do
-
-        match what_to_do['op_type']:
-            case 'reg':
-                self._registrate(req, email, password)
-                return {'status': 'success', 'message': 'registred'}
-            case 'auth':
-                self._authorise(req, what_to_do['data'])
-                return {'status': 'success', 'message': 'authorised'}
-
-
-    def _extract_email_and_passw(self, request: WSGIRequest) -> dict | None:
+            self.errors.append(what_to_do['message'], 400)
         
-        try:
-            email = request.POST.get("email")
-            password = request.POST.get("password")
-        except:
-            output = None
-        else:
-            output = {'email': email, 'password': password}
+        if not self.is_error:
+            match what_to_do['op_type']:
+                case 'reg':
+                    self._registrate(req, email, password)
+                case 'auth':
+                    self._authorise(req, what_to_do['data'])
 
-        return output
-    
+
     def _choose_option(self, email: str, password: str) -> dict:
         authe = Authentification()
         user = authe.is_user_exists(email)

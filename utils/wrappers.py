@@ -1,6 +1,7 @@
 
 from functools import wraps
 from django.shortcuts import redirect
+from django.http import HttpResponseServerError
 from users.services.user_active_data_service import UserActiveDataService
 
 
@@ -40,7 +41,14 @@ def active_user_only():
         @wraps(func)
         def inner(request, *args, **kwargs):
             _id = request.session['member_id']
-            status = UserActiveDataService().execute(_id)
+            service = UserActiveDataService()
+            service.execute(_id=_id)
+
+            if service.is_error:
+                return HttpResponseServerError()
+            else:
+                status = service.response[0]['active']
+
             if not status:
                 response = redirect("profile_set_up_page")
                 return response
@@ -57,7 +65,13 @@ def non_active_user_only():
         @wraps(func)
         def inner(request, *args, **kwargs):
             _id = request.session['member_id']
-            status = UserActiveDataService().execute(_id)
+            service = UserActiveDataService()
+            service.execute(_id=_id)
+
+            if service.is_error:
+                return HttpResponseServerError()
+            else:                
+                status = service.response[0]['active']
             if status:
                 response = redirect("profile_page")
                 return response

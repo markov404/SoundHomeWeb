@@ -1,12 +1,22 @@
 from django.db import models
-from users.components.validators import UserNicknameValidator, UserAvaValidator
+
+from users.components.validators import (
+    UserNicknameValidator, 
+    UserAvaValidator,
+    UserEmailValidator,
+    UserPasswordValidator)
 
 # Create your models here.
 
 
 class SoundHomeUsers(models.Model):
-    email = models.EmailField(max_length=254, unique=True)
-    password = models.CharField(max_length=254)
+    email = models.EmailField(
+        max_length=254, 
+        unique=True, 
+        validators=[UserEmailValidator().is_valid])
+    password = models.CharField(
+        max_length=254,
+        validators=[UserPasswordValidator().is_valid])
 
 
 class SoundHomeUsersAdditionalInfo(models.Model):
@@ -18,7 +28,7 @@ class SoundHomeUsersAdditionalInfo(models.Model):
         upload_to="auatars/", 
         null=True, 
         blank=True,
-        validators=[UserAvaValidator.is_valid])
+        validators=[UserAvaValidator().is_valid])
     nickname = models.CharField(
         "Name", 
         max_length=50, 
@@ -26,5 +36,5 @@ class SoundHomeUsersAdditionalInfo(models.Model):
         default="anonim", 
         unique=True, 
         null=True,
-        validators=[UserNicknameValidator.is_valid])
+        validators=[UserNicknameValidator().is_valid])
     active = models.BooleanField("Status", default=False)

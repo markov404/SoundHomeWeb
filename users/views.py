@@ -1,6 +1,5 @@
-
-from django.shortcuts import redirect, render, HttpResponse
-from django.http import JsonResponse
+from django.shortcuts import redirect, render
+from django.http import JsonResponse, HttpResponseServerError
 from django.core.handlers.wsgi import WSGIRequest
 from django.views.decorators.http import require_http_methods
 
@@ -14,6 +13,11 @@ from users.services.set_up_profile_service import SetUpProfileService
 from users.services.change_user_ava_service import ChangeUserAvaService
 from users.services.change_user_nickname_service import ChangeUserNicknameService
 
+from users.serializers import UserAdditionalInfoForm
+from users.serializers import ChangeUserImageForm
+from users.serializers import ChangeUserNicknameForm
+from users.serializers import UserAARForm
+
 
 # Create your views here.
 
@@ -21,39 +25,66 @@ from users.services.change_user_nickname_service import ChangeUserNicknameServic
 @require_http_methods(["POST"])
 @not_logged_in_user_only()
 def auth(request: WSGIRequest):
-    response = AuthenticateAndAuthOrRegistrUser().execute(request)
-    if not isinstance(response, dict):
-        return HttpResponse()
+    form = UserAARForm(data=request.POST)
     
-    if response['status'] == 'success':
-        return redirect("profile_page")
+    if not form.is_valid():
+        return JsonResponse({'status': 'form_validation_error', 'info': f'{form.errors.as_json()}'})
+
     else:
-        return HttpResponse(response['message'])
+        service = AuthenticateAndAuthOrRegistrUser()
+        service.execute(req=request, data=form.clean())
+
+        if service.is_error:
+            if service.errors.type_of_server:
+                return JsonResponse({'status': 'error', 'info': f'{service.errors.as_json()}'})
+            
+            return JsonResponse({'status': 'message', 'info': f'{service.errors.as_json()}'})
+        
+        return JsonResponse({'status': 'success'})
 
 
 @require_http_methods(["GET"])
 @logged_in_user_only()
 def logout(request: WSGIRequest):
-    DeleteUserFromSessionService().execute(request)
+    service = DeleteUserFromSessionService()
+    service.execute(request=request)
+
+    if service.is_error:
+        return HttpResponseServerError()
+        
     return redirect("index_page")
 
 
 @logged_in_user_only()
 @active_user_only()
-def profile_page(request: WSGIRequest):
-    response = UserBasicDataService().execute(user_id(request))
-    if response['status'] == 'error':
-        return HttpResponse('baad')
+def profile_page(request: WSGIRequest):    
+    service = UserBasicDataService()
+    service.execute(_id=user_id(request))
 
-    return render(request, 'users/profile.html', context=response['data'])
+    if service.is_error:
+        return HttpResponseServerError()
+    else:
+        return render(request, 'users/profile.html', context=service.response[0])
 
 
 @logged_in_user_only()
 @non_active_user_only()
 def set_up_profile(request: WSGIRequest):
     if request.method == "POST":
-        response = SetUpProfileService().execute(request, user_id(request))
-        return JsonResponse(response)
+        form = UserAdditionalInfoForm(data=request.POST, files=request.FILES)
+        if not form.is_valid():
+            return JsonResponse(
+                {'status': 'error', 
+                'message': f'{form.errors.as_text()}'})
+
+        else:
+            service = SetUpProfileService()
+            service.execute(data=form.clean(), _id=user_id(request))
+            
+            if service.is_error:
+                return HttpResponseServerError()         
+            
+            return JsonResponse({'status': 'success'})
     elif request.method == "GET":
         pass
     
@@ -63,20 +94,40 @@ def set_up_profile(request: WSGIRequest):
 @logged_in_user_only()
 @active_user_only()
 def change_user_ava(request: WSGIRequest):
-    data = ChangeUserAvaService().execute(request=request, _id=user_id(request))
-    
-    if data['status'] == 'error':
-        print('fuck')
+    form = ChangeUserImageForm(files=request.FILES)
+
+    if not form.is_valid():
+        return JsonResponse({'status': 'form_validation_error', 'info': f'{form.errors.as_json()}'})
+
     else:
-        return redirect('profile_page')
+        service = ChangeUserAvaService()
+        service.execute(data=form.clean(), _id=user_id(request))
+
+        if service.is_error:
+            if service.errors.type_of_server:
+                return JsonResponse({'status': 'error', 'info': f'{service.errors.as_json()}'})
+
+            return JsonResponse({'status': 'message', 'info': f'{service.errors.as_json()}'})
+
+        return JsonResponse({'status': 'success'})
 
 
 @logged_in_user_only()
 @active_user_only()
 def change_user_nickname(request: WSGIRequest):
-    data = ChangeUserNicknameService().execute(request=request, _id=user_id(request))
-    
-    if data['status'] == 'error':
-        print('fuck')
+    form = ChangeUserNicknameForm(data=request.POST)
+
+    if not form.is_valid():
+        return JsonResponse({'status': 'form_validation_error', 'info': f'{form.errors.as_json()}'})
+        
     else:
-        return redirect('profile_page')
+        service = ChangeUserNicknameService()
+        service.execute(data=form.clean(), _id=user_id(request))
+
+        if service.is_error:
+            if service.errors.type_of_server:
+                return JsonResponse({'status': 'error', 'info': f'{service.errors.as_json()}'})
+
+            return JsonResponse({'status': 'message', 'info': f'{service.errors.as_json()}'})
+        
+        return JsonResponse({'status': 'success'})
