@@ -164,47 +164,47 @@
                 <h4 class="modal-title w-100 font-weight-bold">Yoo! Review !!!</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
-              <form data-url="{% url 'post_user_review' %}" enctype="multipart/form-data" method="post">
+              <form data-url="{% url 'post_user_review' %}" id="create_user_review_form" enctype="multipart/form-data" method="post">
                 <div class="csrf_wrapper" data-csrf="{{ csrf_token }}" style="display:none"></div>
                 <div class="modal-body mx-3">
                   <div class="md-form mb-5">
                     <i class="fa-solid fa-music"></i>
-                    <input type="text" id="form34" name="album_author" class="form-control validate" required>
-                    <label data-error="wrong" data-success="right" for="form34">Author</label>
+                    <input type="text" id="album_author" name="album_author" class="form-control validate" required>
+                    <label data-error="wrong" data-success="right" for="album_author">Author</label>
                   </div>
           
                   <div class="md-form mb-5">
                     <i class="fa-solid fa-heading"></i>
-                    <input type="text" id="form29" name="album_title" class="form-control validate" required>
-                    <label data-error="wrong" data-success="right" for="form29">Title</label>
+                    <input type="text" id="album_title" name="album_title" class="form-control validate" required>
+                    <label data-error="wrong" data-success="right" for="album_title">Title</label>
                   </div>
           
                   <div class="md-form mb-5">
                     <i class="fas fa-tag prefix grey-text"></i>
-                    <input type="text" id="form32" name="review_header" class="form-control validate" required>
-                    <label data-error="wrong" data-success="right" for="form32">Review Header</label>
+                    <input type="text" id="review_title" name="review_title" class="form-control validate" required>
+                    <label data-error="wrong" data-success="right" for="review_title">Review Header</label>
                   </div>
           
                   <div class="md-form mb-5">
                     <i class="fas fa-pencil prefix grey-text"></i>
-                    <textarea type="text" id="form8" name="review_text" class="md-textarea form-control" rows="4" required></textarea>
-                    <label data-error="wrong" data-success="right" for="form8">Review Text</label>
+                    <textarea type="text" id="review_text" name="review_text" class="md-textarea form-control" rows="4" required></textarea>
+                    <label data-error="wrong" data-success="right" for="review_text">Review Text</label>
                   </div>
                   
                   <div class="md-form mb-5">
                     <i class="fa-solid fa-image"></i>
                     <div class="alb_cov_wrapper text-center mt-2 mb-3"> 
-                    <label for="album_cover" id="alb_cov_label" class="ActivityHigh">
+                    <label for="image" id="alb_cov_label" class="ActivityHigh">
                       <img src="{% static 'images/album-default-cover.png' %}" id="alb_cov" />
                     </label>
                     </div>
-                    <input type="file" accept="image/png, image/gif, image/jpeg" onchange="load_file_chng_ava(event, 'alb_cov')" id="album_cover" name="album_cover" style="display:none" required>
+                    <input type="file" accept="image/png, image/gif, image/jpeg" onchange="load_file_chng_ava(event, 'alb_cov')" id="image" name="album_cover" style="display:none" required>
                     <label data-error="wrong" data-success="right" for="alb_cov_label">Album Cover</label>
                   </div>
 
                   <div class="md-form">
                     <i class="fas fa-pencil prefix grey-text"></i>
-                    <input type="text" id="rvw_score" name="review_score" class="form-control validate" required>
+                    <input type="text" id="rvw_score" name="score" class="form-control validate" required>
                     <label data-error="wrong" data-success="right" for="form1">Score</label>
                   </div>
                 </div>
@@ -230,6 +230,8 @@
         {{ block.super }}
     {% endblock common_info %}
 
+    <div id="this_page_info" data-rvwmkpage="{% url 'ceraint_user_review' 0 %}"></div>
+
     {% block alertifycdn %}
         {{ block.super }}
     {% endblock alertifycdn %}
@@ -251,7 +253,32 @@
           function customSubmit(type) {
             let csrf = document.getElementById('csrf_wrapper').getAttribute('data-csrf');
             if (type === 'review') {
+              let image_input = document.getElementById('image')
+              let url = document.getElementById('create_user_review_form').getAttribute('data-url');
+              
+              let album_author = document.getElementById('album_author').value
+              let album_title = document.getElementById('album_title').value
+              let review_title = document.getElementById('review_title').value
+              let review_text = document.getElementById('review_text').value
+              let image = image_input.files[0]
+              let score = document.getElementById('rvw_score').value
 
+              if ((image_input.value !== "" ) && (album_author !== "" ) && (album_title !== "" ) && (review_title !== "" ) && (review_text !== "" ) && (score !== "" )) {
+                let formData = new FormData()
+                formData.append("image", image)
+                formData.append("csrfmiddlewaretoken", csrf)
+                formData.append("score", score)
+
+                formData.append("album_author", album_author)
+                formData.append("album_title", album_title)
+                formData.append("review_title", review_title)
+                formData.append("review_text", review_text)
+
+                send(url, formData)
+
+              } else {
+                alertify.alert('Fill in empty fields, please.') 
+              }
             } else if (type === 'ava') {
               let ava_input = document.getElementById('user_image')
               let url = document.getElementById('change_user_image_form').getAttribute('data-url');
@@ -276,7 +303,7 @@
                   let formData = new FormData()
                   formData.append("nickname", nickname)
                   formData.append("csrfmiddlewaretoken", csrf)
-  
+                  
                   send(url, formData)
   
                 } else {
@@ -309,7 +336,20 @@
                   alertify.alert(json[keys[0]][0].message)                
 
                 } else if (data.status === "success") {
-                  document.location.reload()
+                  if (Object.hasOwn(data, 'flag') === true) {
+                    if (data.flag === 'potato') {
+                      let json = JSON.parse(data.data)
+                      
+                      let url = document.getElementById('this_page_info').getAttribute('data-rvwmkpage')                      
+                      let made_url = url.replace(/.$/,`${json[0].review_id}`)
+                      
+                      change_url(`${made_url}`)
+                    } else {
+                      document.location.reload()    
+                    }
+                  } else {
+                    document.location.reload()
+                  }
 
                 } else if (data.status === "error") {
                   let err = data.info
@@ -327,64 +367,6 @@
                 console.error("Error:", error);
               });
             }
-
-            /*let email = document.getElementById('exampleInputEmail1').value
-            let password = document.getElementById('exampleInputPassword1').value
-            let csrf = document.getElementsByClassName('csrf_wrapper').getAttribute('data-csrf');
-            let url = document.getElementById('sbm1').getAttribute('data-url')
-            
-            if (( email !== "" ) && ( password !== "" )) {
-              let formData = new FormData()
-              formData.append("email", email)
-              formData.append("password", password)
-              formData.append("csrfmiddlewaretoken", csrf)
-  
-              fetch(url, {
-                  method: "POST",
-                  body: formData,
-                  mode: 'cors',
-                  cache: 'default',
-                  credentials: 'include',
-              })
-              .then((response) => response.json())
-              .then((data) => {
-                console.log("Success:", data);
-                if (data.status === "message") {
-                  let msg = data.info
-                  let json = JSON.parse(data.info); 
-                  let keys = Object.keys(json)
-  
-                  alertify.alert(json[0].message)
-                } else if (data.status === "form_validation_error" ) {
-                  let msg = data.info
-                  let json = JSON.parse(data.info); 
-                  let keys = Object.keys(json)
-  
-                  alertify.alert(json[keys[0]][0].message)                
-  
-                } else if (data.status === "success") {
-                  document.location.reload()
-  
-                } else if (data.status === "error") {
-                  let err = data.info
-                  let json = JSON.parse(data.info)
-                  
-                  json.forEach((element) => {
-                    if (element.code === 500) {
-                      let url = document.getElementById('common_data_div').getAttribute('data-erurl')
-                      change_url(`${url}?code=${element.code}&message=${element.message}`)
-                    }
-                  })
-  
-                }
-              })
-              .catch((error) => {
-                console.error("Error:", error);
-              });
-            } else {
-              alertify.alert('Fill in empty fields, please.') 
-            }*/
-  
           }
 
         </script>

@@ -1,8 +1,14 @@
 
 from django.db import transaction
 from django.core.files import File
-from reviews.models import Review, ReviewAudio, ReviewTranslation, UserReview
 from django.apps import apps
+
+from reviews.models import Review, ReviewAudio, ReviewTranslation, UserReview
+
+from logging import getLogger
+
+log = getLogger(__name__)
+
 
 def get_all_reviews_data_list() -> list[dict]:
     output = []
@@ -13,8 +19,9 @@ def get_all_reviews_data_list() -> list[dict]:
 
         if len(output) == 0:
             output = None
-    except:
-        output = None
+    except Exception as E:
+        log.warning(f'{E}')
+        return False
     
     return output
 
@@ -30,16 +37,18 @@ def get_all_users_review_data_list() -> list[dict]:
 
         if len(output) == 0:
             output = None
-    except:
-        output = None
+    except Exception as E:
+        log.warning(f'{E}')
+        return False
     
     return output
 
 def get_review_data_by_id(pk: int) -> dict | None:
     try:
         record = Review.objects.get(pk=pk)
-    except:
-        record = None
+    except Exception as E:
+        log.warning(f'{E}')
+        return False
     
     return record.__dict__
 
@@ -48,8 +57,9 @@ def get_translation_text_by_id(pk: int) -> str | None:
     try:
         record = ReviewTranslation.objects.get(pk=pk)
         translation = record.translated_review_text
-    except:
-        translation = None
+    except Exception as E:
+        log.warning(f'{E}')
+        return False
     
     return translation
 
@@ -58,8 +68,9 @@ def get_audio_url_by_id(pk: int) -> str | None:
     try:
         record = ReviewAudio.objects.get(pk=pk)
         audio_url = record.audio_review.url
-    except:
-        audio_url = None
+    except Exception as E:
+        log.warning(f'{E}')
+        return False
     
     return audio_url
 
@@ -72,8 +83,9 @@ def get_oldest_and_lates_pk_of_review() -> dict | None:
         latest = qs2.pk
 
         output = {'oldest': oldest, 'latest': latest}
-    except:
-        output = None
+    except Exception as E:
+        log.warning(f'{E}')
+        return False
     
     return output
 
@@ -82,8 +94,9 @@ def get_latest_review_id() -> int | None:
     try:
         qs = Review.objects.all().filter(active=True)
         latest = qs.reverse()[0].pk
-    except:
-        latest = None
+    except Exception as E:
+        log.warning(f'{E}')
+        return False
 
     return latest
     
@@ -92,8 +105,11 @@ def delete_all_active_review_objects() -> None:
     try:
         active_reviews = Review.objects.all().filter(active=True)
         active_reviews.delete()
-    except:
-        pass
+    except Exception as E:
+        log.warning(f'{E}')
+        return False
+    
+    return True
 
 
 def create_new_review_and_extends_records(point: dict) -> None:
@@ -112,33 +128,36 @@ def create_new_review_and_extends_records(point: dict) -> None:
             record_translation = ReviewTranslation(
                 review=record, translated_review_text=point['translation'])
             record_translation.save()
-    except:
-        pass
+    except Exception as E:
+        log.warning(f'{E}')
+        return False
+    
+    return True
 
 
-def create_user_review(pk, data) -> int | None:
+def create_user_review_and_get_it_pk(pk, data) -> int | None:
     try:
         with transaction.atomic():
-            img = data['album_cover']
+            img = data['image']
             md = apps.get_model('users', 'SoundHomeUsers')
             user = md.objects.get(pk=pk)
 
             rvw = UserReview(
                 user=user, 
-                score=data['review_score'],
+                score=data['score'],
                 image=File(img.open(), name=f'{pk}_{img.name}'),
                 album_title = data['album_title'],
                 album_author = data['album_author'],
-                review_title = data['review_header'],
+                review_title = data['review_title'],
                 review_text = data['review_text'],
                 active=True)
             rvw.save()
             output = rvw.pk
     except Exception as E:
-        output = None
-        return output
-    else:
-        return output
+        log.warning(f'{E}')
+        return False
+
+    return output
 
 
 def get_user_nickname_by_pk(pk: int) -> str | None:
@@ -146,8 +165,9 @@ def get_user_nickname_by_pk(pk: int) -> str | None:
         md = apps.get_model('users', 'SoundHomeUsers')
         user = md.objects.get(pk=pk)
         output = user.soundhomeusersadditionalinfo.nickname
-    except:
-        output = None
+    except Exception as E:
+        log.warning(f'{E}')
+        return False
 
     return output
 
@@ -159,8 +179,9 @@ def get_user_review_author_nickname_by_pk_of_review(pk: int) -> str | None:
         md = apps.get_model('users', 'SoundHomeUsers')
         user = md.objects.get(pk=usr_id)
         output = user.soundhomeusersadditionalinfo.nickname
-    except:
-        output = None
+    except Exception as E:
+        log.warning(f'{E}')
+        return False
 
     return output
 
@@ -171,8 +192,9 @@ def get_user_review_data_by_id(pk: int) -> dict | None:
         record = UserReview.objects.get(pk=pk)
         output = record.__dict__
         output['image'] = record.image.url
-    except:
-        output = None
+    except Exception as E:
+        log.warning(f'{E}')
+        return False
     
     return output
 
@@ -185,7 +207,8 @@ def get_oldest_and_lates_pk_of_user_review() -> dict | None:
         latest = qs2.pk
 
         output = {'oldest': oldest, 'latest': latest}
-    except:
-        output = None
+    except Exception as E:
+        log.warning(f'{E}')
+        return False
     
     return output

@@ -7,8 +7,11 @@ from users.components.registration import Registration
 
 
 class AuthenticateAndAuthOrRegistrUser(BaseService):
+    MANDATORY_FIELDS = {'email', 'password'}
 
     def execute(self, req: WSGIRequest, data) -> dict:
+        super().execute(data=data)
+        
         email = data['email']
         password = data['password']
 

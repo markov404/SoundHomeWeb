@@ -1,15 +1,20 @@
 
 #from utils.abstractions.interfaces.i_command import ICommand
 from utils.abstractions.data_structures.service_errors import ServiceErrors
+from utils.abstractions.data_structures.service_response import ServiceResponse
 from utils.abstractions.interfaces.i_use_case import IUseCase
 
 class BaseService(IUseCase):
+    MANDATORY_FIELDS = set()
+
     def __init__(self) -> None:
         self._errors: ServiceErrors = ServiceErrors()
-        self._got_entities = []
+        self._got_entities: ServiceResponse = ServiceResponse()
 
-    def execute(self):
-        raise NotImplementedError()
+    def execute(self, data):
+        if not (set(data.keys()) == self.MANDATORY_FIELDS):
+            self.errors.append('Form field names dont correct', 400)
+            return
 
     @property
     def is_error(self) -> bool:
@@ -18,9 +23,9 @@ class BaseService(IUseCase):
         return False
     
     @property
-    def response(self) -> list:
+    def response(self) -> ServiceResponse:
         if self.is_error:
-            return {[]}
+            return ServiceResponse()
         return self._got_entities 
 
     @property

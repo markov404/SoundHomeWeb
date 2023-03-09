@@ -4,7 +4,11 @@ from utils.abstractions.abstract_classes.abs_services import BaseService
 
 
 class SetUpProfileService(BaseService):
+    MANDATORY_FIELDS = {'image', 'nickname'}
+
     def execute(self, data: dict, _id: int):        
+        super().execute(data=data)
+
         image = data['image']
         nickname = data['nickname']
 

@@ -2,6 +2,7 @@
 
 from django.core.handlers.wsgi import WSGIRequest
 from django.shortcuts import redirect, render
+from django.http import JsonResponse
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 
@@ -13,6 +14,8 @@ from reviews.services.certain_review_page_service import CertainReviewPageServic
 from reviews.services.create_user_review_service import CreateUserReviewService
 from reviews.services.all_users_reviews_page_service import AllUsersReviewsPageService
 from reviews.services.certain_user_review_page_service import CertainUserReviewPageService
+
+from reviews.serializers import UserReviewForm
 
 # Create your views here.
 
@@ -51,13 +54,22 @@ def all_reviews(request: WSGIRequest):
 @require_http_methods(["POST"])
 @logged_in_user_only()
 def post_user_review(request: WSGIRequest):
-    usr_id = user_id(request)
-    data = CreateUserReviewService().execute(_id=usr_id, request=request)
+    form = UserReviewForm(data=request.POST, files=request.FILES)
+
+    if not form.is_valid():
+        return JsonResponse({'status': 'form_validation_error', 'info': f'{form.errors.as_json()}'})
     
-    if data['status'] == 'success':
-        return redirect(reverse('ceraint_user_review', kwargs={ 'pk': data['review_id'] }))
     else:
-        return render('fdf')
+        service = CreateUserReviewService()
+        service.execute(_id=user_id(request), data=form.clean())
+
+        if service.is_error:
+
+            if service.errors.type_of_server:
+                return JsonResponse({'status': 'error', 'info': f'{service.errors.as_json()}'})
+            return JsonResponse({'status': 'message', 'info': f'{service.errors.as_json()}'})
+        
+        return JsonResponse({'status': 'success', 'data': f'{service.response.as_json()}', 'flag': 'potato'})
 
 
 @require_http_methods(["GET"])
