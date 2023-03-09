@@ -5,7 +5,7 @@ class ServiceResponse(list):
     def append(self, value: dict):
         if not isinstance(value, dict):
             raise TypeError()
-        super().append(value) 
+        super().append(value)
 
     def as_json(self) -> str:
         return json.dumps(self)

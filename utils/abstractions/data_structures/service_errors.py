@@ -1,13 +1,27 @@
 
 import json
+from utils.abstractions.interfaces.i_use_case import IUseCase
 from utils.abstractions.types.error_type import Error
 
+from logging import getLogger
+
+log = getLogger(__name__)
+
+
 class ServiceErrors(list):
+    def __init__(self, used_by) -> None:
+        if not isinstance(used_by, IUseCase):
+            raise TypeError('Service error should have IUseCase based used_by!')
+        self.USED_BY = used_by
+
     def append(self, message: str, code: int = None):
         if code is None:
-            super().append(Error(message=message))
+            er = Error(message=message)
+            super().append(er)
         else:
-            super().append(Error(message=message, code=code))
+            er = Error(message=message, code=code)
+            super().append(er)
+        log.warning(f'service({self.USED_BY}) got error({er})')
 
     @property
     def type_of_server(self) -> bool:

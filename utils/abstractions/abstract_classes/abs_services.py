@@ -9,7 +9,7 @@ class BaseService(IUseCase):
     MANDATORY_FIELDS = set()
 
     def __init__(self) -> None:
-        self._errors: ServiceErrors = ServiceErrors()
+        self._errors: ServiceErrors = ServiceErrors(self)
         self._got_entities: ServiceResponse = ServiceResponse()
 
     def execute(self, data):
