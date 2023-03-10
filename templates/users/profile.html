@@ -59,11 +59,37 @@
         </div>
       
         <div class="col-lg-4 mb-4 mb-lg-0">
+          {% if not fav_reviews %}
           <img
             src="{% static 'images/rst-warn-v2.svg' %}"
             class="w-100 shadow-1-strong rounded mb-4"
             alt="Mountains in the Clouds"
           />
+          {% else %}
+
+          <div class='FavRevs ActivityHigh mb-4'>
+          {% for rv in fav_reviews  %}
+          <div class="row text-center FavRevsListItem" onclick="change_url(`{% url 'ceraint_user_review' rv.id %}`)">
+            <div class='col-lg-4 mb-lg-0'>
+              <img src="{{rv.image.url}}" class="FavRevImage">
+            </div>
+            <div class='col-lg-4 mb-lg-0'>
+              <p class='FavCreatorNick'>
+              @{{ rv.user.soundhomeusersadditionalinfo.nickname }}
+              </p>
+            </div>
+            <div class='col-lg-4 mb-lg-0'>
+              <p class='FavRevScore'>
+              {{ rv.score }}
+              <p>
+            </div>
+          </div>
+          {% endfor %}
+          </div>
+    
+          {% endif %}
+
+
           
           <a href="{% url 'logout_view' %}">
           <img

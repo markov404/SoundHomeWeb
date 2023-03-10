@@ -1,4 +1,5 @@
 from django.db import models
+from django.apps import apps
 
 from users.components.validators import (
     UserNicknameValidator, 
@@ -38,3 +39,11 @@ class SoundHomeUsersAdditionalInfo(models.Model):
         null=True,
         validators=[UserNicknameValidator().is_valid])
     active = models.BooleanField("Status", default=False)
+
+
+class SoundHomeUsersWhatUsersLikes(models.Model):
+    user = models.ForeignKey('users.SoundHomeUsers', on_delete=models.CASCADE)
+    user_review = models.ForeignKey('reviews.UserReview', on_delete=models.CASCADE)
+      
+    class Meta:
+        unique_together = ('user', 'user_review',)

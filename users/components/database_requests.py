@@ -160,3 +160,50 @@ def get_user_own_review_ids(pk: int) -> list:
         return Error(f'Queryset error - {E}', code=500)
 
     return output
+
+
+def get_user_favourites_reviews(pk: int) -> list:
+    try:
+        likes_model = apps.get_model('users', 'SoundHomeUsersWhatUsersLikes')
+        user_model = apps.get_model('users', 'SoundHomeUsers')
+        usr = user_model.objects.get(pk=pk)
+        qs = likes_model.objects.filter(user=usr)
+        output = []
+        for rv in qs:
+            output.append(rv.user_review)
+    except Exception as E:
+        log.warning(f'{E}')
+        return Error(f'Queryset error - {E}', code=500)
+    
+    return output
+
+
+def get_user_favourites_reviews_images(pk: int) -> list:
+    try:
+        likes_model = apps.get_model('users', 'SoundHomeUsersWhatUsersLikes')
+        user_model = apps.get_model('users', 'SoundHomeUsers')
+        usr = user_model.objects.get(pk=pk)
+        qs = likes_model.objects.filter(user=usr)
+        output = []
+        for rv in qs:
+            output.append(rv.user_review.image.url)
+    except Exception as E:
+        log.warning(f'{E}')
+        return Error(f'Queryset error - {E}', code=500)
+    
+    return output
+
+def get_user_favourites_reviews_ids(pk: int) -> list:
+    try:
+        likes_model = apps.get_model('users', 'SoundHomeUsersWhatUsersLikes')
+        user_model = apps.get_model('users', 'SoundHomeUsers')
+        usr = user_model.objects.get(pk=pk)
+        qs = likes_model.objects.filter(user=usr)
+        output = []
+        for rv in qs:
+            output.append(rv.user_review.pk)
+    except Exception as E:
+        log.warning(f'{E}')
+        return Error(f'Queryset error - {E}', code=500)
+    
+    return output

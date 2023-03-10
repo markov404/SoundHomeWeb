@@ -5,7 +5,8 @@ from users.components.database_requests import (
     get_user_additional_image_url,
     get_user_additional_nickname,
     get_user_own_review_links,
-    get_user_own_review_ids)
+    get_user_own_review_ids,
+    get_user_favourites_reviews)
 
 
 class UserBasicDataService(BaseService):
@@ -18,6 +19,8 @@ class UserBasicDataService(BaseService):
         self._extract_user_nickname(_id)
         self._extract_user_ava_url(_id)
         self._extract_user_reviews(_id)
+        self._extract_user_fav_reviews(_id)
+
 
     def _extract_basic_user_data(self, _id: int) -> None:
         email = get_user_email_by_pk(_id)
@@ -66,4 +69,17 @@ class UserBasicDataService(BaseService):
         if self.get_error(links):
             self.errors.append('Problem with getting user reveiws')
         return links
-        
+    
+
+    def _extract_user_fav_reviews(self, _id: int) -> None:
+        rvws = get_user_favourites_reviews(_id)
+        if self.get_error(rvws):
+            self.errors.append('Problem with getting fav reviews images')
+            return
+
+        if len(rvws) == 0:
+            return None
+        elif len(rvws) > 6:
+            self._got_entities.append({'fav_reviews': True, 'fav_reviews_alot': True})    
+        else:
+            self._got_entities.append({'fav_reviews': rvws})         

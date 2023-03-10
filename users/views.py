@@ -50,11 +50,12 @@ def logout(request: WSGIRequest):
     service.execute(request=request)
 
     if service.is_error:
-        return HttpResponseServerError()
+        return HttpResponseServerError('500')
         
     return redirect("index_page")
 
 
+@require_http_methods(["GET"])
 @logged_in_user_only()
 @active_user_only()
 def profile_page(request: WSGIRequest):    
@@ -67,6 +68,7 @@ def profile_page(request: WSGIRequest):
         return render(request, 'users/profile.html', context=service.response.as_one_dictionary())
 
 
+@require_http_methods(["POST", "GET"])
 @logged_in_user_only()
 @non_active_user_only()
 def set_up_profile(request: WSGIRequest):
@@ -74,15 +76,18 @@ def set_up_profile(request: WSGIRequest):
         form = UserAdditionalInfoForm(data=request.POST, files=request.FILES)
         if not form.is_valid():
             return JsonResponse(
-                {'status': 'error', 
-                'message': f'{form.errors.as_text()}'})
+                {'status': 'form_validation_error', 
+                'info': f'{form.errors.as_json()}'})
 
         else:
             service = SetUpProfileService()
             service.execute(data=form.clean(), _id=user_id(request))
             
             if service.is_error:
-                return HttpResponseServerError()         
+                if service.errors.type_of_server:
+                    return JsonResponse({'status': 'error', 'info': f'{service.errors.as_json()}'})
+
+                return JsonResponse({'status': 'message', 'info': f'{service.errors.as_json()}'})     
             
             return JsonResponse({'status': 'success'})
     elif request.method == "GET":
@@ -91,6 +96,7 @@ def set_up_profile(request: WSGIRequest):
     return render(request, 'users/set_up_profile.html', context={})
 
 
+@require_http_methods(["POST"])
 @logged_in_user_only()
 @active_user_only()
 def change_user_ava(request: WSGIRequest):
@@ -112,6 +118,7 @@ def change_user_ava(request: WSGIRequest):
         return JsonResponse({'status': 'success'})
 
 
+@require_http_methods(["POST"])
 @logged_in_user_only()
 @active_user_only()
 def change_user_nickname(request: WSGIRequest):

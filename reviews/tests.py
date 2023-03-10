@@ -1,6 +1,8 @@
+
 import pytest
 import time
-import timeit
+import os
+import threading
 from django.test import TestCase
 from io import BytesIO
 
@@ -8,6 +10,8 @@ from io import BytesIO
 
 from reviews.components.translator import Translator
 from reviews.components.speecher import Speecher
+from reviews.components.speecher import SpeecherBasedYaCloudTech
+from reviews.components.speecher import SpeecherModifiedForAsync
 
 @pytest.fixture
 def review_text() -> str:
@@ -52,3 +56,73 @@ def test_speecher(revew_text_translated):
     print(f'time - {total}')
     assert total < float(100)
     assert isinstance(file, BytesIO)
+
+def test_yandex_based_speecher(revew_text_translated):
+    os.environ['YANDEX_CLOUD_IAM_TOKEN'] = 't1.9euelZrInoyUiomJnJ6Ljo_Ml5PHzO3rnpWakYuXzJSMl5SMycidjJmLxpvl8_c1NVJf-e92Rhk6_t3z93VjT1_573ZGGTr-.df4Yp3g4UVoFbJrQAjQyZojZpxl6eV7vxEMdraTbL6BNPJ9eT2_Vl7vnMQIguwfBD2nFS2Rla_RUDkP6CT7ODg'
+    os.environ['YANDEX_CLOUD_FOLDER_ID'] = 'b1g5maebo5uupmgv97hb'
+
+   
+    def mok_service_side_call_realisation_two(data: list[dict]):
+        spchr = SpeecherModifiedForAsync()
+        threads = []
+        results = [{} for x in data]
+        for i, point in enumerate(data):
+            text = point['translation']
+            nt = threading.Thread(
+                target=spchr.get_speech_file_object, 
+                args=(text, i, results)
+                )
+            nt.start()
+            threads.append(nt)
+
+        for process in threads:
+            process.join()
+
+        del spchr
+        
+        for rslt, point in zip(results, data):
+            point['audio_bytes'] = rslt 
+        
+        return data[0]['audio_bytes']
+
+    def mok_service_side_call_realisation_one(data: list[dict]):
+        spchr = SpeecherBasedYaCloudTech()
+        threads = []
+        results = [{} for x in data]
+        for i, point in enumerate(data):
+            text = point['translation']
+            nt = threading.Thread(
+                target=spchr.get_speech_file_object, 
+                args=(text, i, results)
+                )
+            nt.start()
+            threads.append(nt)
+
+        for process in threads:
+            process.join()
+
+        del spchr
+        
+        for rslt, point in zip(results, data):
+            point['audio_bytes'] = rslt
+        
+        return data[0]['audio_bytes']
+
+
+    _data1 = [{'translation': revew_text_translated}]
+
+    t0 = time.time()
+    rslt1 = mok_service_side_call_realisation_one(_data1)
+    t1 = time.time()
+    total = t1 - t0
+    print(f'Time using API - {total}')
+
+    _data2 = [{'translation': revew_text_translated}]
+    print(type(rslt1))
+    t0 = time.time()
+    rslt2 = mok_service_side_call_realisation_two(_data2)
+    t1 = time.time()
+    total = t1 - t0
+    print(f'Time using google DevKit - {total}')
+
+    assert type(rslt1) == type(rslt2)

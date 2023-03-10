@@ -11,6 +11,10 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from reviews.components.interfaces.IDriverAdapter import IDriverAdapter
 
+from logging import getLogger
+
+log = getLogger(__name__)
+
 
 class SeleniumAdapter(IDriverAdapter):
     def __init__(self, _sel_instance = None) -> None:
@@ -27,8 +31,8 @@ class SeleniumAdapter(IDriverAdapter):
             element = WebDriverWait(self._sel, time_for_wait).until(
                 EC.presence_of_element_located(by_what)
             )
-        except TimeoutException:
-            return None
+        except TimeoutException as E:
+            log.warning(E)
         else:
             return element
 
@@ -40,32 +44,33 @@ class SeleniumAdapter(IDriverAdapter):
             element = WebDriverWait(self._sel, time_for_wait).until(
                 EC.presence_of_all_elements_located(by_what)
             )
-        except TimeoutException:
-            return None
+        except TimeoutException as E:
+            log.warning(E)
         else:
             return element
 
     def click_on_element(self, element: WebElement) -> None:
         try:
             element.click()
-        except WebDriverException:
-            pass
+        except WebDriverException as E:
+            log.warning(E)
         finally:
             return None
 
     def go_to_page(self, url: str) -> None:
         try:
+            self._sel.implicitly_wait(5)
             self._sel.get(url)
-        except WebDriverException:
-            pass
+        except WebDriverException as E:
+            log.warning(E)
         finally:
             return None
 
     def reload_page(self) -> None:
         try:
             self._sel.navigate().refresh()
-        except WebDriverException:
-            pass
+        except WebDriverException as E:
+            log.warning(E)
         finally:
             return None
 

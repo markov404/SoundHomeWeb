@@ -10,9 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
-
+import os
 from pathlib import Path
-import logging
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -55,6 +55,19 @@ LOGGING = {
     },
 }
 
+# Get logger here
+
+from logging import getLogger
+
+log = getLogger(__name__)
+
+# Environmental
+
+DOT_ENV_PATH = f'{BASE_DIR}/configuration.env'
+if os.path.exists(DOT_ENV_PATH):
+    if not load_dotenv(DOT_ENV_PATH):
+       log.exception('Environmental variables is not set upped!')
+    
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 

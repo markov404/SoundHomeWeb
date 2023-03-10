@@ -98,7 +98,17 @@
                         </div>
                     </div>
                     </div> {% endcomment %}
+                    {% if PRO %}                    
+                    {% else %}
+                    <label for="add_to_favourites">
+                        <i class="fa-regular fa-star fa-2xl" id='star' data-rvwid='{{data.id}}'></i>
+                    </label>
+                    <button type="button" id="add_to_favourites" style="display:none" onclick="like_or_unlike()" class="btn btn-dark"></button>
+                    {% endif %}
+                    
+                    {% if PRO %}
                     <audio src="{{ audio_url }}" controls></audio>
+                    {% endif %}
                 </div>
                 
                 <div class="ReviewTitle">
@@ -128,8 +138,18 @@
         {{ block.super }}
     {% endblock footer %}
 
+    {% block common_info %}
+        {{ block.super }}
+    {% endblock common_info %}
+    {% block alertifycdn %}
+        {{ block.super }}
+    {% endblock alertifycdn %}
+
+    <div id="this_page_info" data-rvwlikecondpage="{% url 'is_user_like_it_review' data.id %}" data-likeorunlikepage="{% url 'like_or_unlike_user_review' data.id %}"></div>
+
     {% block scripts %}
         {{ block.super }}
+        {% block login_form_code %}{% endblock login_form_code %}
 
         <script>
             let txt_container = document.getElementById('rvw_txt')
@@ -154,6 +174,118 @@
                 }
             })
             txt_container.innerHTML = output
+        </script>
+
+        <script>
+            let star = document.getElementById('star')
+            let rvw_id = star.getAttribute('data-rvwid')
+            let lik_url = document.getElementById('this_page_info').getAttribute('data-rvwlikecondpage')
+            let lik_or_unlike_url = document.getElementById('this_page_info').getAttribute('data-likeorunlikepage')
+            
+            function like_or_unlike() {
+                send_two(lik_or_unlike_url)
+            }
+
+            function send(url) {
+                fetch(url, {
+                  method: "GET",
+                  mode: 'cors',
+                  cache: 'default',
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                  console.log("Success:", data);
+                  if (data.status === "message") {
+                    let msg = data.info
+                    let json = JSON.parse(data.info); 
+                    let keys = Object.keys(json)
+  
+                    alertify.alert(json[0].message)
+                  } else if (data.status === "form_validation_error" ) {
+                    let msg = data.info
+                    let json = JSON.parse(data.info); 
+                    let keys = Object.keys(json)
+  
+                    alertify.alert(json[keys[0]][0].message)                
+  
+                  } else if (data.status === "success") {
+                    let json = JSON.parse(data.data)
+                    let is_he_likes = json[0].data
+                    
+                    if (is_he_likes === true) {
+                        star.style.color = 'red'
+                    } else if (is_he_likes === false) {
+                        star.style.color = 'black'
+                    }
+
+                  } else if (data.status === "error") {
+                    let err = data.info
+                    let json = JSON.parse(data.info)
+                    
+                    json.forEach((element) => {
+                      if (element.code >= 500) {
+                        let url = document.getElementById('common_data_div').getAttribute('data-erurl')
+                        change_url(`${url}?code=${element.code}&message=${element.message}`)
+                      }
+                    })
+                  }
+                })
+                .catch((error) => {
+                  console.error("Error:", error);
+                });
+              }
+
+            function send_two(url) {
+                fetch(url, {
+                  method: "GET",
+                  mode: 'cors',
+                  cache: 'default',
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                  console.log("Success:", data);
+                  if (data.status === "message") {
+                    let msg = data.info
+                    let json = JSON.parse(data.info); 
+                    let keys = Object.keys(json)
+  
+                    alertify.alert(json[0].message)
+                  } else if (data.status === "form_validation_error" ) {
+                    let msg = data.info
+                    let json = JSON.parse(data.info); 
+                    let keys = Object.keys(json)
+  
+                    alertify.alert(json[keys[0]][0].message)                
+  
+                  } else if (data.status === "success") {
+
+                    if (star.style.color === 'red') {
+                        star.style.color = 'black'
+                    } else if (star.style.color === 'black') {
+                        star.style.color = 'red'
+                    }
+
+                  } else if (data.status === "error") {
+                    let err = data.info
+                    let json = JSON.parse(data.info)
+                    
+                    json.forEach((element) => {
+                      if (element.code >= 500) {
+                        let url = document.getElementById('common_data_div').getAttribute('data-erurl')
+                        change_url(`${url}?code=${element.code}&message=${element.message}`)
+                      }
+                    })
+                  }
+                })
+                .catch((error) => {
+                  console.error("Error:", error);
+                });
+              }
+            
+              window.addEventListener("load", (event) => {
+                send(lik_url)
+              });
+
         </script>
 
     {% endblock scripts %}

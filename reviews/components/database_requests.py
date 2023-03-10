@@ -212,3 +212,45 @@ def get_oldest_and_lates_pk_of_user_review() -> dict | None:
         return Error(f'{E}', code=500)
     
     return output
+
+
+def is_user_like_review(_user_id: iter, _rvw_id: int)  -> Error | bool:
+    try:
+        usr_md = apps.get_model('users', 'SoundHomeUsersWhatUsersLikes')
+        qs = usr_md.objects.filter(user=_user_id, user_review=_rvw_id)
+        
+        if len(qs) == 0:
+            output = False
+        elif len(qs) == 1:
+            output = True
+        else:
+            raise Exception
+    except Exception as E:
+        log.warning(f'{E}')
+        return Error(f'{E}', code=500)
+
+    return output
+
+
+def like_or_unlike_user_review(_user_id: iter, _rvw_id: int)  -> Error | bool:
+    try:
+        usr_likes_md = apps.get_model('users', 'SoundHomeUsersWhatUsersLikes')
+        usr_md = apps.get_model('users', 'SoundHomeUsers')
+        rvw_md = apps.get_model('reviews', 'UserReview')
+        qs = usr_likes_md.objects.filter(user=_user_id, user_review=_rvw_id)
+        
+        if len(qs) == 0:
+            usr = usr_md.objects.get(pk=_user_id)
+            rvw = rvw_md.objects.get(pk=_rvw_id)
+            like_obj = usr_likes_md(user=usr, user_review=rvw)
+            like_obj.save()
+        elif len(qs) == 1:
+            like_obj = qs[0]
+            like_obj.delete()
+        else:
+            raise Exception
+    except Exception as E:
+        log.warning(f'{E}')
+        return Error(f'{E}', code=500)
+
+    return None

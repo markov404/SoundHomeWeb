@@ -3,7 +3,7 @@ import threading
 from reviews.services.interfaces.ICommand import ICommand
 from reviews.components.pitchf_scruber_builder import PitchFScrubberBuilder
 from reviews.components.translator import Translator
-from reviews.components.speecher import SpeecherModifiedForAsync
+from reviews.components.speecher import SpeecherBasedYaCloudTech
 
 from reviews.components.database_requests import (
     delete_all_active_review_objects,
@@ -41,7 +41,7 @@ class UpdateReviewsInDBService(ICommand):
         del trns
     
     def _make_audio_revs(self, data: list[dict]) -> None:
-        spchr = SpeecherModifiedForAsync()
+        spchr = SpeecherBasedYaCloudTech()
         threads = []
         results = [{} for x in data]
         for i, point in enumerate(data):

@@ -14,6 +14,8 @@ from reviews.services.certain_review_page_service import CertainReviewPageServic
 from reviews.services.create_user_review_service import CreateUserReviewService
 from reviews.services.all_users_reviews_page_service import AllUsersReviewsPageService
 from reviews.services.certain_user_review_page_service import CertainUserReviewPageService
+from reviews.services.mini_services import DoUserLikeReviewWithId
+from reviews.services.mini_services import LikeOrUnlikeIt
 
 from reviews.serializers import UserReviewForm
 
@@ -121,4 +123,27 @@ def index_user_reviews(request: WSGIRequest, pk: int):
             request, 'reviews/review.html', 
             context={'data': data, 
                 'additional_info': {'next_id': next_id, 'prev_id': prev_id, 'nickname': nickname}})
-                
+
+
+@require_http_methods(["GET"])
+@logged_in_user_only()
+def is_user_like_it(request: WSGIRequest, pk: int):
+    service = DoUserLikeReviewWithId()
+    service.execute(_id=user_id(request), _rv_id=pk)
+
+    if service.is_error:
+        return JsonResponse({'status': 'error', 'info': f'{service.errors.as_json()}'})
+    else:
+        return JsonResponse({'status': 'success', 'data': f'{service.response.as_json()}'})
+
+
+@require_http_methods(["GET"])
+@logged_in_user_only()
+def like_or_unlike_it(request: WSGIRequest, pk: int):
+    service = LikeOrUnlikeIt()
+    service.execute(_id=user_id(request), _rv_id=pk)
+
+    if service.is_error:
+        return JsonResponse({'status': 'error', 'info': f'{service.errors.as_json()}'})
+    else:
+        return JsonResponse({'status': 'success'})

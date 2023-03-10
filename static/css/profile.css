@@ -1,5 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Kalam&family=Roboto:wght@300&display=swap');
 
+@import url('https://fonts.googleapis.com/css2?family=Kalam&family=Roboto:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Lato&family=Raleway:ital,wght@1,200&family=Roboto:wght@300&family=Ubuntu:wght@300&display=swap');
 
 .ProfileWrapper {
     margin-top: 150px;
@@ -25,12 +26,12 @@
 
 .Activity:hover {
     scale: 1.01;
-    box-shadow: 0 0 11px royalblue; 
+    box-shadow: 0 0 11px rgb(80, 139, 149); 
 }
 
 .ActivityHigh:hover {
     scale: 1.1;
-    box-shadow: 0 0 11px royalblue; 
+    box-shadow: 0 0 11px rgb(80, 139, 149); 
 }
 
 .cont {
@@ -97,6 +98,36 @@
 .cont2:hover #oval {
     left: 90%;
     top: -10%;
+}
+
+.FavRevs {
+    padding: 10px;
+}
+
+.FavCreatorNick {
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+}
+
+.FavRevScore {
+    font-family: 'Gamja Flower', cursive;
+    font-size: 16px;
+}
+
+.FavRevImage {
+    width: 50px;
+    height: 50px;
+    /* border-radius: 5px; */
+}
+
+.FavRevsListItem {
+    margin-bottom: 20px;
+    height: 50px;
+    line-height: 50px;
+}
+
+.FavRevsListItem:hover {
+    box-shadow: 0 0 11px rgba(33,33,33,.2); 
 }
 
 @media (min-width: 1400px) { 
