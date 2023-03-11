@@ -4,7 +4,10 @@ import io
 import os
 import sys
 import uuid
+
+import mock
 from PIL import Image
+from django.apps import apps
 from django.test import TestCase
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
@@ -12,6 +15,7 @@ from utils.abstractions.data_structures.service_response import ServiceResponse
 from utils.abstractions.types.error_type import Error
 
 from users.models import SoundHomeUsersAdditionalInfo
+from users.models import SoundHomeUsers
 
 from users.components.registration import Registration
 from users.components import database_requests as dbq
@@ -20,6 +24,7 @@ from users.services.user_data_service import UserBasicDataService
 # Create your tests here.
 
 """ Cases """
+
 
 class VirginUser(TestCase):
     def setUp(self) -> None:
@@ -97,14 +102,8 @@ class UserWithSomePotentialData(VirginUser):
         super().tearDown()
 
 
-class VirginUserWithSomeEnvironment(VirginUser):
-    def setUp(self) -> None:
-        super().setUp()
-
-    def tearDown(self) -> None:
-        super().tearDown()
-
 """Testing module 'database_requests.py'"""
+
 
 class UserWithSomeDataCases(UserWithSomePotentialData):
     def test_setting_up_account_positive(self) -> None:
@@ -176,8 +175,21 @@ class VirginUserCases(VirginUser):
         respone = dbq.change_user_active(pk=666, active=True)
         self.assertIsInstance(respone, Error)
 
+    def test_user_own_reviews(self) -> None:
+        pk = self.test_user.pk
+        rvws = dbq.get_user_own_review_ids(pk=pk)
+        
+        self.assertEqual(rvws, [])
+
+    def test_user_favourite_reviews(self) -> None:
+        pk = self.test_user.pk
+        
+        rvws = dbq.get_user_favourites_reviews_ids(pk=pk)
+        self.assertEqual(rvws, [])
+
 
 """Testing module 'user_data_service.py'"""
+
 
 class UserDataServiceTestCase(TestCase):
     def setUp(self):
