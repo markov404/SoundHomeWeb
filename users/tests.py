@@ -1,5 +1,12 @@
 
+
+import io
+import os
+import sys
+import uuid
+from PIL import Image
 from django.test import TestCase
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from utils.abstractions.data_structures.service_response import ServiceResponse
 from utils.abstractions.types.error_type import Error
@@ -22,43 +29,115 @@ class VirginUser(TestCase):
             'password': 'btufn262osn8F'   
         }
 
-        def _make_user():
-            component = Registration()
-            self.test_user = component.create_user(
-                email=self.TEST_DATA['email'], 
-                password=self.TEST_DATA['password'])
-        self.make_user = _make_user
         self.make_user()
     
     def tearDown(self) -> None:
         del self.test_user
         self.make_user()
 
+    def make_user(self) -> None:
+        component = Registration()
+        self.test_user = component.create_user(
+            email=self.TEST_DATA['email'], 
+            password=self.TEST_DATA['password'])
 
-class VirginUser(TestCase):
+
+class UserWithSomePotentialData(VirginUser):
     def setUp(self) -> None:
+        super().setUp()
+        image_content_type = 'png'
+        img_good = io.BytesIO()
+        Image.new(mode='RGB', size=(999, 999)).save(img_good, format=image_content_type)
+        
+        img_bad = io.BytesIO()
+        Image.new(mode='RGB', size=(1001, 1000)).save(img_bad, format=image_content_type)
 
-        self.TEST_DATA = {
-            'email': 'UsamaBenLaden@yandex.ru',
-            'password': 'btufn262osn8F'   
-        }
+        self.mok_img_good = self.mok_InMemoryUploadedFile(
+            img=img_good,
+            field_name='ImageField',
+            file_name='pic'+ f'{uuid.uuid4()}',
+            content=image_content_type,
+            size=sys.getsizeof(img_good)
+        )
+        self.mok_img_bad = self.mok_InMemoryUploadedFile(
+            img=img_bad,
+            field_name='ImageField',
+            file_name='pic'+ f'{uuid.uuid4()}',
+            content=image_content_type,
+            size=sys.getsizeof(img_bad)
+        ) 
 
-        def _make_user():
-            component = Registration()
-            self.test_user = component.create_user(
-                email=self.TEST_DATA['email'], 
-                password=self.TEST_DATA['password'])
-        self.make_user = _make_user
-        self.make_user()
+
+        self.test_nickname_good = '@JorjoJiovanni'
+        self.test_nickname_bad = '@JorjoJi@ovanni'
+
+        self.TEST_DATA.update({
+            'test_image_good': self.mok_img_good,
+            'test_image_bad': self.mok_img_bad,
+            'test_nickname_good': self.test_nickname_good,
+            'test_nickname_bad': self.test_nickname_bad,
+        })
+        self.DO_DELETE = False
     
-    def tearDown(self) -> None:
-        del self.test_user
-        self.make_user()  
+    @staticmethod
+    def mok_InMemoryUploadedFile(
+        img, field_name, file_name, content, size, charset=None) -> InMemoryUploadedFile:
 
+        return InMemoryUploadedFile(
+            file=img, 
+            field_name=field_name,
+            name=file_name,
+            content_type=content,
+            size=size,
+            charset=charset)
+
+    def tearDown(self) -> None:
+        if self.DO_DELETE:
+            os.remove(self.test_user.soundhomeusersadditionalinfo.image.path)
+        super().tearDown()
+
+
+class VirginUserWithSomeEnvironment(VirginUser):
+    def setUp(self) -> None:
+        super().setUp()
+
+    def tearDown(self) -> None:
+        super().tearDown()
 
 """Testing module 'database_requests.py'"""
 
-class DataBaseRequestsModuleCase(VirginUser):
+class UserWithSomeDataCases(UserWithSomePotentialData):
+    def test_setting_up_account_positive(self) -> None:
+        pk = self.test_user.pk
+        response = dbq.add_user_ava_and_nickname_end_set_user_active(
+            pk=pk, 
+            ava=self.TEST_DATA['test_image_good'],
+            nickname=self.TEST_DATA['test_nickname_good'])
+        
+        try:
+            self.assertEqual(response, True)
+        except Exception as E:
+            self.fail(f"{E}")
+        else:
+            self.DO_DELETE = True
+
+    def test_setting_up_account_negative(self) -> None:
+        pk = self.test_user.pk
+        response = dbq.add_user_ava_and_nickname_end_set_user_active(
+            pk=666, 
+            ava=self.TEST_DATA['test_image_bad'],
+            nickname=self.TEST_DATA['test_nickname_good'])
+        
+        try:
+            self.assertIsInstance(response, Error)
+        except Exception as E:
+            self.DO_DELETE = True
+            self.fail(f"{E}")
+        else:
+            pass
+
+
+class VirginUserCases(VirginUser):
     def test_check_active_posititve(self, _result_status: bool = False) -> None:
         pk = self.test_user.pk
         status = dbq.get_user_additional_active_status(pk)

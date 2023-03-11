@@ -16,7 +16,7 @@ class UserAvaValidator(ImageValidator):
         
     def _size_validation(self, image_file: Image, value: InMemoryUploadedFile):
         width, height = image_file.size
-        if width > 1000 and height > 1000:
+        if (width > 1000) or (height > 1000) or ((width > 1000) and (height > 1000)):
             self.error(f'Your image is out of maximum size.', value)
         return value
 

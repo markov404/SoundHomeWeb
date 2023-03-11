@@ -1,5 +1,5 @@
+
 from django.db import models
-from django.apps import apps
 
 from users.components.validators import (
     UserNicknameValidator, 
@@ -69,3 +69,4 @@ class SoundHomeUsersWhatUsersLikes(models.Model):
 
     def __str__(self) -> str:
         return f'User: {self.user.pk} | Review: {self.user_review.pk}'
+
