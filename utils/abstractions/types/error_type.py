@@ -5,8 +5,6 @@ class Error(dict):
     VALUE_CODE_CHOICES = []
     
     def __init__(self, message: str, code: int = 500):
-        print(type(message), 'msg')
-        print(type(code), 'code')
         if (not isinstance(message, str)) or (not isinstance(code, int)):
             raise TypeError
             

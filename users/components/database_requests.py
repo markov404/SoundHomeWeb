@@ -1,6 +1,7 @@
 
 from django.db import transaction
 from django.apps import apps
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.files import File
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
@@ -34,6 +35,11 @@ def get_user_additional_info_by_pk(pk: int) -> dict | bool:
 
 def get_user_additional_active_status(pk: int) -> str | bool:
     try:
+        try:
+            usr = SoundHomeUsers.objects.get(pk=pk)
+        except ObjectDoesNotExist as Excp:
+            raise Excp
+
         usr, created = SoundHomeUsersAdditionalInfo.objects.get_or_create(pk=pk)
         active = usr.active
     except Exception as E:
@@ -45,6 +51,11 @@ def get_user_additional_active_status(pk: int) -> str | bool:
 
 def add_user_ava_and_nickname(pk: int, ava: InMemoryUploadedFile, nickname: str) -> bool:
     try:
+        try:
+            usr = SoundHomeUsers.objects.get(pk=pk)
+        except ObjectDoesNotExist as Excp:
+            raise Excp
+
         with transaction.atomic():
             usr, created = SoundHomeUsersAdditionalInfo.objects.get_or_create(pk=pk)
             usr.image = File(ava.open(), name=f'{pk}_{ava.name}') 
@@ -59,6 +70,11 @@ def add_user_ava_and_nickname(pk: int, ava: InMemoryUploadedFile, nickname: str)
 
 def change_user_active(pk: int, active: bool) -> bool:
     try:
+        try:
+            usr = SoundHomeUsers.objects.get(pk=pk)
+        except ObjectDoesNotExist as Excp:
+            raise Excp
+
         usr, created = SoundHomeUsersAdditionalInfo.objects.get_or_create(pk=pk)
         usr.active = active
         usr.save()
@@ -75,6 +91,11 @@ def add_user_ava_and_nickname_end_set_user_active(
     ava: InMemoryUploadedFile,
     nickname: str) -> bool | Error:
     try:
+        try:
+            usr = SoundHomeUsers.objects.get(pk=pk)
+        except ObjectDoesNotExist as Excp:
+            raise Excp
+
         with transaction.atomic():
             usr, created = SoundHomeUsersAdditionalInfo.objects.get_or_create(pk=pk)
             usr.image = File(ava.open(), name=f'{pk}_{ava.name}') 

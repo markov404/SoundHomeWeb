@@ -18,6 +18,15 @@ class Registration(IRegistrationBase):
             return False
         else:
             return user
+    
+    def _delete_user(self, _id):
+        try:
+            tutu = SoundHomeUsers.objects.get(pk=_id)
+            tutu.delete()
+        except:
+            return False
+        else:
+            return True
 
     def __passw_hex(self, password: str):
         return hashlib.sha256(password.encode()).hexdigest()
