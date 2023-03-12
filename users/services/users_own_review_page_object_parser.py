@@ -1,7 +1,7 @@
 from django.core.paginator import Page
 from utils.abstractions.abstract_classes.abs_services import BaseService
 
-class UsersOwnReviewPageObjectParser(BaseService):
+class UsersReviewPageObjectParser(BaseService):
 
     def execute(self, page_obj: Page) -> None:
         try:

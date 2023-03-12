@@ -31,3 +31,7 @@ class UserAARForm(BaseLayerValidationForm):
 
 class UsersOwnReviewListingForm(forms.Form):
     page = forms.IntegerField()
+
+
+class UsersFavouriteReviewListingForm(forms.Form):
+    page = forms.IntegerField()

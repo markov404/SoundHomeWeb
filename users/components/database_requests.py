@@ -204,7 +204,11 @@ def get_user_favourites_reviews(pk: int) -> list:
         qs = likes_model.objects.filter(user=usr)
         output = []
         for rv in qs:
-            output.append(rv.user_review)
+            by_who = rv.user_review.user.soundhomeusersadditionalinfo.nickname
+            score = rv.user_review.score
+            image = rv.user_review.image.url
+            _id = rv.user_review.pk
+            output.append({'nickname': by_who, 'id': _id, 'score': score, 'image': image})
     except Exception as E:
         log.warning(f'{E}')
         return Error(f'Queryset error - {E}', code=500)

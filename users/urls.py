@@ -11,4 +11,5 @@ urlpatterns = [
     path('set_up_profile/change_nickname', view=views.change_user_nickname, name="chng_usr_nickname"),
     
     path('profile/user_review_listing/', view=views.user_reviews_listing, name="user_review_listing"),
+    path('profile/favourite_review_listing/', view=views.fav_user_reviews, name="favourite_review_listing"),
 ]

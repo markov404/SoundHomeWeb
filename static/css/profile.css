@@ -164,7 +164,23 @@
 
 .OwnRvListingImage {
     width: 100px;
+    height: 100px;
 }
+
+.ball {
+    border-radius: 25px;
+    width: 310px;
+    height: 200px;
+    /* background: #c00; */
+    background: url("/static/images/cloud.png");
+    background-size: cover;
+    text-shadow: white 0px 0px 2px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: transform 1s;
+  }
+  
 
 @media (min-width: 1400px) { 
 

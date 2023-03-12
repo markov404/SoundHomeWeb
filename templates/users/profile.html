@@ -71,9 +71,10 @@
           />
           {% else %}
 
-          <div class='FavRevs ActivityHigh mb-4'>
+          <div class='FavRevs ActivityHigh mb-4' id="fav_revs">
+            {% comment %}
           {% for rv in fav_reviews  %}
-          <div class="row text-center FavRevsListItem" onclick="change_url(`{% url 'ceraint_user_review' rv.id %}`)">
+          <div class="row text-center FavRevsListItem" onclick="change_url(`{% url 'ceraint_user_review' rv.id %}`)"> <!-- BULBA -->
             <div class='col-lg-4 mb-lg-0'>
               <img src="{{rv.image.url}}" class="FavRevImage">
             </div>
@@ -89,6 +90,8 @@
             </div>
           </div>
           {% endfor %}
+          {% endcomment %}
+          <button type="button" id="rnavf" class="btn btn-secondary btn-sm">Small button</button>
           </div>
     
           {% endif %}
@@ -359,6 +362,15 @@
       {% endblock profile_modal_parts %}
 
     {% endblock content %}
+
+    {% block content_special %}
+    {% load static %}
+    <p>Click anywhere to move the ball</p>
+    <div id="foo" class="ball"></div>
+    
+    {% endblock content_special %}
+
+
     
     {% block footer %}
         {{ block.super }}
@@ -369,7 +381,7 @@
         {{ block.super }}
     {% endblock common_info %}
 
-    <div id="this_page_info" data-rvwmkpage="{% url 'ceraint_user_review' 0 %}" data-rvwlistingpage="{% url 'user_review_listing' %}"></div>
+    <div id="this_page_info" data-rvwmkpage="{% url 'ceraint_user_review' 0 %}" data-rvwlistingpage="{% url 'user_review_listing' %}" data-rvwfavlistingpage="{% url 'favourite_review_listing' %}"></div>
 
     {% block alertifycdn %}
         {{ block.super }}
@@ -388,6 +400,132 @@
         </script>
 
         <script>
+
+          const f = document.getElementById("foo");
+          document.addEventListener(
+            "click",
+            (ev) => {
+              f.style.transform = `translateY(${ev.clientY - 25}px)`;
+              f.style.transform += `translateX(${ev.clientX - 25}px)`;
+            },
+            false
+          );
+
+
+
+          function get_fav_listing_from_page(page) {
+            let csrf = document.getElementById('csrf_wrapper').getAttribute('data-csrf');
+            let url = document.getElementById('this_page_info').getAttribute('data-rvwfavlistingpage')
+            
+            let url_made = `${url}?page=${page}`
+
+            fetch(url_made, {
+              method: "GET",
+              mode: 'cors',
+              cache: 'default',
+              credentials: 'include',
+            })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log("Success:", data);
+              if (data.status === "message") {
+                let msg = data.info
+                let json = JSON.parse(data.info); 
+                let keys = Object.keys(json)
+
+                alertify.alert(json[0].message)
+              } else if (data.status === "form_validation_error" ) {
+                let msg = data.info
+                let json = JSON.parse(data.info); 
+                let keys = Object.keys(json)
+
+                alertify.alert(json[keys[0]][0].message)                
+
+              } else if (data.status === "success") {
+                let listing_container = document.getElementById('fav_revs')
+                //let lnav = document.getElementById('lnav')
+                let rnav = document.getElementById('rnavf')
+                listing_container.innerHTML = ""
+                //console.log(data.data)
+                let json = JSON.parse(data.data)
+                let next_page = json.next_page
+                let previous_page = json.previous_page
+                let rvs = json.revs
+                console.log(rvs)
+                
+                /* DUDA */
+                rvs.forEach((element) => {
+                  const row = document.createElement("div")
+                  //row.id = `listing_item${element.id}`
+                  row.className = `row text-center FavRevsListItem`
+                  var url_mask = "{% url 'ceraint_user_review' 12345 %}".replace(/12345/, element.id.toString());
+                  row.setAttribute("onclick", `change_url('${url_mask}')`)
+
+                  const col1 = document.createElement("div")
+                  col1.className = `col-lg-4 mb-lg-0`
+                  row.appendChild(col1)
+
+                  const img = document.createElement("img")
+                  img.src = element.image
+                  img.className = `FavRevImage`
+                  col1.appendChild(img)
+
+                  const col2 = document.createElement("div")
+                  col2.className = `col-lg-4 mb-lg-0`
+                  row.appendChild(col2)
+
+                  const p1 = document.createElement("p")
+                  p1.className = `FavCreatorNick`
+                  p1.innerHTML = element.nickname
+                  col2.appendChild(p1)
+
+                  const col3 = document.createElement("div")
+                  col3.className = `col-lg-4 mb-lg-0`
+                  row.appendChild(col3)
+
+                  const p2 = document.createElement("p")
+                  p2.className = `FavRevScore`
+                  p2.innerHTML = element.score
+                  col3.appendChild(p2)
+
+                  listing_container.appendChild(row)
+                })
+
+                if (next_page !== '#') {
+                  const mr = document.createElement("div")
+                  mr.className = 'mr-auto'
+                  listing_container.appendChild(mr)
+                  const b = document.createElement("button")
+                  b.className = 'btn btn-secondary btn-sm'
+                  mr.appendChild(b)
+
+                  b.style.visibility = 'visible'
+                  b.type = 'button'
+                  b.innerHTML = 'Next'
+                  b.setAttribute("onclick", `get_fav_listing_from_page(${next_page})`)
+                } else {
+                  b.style.visibility = 'hidden'
+                }
+                
+              } else if (data.status === "error") {
+                let err = data.info
+                let json = JSON.parse(data.info)
+                
+                json.forEach((element) => {
+                  if (element.code >= 500) {
+                    let url = document.getElementById('common_data_div').getAttribute('data-erurl')
+                    change_url(`${url}?code=${element.code}&message=${element.message}`)
+                  }
+                })
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+          }
+
+          get_fav_listing_from_page(1)
+
           function get_listing_from_page(page) {
             let csrf = document.getElementById('csrf_wrapper').getAttribute('data-csrf');
             let url = document.getElementById('this_page_info').getAttribute('data-rvwlistingpage')

@@ -15,13 +15,15 @@ from users.services.set_up_profile_service import SetUpProfileService
 from users.services.change_user_ava_service import ChangeUserAvaService
 from users.services.change_user_nickname_service import ChangeUserNicknameService
 from users.services.user_own_reviews_listing_service import UserOwnReviewsListingService
-from users.services.users_own_review_page_object_parser import UsersOwnReviewPageObjectParser
+from users.services.users_own_review_page_object_parser import UsersReviewPageObjectParser
+from users.services.user_favourite_reviews_listing_service import UserFavouriteReviewsListingService
 
 from users.serializers import UserAdditionalInfoForm
 from users.serializers import ChangeUserImageForm
 from users.serializers import ChangeUserNicknameForm
 from users.serializers import UserAARForm
 from users.serializers import UsersOwnReviewListingForm
+from users.serializers import UsersFavouriteReviewListingForm
 
 
 # Create your views here.
@@ -146,6 +148,7 @@ def change_user_nickname(request: WSGIRequest):
 
 
 @require_http_methods(["GET"])
+@logged_in_user_only()
 def user_reviews_listing(request: WSGIRequest):
     form = UsersOwnReviewListingForm(data=request.GET)
     if not form.is_valid():
@@ -161,10 +164,40 @@ def user_reviews_listing(request: WSGIRequest):
 
         else:
             data = form.clean()
-            pagination = Paginator(service.response.as_one_dictionary()['fav_rvws'], 4)
+            pagination = Paginator(service.response.as_one_dictionary()['own_rvws'], 4)
             page_obj = pagination.get_page(data['page'])
 
-            service = UsersOwnReviewPageObjectParser()
+            service = UsersReviewPageObjectParser()
+            service.execute(page_obj)
+
+            if service.is_error:
+                return JsonResponse({'status': 'error', 'info': f'{service.errors.as_json()}'})
+            else:
+                return JsonResponse({'status': 'success', 'data': f'{service.response.as_json_v2()}'})
+
+
+@require_http_methods(["GET"])
+@logged_in_user_only()
+def fav_user_reviews(request: WSGIRequest):
+    form = UsersFavouriteReviewListingForm(data=request.GET)
+
+    if not form.is_valid():
+        return JsonResponse({'status': 'form_validation_error', 'info': f'{form.errors.as_json()}'})
+
+    else:
+
+        service = UserFavouriteReviewsListingService()
+        service.execute(_id=user_id(request))
+
+        if service.is_error:
+            return JsonResponse({'status': 'error', 'info': f'{service.errors.as_json()}'})
+        
+        else:
+            data = form.clean()
+            pagination = Paginator(service.response.as_one_dictionary()['fav_reviews'], 4)
+            page_obj = pagination.get_page(data['page'])
+
+            service = UsersReviewPageObjectParser()
             service.execute(page_obj)
 
             if service.is_error:

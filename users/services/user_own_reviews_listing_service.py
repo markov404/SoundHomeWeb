@@ -18,7 +18,7 @@ class UserOwnReviewsListingService(BaseService):
         output = []
         for img, i, t in zip(images, ids, titles):
             output.append({'image': img, 'id': i, 'title': t})
-        self._got_entities.append({'fav_rvws': output})
+        self._got_entities.append({'own_rvws': output})
     
     def _get_all_users_review_image_paths(self, _id: int) -> list:
         images = get_user_own_review_links(pk=_id)
