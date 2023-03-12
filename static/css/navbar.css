@@ -27,3 +27,7 @@
     font-family: 'Mynerve', cursive;
     font-size: 20px;
 }
+
+.Navigationb:hover {
+    color: blueviolet;
+}

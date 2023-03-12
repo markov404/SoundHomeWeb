@@ -35,19 +35,19 @@
             <ul class="navbar-nav mx-auto">
                 {% if member %}
                 <li class="nav-item dropdown">
-                  <button type="button" class="dropdown-toggle btn btn-link" data-bs-toggle="dropdown">
+                  <button type="button" class="dropdown-toggle btn btn-link Navigationb" data-bs-toggle="dropdown">
                     Reviews
                   </button>
                   <ul class="dropdown-menu dropdown-menu-end">
-                    <li> <a href="{% url 'all_reviews' %}" class="dropdown-item"> Proffesionals </a> </li>
-                    <li> <a href="{% url 'ceraint_review' latest_review %}" class="dropdown-item"> Latest Pro </a> </li>
-                    <li> <a href="{% url 'all_users_reviews' %}" class="dropdown-item"> User`s made </a> </li>
+                    <li> <a href="{% url 'all_reviews' %}" class="dropdown-item Navigationb"> Proffesionals </a> </li>
+                    <li> <a href="{% url 'ceraint_review' latest_review %}" class="dropdown-item Navigationb"> Latest Pro </a> </li>
+                    <li> <a href="{% url 'all_users_reviews' %}?page=1" class="dropdown-item Navigationb"> User`s made </a> </li>
                   </ul>
                 </li>
                 {% endif %}
                 <li class="nav-item">
                     <!--<a class="nav-link" href="#">About <span class="sr-only"></span></a>-->
-                    <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    <button type="button" class="btn btn-link Navigationb" data-bs-toggle="modal" data-bs-target="#exampleModal">
                         About
                     </button>                      
                 </li>
@@ -56,13 +56,13 @@
                 <img src="{% static 'images/slogan.jpg' %}" alt="Logo" width="250px" class="logo-image">
                 </div>
                 <li class="nav-item">
-                    <button type="button" class="btn btn-link">
+                    <button type="button" class="btn btn-link Navigationb">
                         Cheers
                     </button>  
                 </li>
                 {% if member %}
                 <li class="nav-item">
-                  <button type="button" class="btn btn-link" onclick="change_url('{% url 'profile_page' %}')">
+                  <button type="button" class="btn btn-link Navigationb" onclick="change_url('{% url 'profile_page' %}')">
                       Profile
                   </button>
                 </li>

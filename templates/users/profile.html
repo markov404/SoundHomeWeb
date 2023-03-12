@@ -9,6 +9,10 @@
     <title>SH Profile</title>
     {% endblock title %}
 
+    {% block mediaicons %}
+    <link rel="stylesheet" href="https://kit.fontawesome.com/5509c6393f.css" crossorigin="anonymous">
+    {% endblock mediaicons %}
+
     {% block media %}
     {% load static %}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
@@ -108,9 +112,9 @@
           <div class="row mb-4">
             <div class="col-lg-6 mb-lg-0 text-center">
               <label for="tutu">
-              <img src="{% static 'images/books.png' %}" class="Activity VertShitB"></img>
+              <img src="{% static 'images/shelf_cds.jpg' %}" class="Activity VertShitB"></img>
               </label>
-              <button type="button" id="tutu" class="btn btn-link"/>
+              <button type="button" id="tutu" class="btn btn-link" onclick="get_listing_from_page(1)" data-bs-toggle="modal" data-bs-target="#fav_reviews_listing"/>
             </div>
             <div class="col-lg-6 mb-lg-0 text-center">
               <label for="titi">
@@ -219,6 +223,23 @@
 
       {% block profile_modal_parts %}
 
+
+        <div class="modal fade" id="fav_reviews_listing" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header text-center">
+                <h4 class="modal-title w-100 font-weight-bold">Your reviews</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="container" id="listing_reviews">
+              </div>
+              <div class="d-flex justify-content-between" id="listing_navigation">
+                <i class="fa-solid fa-2x fa-arrow-left LSTNavBtn" id="lnav"></i>
+                <i class="fa-solid fa-2x fa-arrow-right LSTNavBtn" id="rnav"></i>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <div class="modal fade" id="chng_ava_modal" tabindex="-1" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered">
@@ -348,7 +369,7 @@
         {{ block.super }}
     {% endblock common_info %}
 
-    <div id="this_page_info" data-rvwmkpage="{% url 'ceraint_user_review' 0 %}"></div>
+    <div id="this_page_info" data-rvwmkpage="{% url 'ceraint_user_review' 0 %}" data-rvwlistingpage="{% url 'user_review_listing' %}"></div>
 
     {% block alertifycdn %}
         {{ block.super }}
@@ -367,6 +388,99 @@
         </script>
 
         <script>
+          function get_listing_from_page(page) {
+            let csrf = document.getElementById('csrf_wrapper').getAttribute('data-csrf');
+            let url = document.getElementById('this_page_info').getAttribute('data-rvwlistingpage')
+            
+            let url_made = `${url}?page=${page}`
+
+            fetch(url_made, {
+              method: "GET",
+              mode: 'cors',
+              cache: 'default',
+              credentials: 'include',
+            })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log("Success:", data);
+              if (data.status === "message") {
+                let msg = data.info
+                let json = JSON.parse(data.info); 
+                let keys = Object.keys(json)
+
+                alertify.alert(json[0].message)
+              } else if (data.status === "form_validation_error" ) {
+                let msg = data.info
+                let json = JSON.parse(data.info); 
+                let keys = Object.keys(json)
+
+                alertify.alert(json[keys[0]][0].message)                
+
+              } else if (data.status === "success") {
+                let listing_container = document.getElementById('listing_reviews')
+                let lnav = document.getElementById('lnav')
+                let rnav = document.getElementById('rnav')
+                listing_container.innerHTML = ""
+                //console.log(data.data)
+                let json = JSON.parse(data.data)
+                let next_page = json.next_page
+                let previous_page = json.previous_page
+                let rvs = json.revs
+                
+                rvs.forEach((element) => {
+                  const row = document.createElement("div")
+                  row.id = `listing_item${element.id}`
+                  row.className = `row ListingEl Activity`
+
+                  const col = document.createElement("div")
+                  col.className = `col`
+                  row.appendChild(col)
+
+                  const img = document.createElement("img")
+                  img.src = element.image
+                  img.className = `OwnRvListingImage`
+                  col.appendChild(img)
+                  
+                  const a = document.createElement("a")
+                  var url_mask = "{% url 'ceraint_user_review' 12345 %}".replace(/12345/, element.id.toString());
+                  row.setAttribute("onclick", `change_url('${url_mask}')`)
+                  //a.href = url_mask
+                  a.className =  `OwnRvTitle`
+                  a.innerHTML = element.title
+                  col.appendChild(a)
+                  listing_container.appendChild(row)
+                })
+                
+                if (previous_page !== '#') {
+                  lnav.style.visibility = 'visible'
+                  lnav.setAttribute("onclick", `get_listing_from_page(${previous_page})`)
+                } else {
+                  lnav.style.visibility = 'hidden'
+                }
+
+                if (next_page !== '#') {
+                  rnav.style.visibility = 'visible'
+                  rnav.setAttribute("onclick", `get_listing_from_page(${next_page})`)
+                } else {
+                  rnav.style.visibility = 'hidden'
+                }
+
+              } else if (data.status === "error") {
+                let err = data.info
+                let json = JSON.parse(data.info)
+                
+                json.forEach((element) => {
+                  if (element.code >= 500) {
+                    let url = document.getElementById('common_data_div').getAttribute('data-erurl')
+                    change_url(`${url}?code=${element.code}&message=${element.message}`)
+                  }
+                })
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+          }
 
           function customSubmit(type) {
             let csrf = document.getElementById('csrf_wrapper').getAttribute('data-csrf');

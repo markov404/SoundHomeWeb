@@ -3,7 +3,8 @@ from utils.abstractions.abstract_classes.abs_services import BaseService
 from reviews.components.database_requests import (
     get_oldest_and_lates_pk_of_user_review,
     get_user_review_data_by_id,
-    get_user_review_author_nickname_by_pk_of_review)
+    get_user_review_author_nickname_by_pk_of_review,
+    get_list_of_pk_of_user_review)
 
 class CertainUserReviewPageService(BaseService):
 
@@ -20,26 +21,24 @@ class CertainUserReviewPageService(BaseService):
         self._got_entities.append({'data': data})
 
     def _extract_oldest_and_lastest_pk_of_user_review(self, _id: int) -> dict:
-        response = get_oldest_and_lates_pk_of_user_review()
-        if self.get_error(response):
-            self.errors.append('Problem with getting oldest and latest')
+        list_of_ids = get_list_of_pk_of_user_review()
+        if self.get_error(list_of_ids):
+            self.errors.append('Problem with getting list of ids')
             return
         
-        if response is not None:
-            oldest = response['oldest']
-            latest = response['latest']
+        if list_of_ids is not None:
 
             next_id = 0
             prev_id = 0
-            if _id == latest:
-                next_id = oldest
-                prev_id = _id - 1
-            elif _id == oldest:
-                next_id = _id + 1
-                prev_id = latest
+            if _id == list_of_ids[-1]:
+                next_id = list_of_ids[0]
+                prev_id = list_of_ids[-2]
+            elif _id == list_of_ids[0]:
+                next_id = list_of_ids[1]
+                prev_id = list_of_ids[-1]
             else:
-                next_id = _id + 1
-                prev_id = _id - 1
+                next_id = list_of_ids[list_of_ids.index(_id)+1]
+                prev_id = list_of_ids[list_of_ids.index(_id)-1]
         else:
             next_id = None
             prev_id = None

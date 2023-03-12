@@ -89,6 +89,19 @@ def get_oldest_and_lates_pk_of_review() -> dict | None:
     
     return output
 
+def get_list_of_pk_of_review() -> dict | None:
+    try:
+        qs1 = Review.objects.all().filter(active=True)
+        output = []        
+        for rv in qs1:
+            output.append(rv.pk)
+
+    except Exception as E:
+        log.warning(f'{E}')
+        return Error(f'{E}', code=500)
+    
+    return output
+
 
 def get_latest_review_id() -> int | None:
     try:
@@ -207,6 +220,20 @@ def get_oldest_and_lates_pk_of_user_review() -> dict | None:
         latest = qs2.pk
 
         output = {'oldest': oldest, 'latest': latest}
+    except Exception as E:
+        log.warning(f'{E}')
+        return Error(f'{E}', code=500)
+    
+    return output
+
+
+def get_list_of_pk_of_user_review() -> dict | None:
+    try:
+        qs1 = UserReview.objects.all().filter(active=True)
+        output = []
+        for rv in qs1:
+            output.append(rv.pk)
+
     except Exception as E:
         log.warning(f'{E}')
         return Error(f'{E}', code=500)

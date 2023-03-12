@@ -101,7 +101,7 @@
                     {% if PRO %}                    
                     {% else %}
                     <label for="add_to_favourites">
-                        <i class="fa-regular fa-star fa-2xl" id='star' data-rvwid='{{data.id}}'></i>
+                        <i class="fa-regular fa-star fa-2xl fa-beat" style="--fa-animation-duration: 2s;" id='star' data-rvwid='{{data.id}}'></i>
                     </label>
                     <button type="button" id="add_to_favourites" style="display:none" onclick="like_or_unlike()" class="btn btn-dark"></button>
                     {% endif %}
@@ -213,7 +213,7 @@
                     let is_he_likes = json[0].data
                     
                     if (is_he_likes === true) {
-                        star.style.color = 'red'
+                        star.style.color = 'blueviolet'
                     } else if (is_he_likes === false) {
                         star.style.color = 'black'
                     }
@@ -259,10 +259,10 @@
   
                   } else if (data.status === "success") {
 
-                    if (star.style.color === 'red') {
+                    if (star.style.color === 'blueviolet') {
                         star.style.color = 'black'
                     } else if (star.style.color === 'black') {
-                        star.style.color = 'red'
+                        star.style.color = 'blueviolet'
                     }
 
                   } else if (data.status === "error") {

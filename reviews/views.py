@@ -2,8 +2,8 @@
 
 from django.core.handlers.wsgi import WSGIRequest
 from django.shortcuts import redirect, render
-from django.http import JsonResponse, HttpResponseServerError
-from django.urls import reverse
+from django.http import JsonResponse, HttpResponseServerError, HttpResponseBadRequest
+from django.core.paginator import Paginator
 from django.views.decorators.http import require_http_methods
 
 from utils.wrappers import logged_in_user_only
@@ -18,6 +18,7 @@ from reviews.services.mini_services import DoUserLikeReviewWithId
 from reviews.services.mini_services import LikeOrUnlikeIt
 
 from reviews.serializers import UserReviewForm
+from reviews.serializers import UsersReviewAllForm
 
 # Create your views here.
 
@@ -91,16 +92,27 @@ def post_user_review(request: WSGIRequest):
 @require_http_methods(["GET"])
 @logged_in_user_only()
 def all_users_reviews(request: WSGIRequest):
-    service = AllUsersReviewsPageService()
-    service.execute()
 
-    if service.is_error:
-        status = 'error'
+    form = UsersReviewAllForm(data=request.GET)
+    
+    if not form.is_valid():
+        return HttpResponseBadRequest('400')
+
     else:
-        status = 'success'
+
+        service = AllUsersReviewsPageService()
+        service.execute()
+
+        if service.is_error:
+            status = 'error'
+            page_obj = None
+        else:
+            status = 'success'
+            pagination = Paginator(service.response.as_one_dictionary()['data'], 6)
+            page_obj = pagination.get_page(form.clean()['page'])
         
-    return render(request, 'reviews/all_reviews.html', 
-    context={'data': service.response.as_one_dictionary()['data'], 'status': status, 'title': 'Amateur Reviews'})
+        return render(request, 'reviews/all_reviews.html', 
+        context={'data': page_obj, 'status': status, 'title': 'Amateur Reviews'})
 
 
 @require_http_methods(["GET"])

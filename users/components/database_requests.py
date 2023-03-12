@@ -182,6 +182,19 @@ def get_user_own_review_ids(pk: int) -> list:
 
     return output
 
+def get_user_own_review_album_title(pk: int) -> list:
+    try:
+        usrv = apps.get_model('reviews', 'userreview')
+        output = []
+        qs = usrv.objects.filter(user=pk)
+        for rvw in qs:
+            output.append(rvw.album_title)
+    except Exception as E:
+        log.warning(f'{E}')
+        return Error(f'Queryset error - {E}', code=500)
+
+    return output
+
 
 def get_user_favourites_reviews(pk: int) -> list:
     try:

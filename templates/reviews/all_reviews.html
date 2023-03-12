@@ -26,6 +26,34 @@
     {% endblock navbar %}
 
     {% block content %}
+
+
+
+        {% if not PRO %}
+            <div class="container ReviewListingNavigation">
+                <div class="row">
+                
+                <div class="mr-auto bongo">
+            {% if data.has_previous and not data.has_next %}
+                <a href="?page={{ data.previous_page_number }}" class="Rlnbtn">Previous</a>
+                <a href="?page=1" class="Rlnbtn Nbr">Next</a>
+            {% endif %}
+
+            {% if data.has_next and not data.has_previous %}
+                <a href="?page={{ data.paginator.num_pages }}" class="Rlnbtn">Previous</a>
+                <a href="?page={{ data.next_page_number }}" class="Rlnbtn Nbr">Next</a>
+            {% endif %}
+
+            {% if data.has_next and data.has_previous %}
+                <a href="?page={{ data.previous_page_number }}" class="Rlnbtn">Previous</a>
+                <a href="?page={{ data.next_page_number }}" class="Rlnbtn Nbr">Next</a>
+            {% endif %}
+                </div>
+                </div>
+            </div>
+        {% endif %}
+
+
         {% if status == 'success' %}
         <div class="container ReviewsList" id="rvw_list">
         {% for rev in data %}
@@ -54,7 +82,7 @@
                     {% if rev.album_year %}
                     <p id="alb_year"> {{ rev.album_year }} </p>
                     {% else %}
-                    <p id="alb_year"> By: {{ rev.nickname }} </p>
+                    <p id="alb_by_who"> By: {{ rev.nickname }} </p>
                     {% endif %}
                 </div>
                 <div class="col">

@@ -1,4 +1,4 @@
-
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@200&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Lato&family=Raleway:ital,wght@1,200&family=Roboto:wght@300&family=Ubuntu:wght@300&display=swap');
 
 .ReviewsList {
@@ -51,4 +51,29 @@
 .emog {
     font-family: 'Gamja Flower', cursive;
     font-size: 30px;
+}
+
+.ReviewListingNavigation {
+    margin-top: 150px;
+    text-align: right;
+    padding-right: 98px;
+}
+
+.Rlnbtn {
+    text-decoration: none;
+    color: black;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 400;
+}
+
+.Nbr {
+    margin-left: 10px;
+}
+
+.Rlnbtn:hover {
+    color: blueviolet;
+}
+
+#alb_by_who {
+    font-family: 'Gamja Flower', cursive;
 }

@@ -4,7 +4,7 @@ from reviews.components.database_requests import (
     get_review_data_by_id,
     get_translation_text_by_id,
     get_audio_url_by_id,
-    get_oldest_and_lates_pk_of_review)
+    get_list_of_pk_of_review)
 
 
 class CertainReviewPageService(BaseService):
@@ -39,30 +39,26 @@ class CertainReviewPageService(BaseService):
 
 
     def _extract_oldest_and_lastest_pk_of_review(self, _id: int) -> dict | None:
-        response = get_oldest_and_lates_pk_of_review()
-        if self.get_error(response):
-            self.errors.append('Problem with getting oldest, latest data')
+        list_of_ids = get_list_of_pk_of_review()
+        if self.get_error(list_of_ids):
+            self.errors.append('Problem with getting list of ids')
             return
         
-        if not self.is_error:
+        if list_of_ids is not None:
 
-            if response is not None:
-                oldest = response['oldest']
-                latest = response['latest']
-
-                next_id = 0
-                prev_id = 0
-                if _id == latest:
-                    next_id = oldest
-                    prev_id = _id - 1
-                elif _id == oldest:
-                    next_id = _id + 1
-                    prev_id = _id
-                else:
-                    next_id = _id + 1
-                    prev_id = _id - 1
+            next_id = 0
+            prev_id = 0
+            if _id == list_of_ids[-1]:
+                next_id = list_of_ids[0]
+                prev_id = list_of_ids[-2]
+            elif _id == list_of_ids[0]:
+                next_id = list_of_ids[1]
+                prev_id = list_of_ids[-1]
             else:
-                next_id = None
-                prev_id = None
-            
-            self._got_entities.append({'next_id': next_id, 'prev_id': prev_id})
+                next_id = list_of_ids[list_of_ids.index(_id)+1]
+                prev_id = list_of_ids[list_of_ids.index(_id)-1]
+        else:
+            next_id = None
+            prev_id = None
+
+        self._got_entities.append({'next_id': next_id, 'prev_id': prev_id})

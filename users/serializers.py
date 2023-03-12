@@ -1,5 +1,6 @@
 
-from utils.abstractions.abstract_classes.abs_form import BaseLayerValidationForm
+from django import forms
+from utils.abstractions.abstract_classes.abs_forms import BaseLayerValidationForm
 from users.models import SoundHomeUsersAdditionalInfo
 from users.models import SoundHomeUsers
 
@@ -26,3 +27,7 @@ class UserAARForm(BaseLayerValidationForm):
     class Meta:
         model = SoundHomeUsers
         fields = ['email', 'password']
+
+
+class UsersOwnReviewListingForm(forms.Form):
+    page = forms.IntegerField()
