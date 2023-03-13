@@ -21,6 +21,14 @@
 
 <img src="https://i.ibb.co/fqgp9HZ/Review-updating-implementation-DRU-Service.jpg" alt="Review-updating-implementation-DRU-Service" border="0">
 
+
+
+## Database
+
+Production server uses MySql. DB scheme conform to basic normal forms.
+
+<img src="https://i.ibb.co/TYL73Y7/Review-updating-implementation-DB-Scheme-drawio.png" alt="Review-updating-implementation-DB-Scheme-drawio" border="0">
+
 Remember:
 rabbitmq.conf: |
   consumer_timeout = 31622400000
