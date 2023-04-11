@@ -58,8 +58,8 @@ def test_speecher(revew_text_translated):
     assert isinstance(file, BytesIO)
 
 def test_yandex_based_speecher(revew_text_translated):
-    os.environ['YANDEX_CLOUD_IAM_TOKEN'] = 't1.9euelZrInoyUiomJnJ6Ljo_Ml5PHzO3rnpWakYuXzJSMl5SMycidjJmLxpvl8_c1NVJf-e92Rhk6_t3z93VjT1_573ZGGTr-.df4Yp3g4UVoFbJrQAjQyZojZpxl6eV7vxEMdraTbL6BNPJ9eT2_Vl7vnMQIguwfBD2nFS2Rla_RUDkP6CT7ODg'
-    os.environ['YANDEX_CLOUD_FOLDER_ID'] = 'b1g5maebo5uupmgv97hb'
+    os.environ['YANDEX_CLOUD_IAM_TOKEN'] = 'mok'
+    os.environ['YANDEX_CLOUD_FOLDER_ID'] = 'mok'
 
    
     def mok_service_side_call_realisation_two(data: list[dict]):
