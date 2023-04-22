@@ -13,6 +13,10 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='soundhomeusersadditionalinfo',
             name='image',
-            field=models.ImageField(blank=True, null=True, upload_to='auatars/', verbose_name='Auatar'),
+            field=models.ImageField(
+                blank=True,
+                null=True,
+                upload_to='auatars/',
+                verbose_name='Auatar'),
         ),
     ]

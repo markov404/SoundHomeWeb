@@ -16,32 +16,67 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='soundhomeusers',
             name='email',
-            field=models.EmailField(max_length=254, unique=True, validators=[users.components.validators.UserEmailValidator.is_valid]),
+            field=models.EmailField(
+                max_length=254,
+                unique=True,
+                validators=[
+                    users.components.validators.UserEmailValidator.is_valid]),
         ),
         migrations.AlterField(
             model_name='soundhomeusers',
             name='password',
-            field=models.CharField(max_length=254, validators=[users.components.validators.UserPasswordValidator.is_valid]),
+            field=models.CharField(
+                max_length=254,
+                validators=[
+                    users.components.validators.UserPasswordValidator.is_valid]),
         ),
         migrations.AlterField(
             model_name='soundhomeusersadditionalinfo',
             name='image',
-            field=models.ImageField(blank=True, null=True, upload_to='auatars/', validators=[users.components.validators.UserAvaValidator.is_valid], verbose_name='Auatar'),
+            field=models.ImageField(
+                blank=True,
+                null=True,
+                upload_to='auatars/',
+                validators=[
+                    users.components.validators.UserAvaValidator.is_valid],
+                verbose_name='Auatar'),
         ),
         migrations.AlterField(
             model_name='soundhomeusersadditionalinfo',
             name='nickname',
-            field=models.CharField(blank=True, default='anonim', max_length=50, null=True, unique=True, validators=[users.components.validators.UserNicknameValidator.is_valid], verbose_name='Name'),
+            field=models.CharField(
+                blank=True,
+                default='anonim',
+                max_length=50,
+                null=True,
+                unique=True,
+                validators=[
+                    users.components.validators.UserNicknameValidator.is_valid],
+                verbose_name='Name'),
         ),
         migrations.CreateModel(
             name='SoundHomeUsersWhatUsersLikes',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='users.soundhomeusers')),
-                ('user_review', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='reviews.userreview')),
+                ('id',
+                 models.BigAutoField(
+                     auto_created=True,
+                     primary_key=True,
+                     serialize=False,
+                     verbose_name='ID')),
+                ('user',
+                 models.ForeignKey(
+                     on_delete=django.db.models.deletion.CASCADE,
+                     to='users.soundhomeusers')),
+                ('user_review',
+                 models.ForeignKey(
+                     on_delete=django.db.models.deletion.CASCADE,
+                     to='reviews.userreview')),
             ],
             options={
-                'unique_together': {('user', 'user_review')},
+                'unique_together': {
+                    (
+                        'user',
+                        'user_review')},
             },
         ),
     ]

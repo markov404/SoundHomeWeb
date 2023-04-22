@@ -1,9 +1,10 @@
 
-#from utils.abstractions.interfaces.i_command import ICommand
+# from utils.abstractions.interfaces.i_command import ICommand
 from utils.abstractions.data_structures.service_errors import ServiceErrors
 from utils.abstractions.data_structures.service_response import ServiceResponse
 from utils.abstractions.types.error_type import Error
 from utils.abstractions.interfaces.i_use_case import IUseCase
+
 
 class BaseService(IUseCase):
     MANDATORY_FIELDS = set()
@@ -22,12 +23,12 @@ class BaseService(IUseCase):
         if len(self.errors) != 0:
             return True
         return False
-    
+
     @property
     def response(self) -> ServiceResponse:
         if self.is_error:
             return ServiceResponse()
-        return self._got_entities 
+        return self._got_entities
 
     @property
     def errors(self) -> ServiceErrors:

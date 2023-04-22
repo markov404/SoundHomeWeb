@@ -2,7 +2,7 @@
 from django.db import models
 
 from users.components.validators import (
-    UserNicknameValidator, 
+    UserNicknameValidator,
     UserAvaValidator,
     UserEmailValidator,
     UserPasswordValidator)
@@ -15,8 +15,8 @@ class SoundHomeUsers(models.Model):
     Stores basic user data.
     """
     email = models.EmailField(
-        max_length=254, 
-        unique=True, 
+        max_length=254,
+        unique=True,
         validators=[UserEmailValidator().is_valid])
     password = models.CharField(
         max_length=254,
@@ -35,17 +35,17 @@ class SoundHomeUsersAdditionalInfo(models.Model):
         SoundHomeUsers, on_delete=models.CASCADE, primary_key=True)
 
     image = models.ImageField(
-        "Auatar", 
-        upload_to="auatars/", 
-        null=True, 
+        "Auatar",
+        upload_to="auatars/",
+        null=True,
         blank=True,
         validators=[UserAvaValidator().is_valid])
     nickname = models.CharField(
-        "Name", 
-        max_length=50, 
-        blank=True, 
-        default="anonim", 
-        unique=True, 
+        "Name",
+        max_length=50,
+        blank=True,
+        default="anonim",
+        unique=True,
         null=True,
         validators=[UserNicknameValidator().is_valid])
     active = models.BooleanField("Status", default=False)
@@ -62,11 +62,12 @@ class SoundHomeUsersWhatUsersLikes(models.Model):
     """
 
     user = models.ForeignKey('users.SoundHomeUsers', on_delete=models.CASCADE)
-    user_review = models.ForeignKey('reviews.UserReview', on_delete=models.CASCADE)
-      
+    user_review = models.ForeignKey(
+        'reviews.UserReview',
+        on_delete=models.CASCADE)
+
     class Meta:
         unique_together = ('user', 'user_review',)
 
     def __str__(self) -> str:
         return f'User: {self.user.pk} | Review: {self.user_review.pk}'
-

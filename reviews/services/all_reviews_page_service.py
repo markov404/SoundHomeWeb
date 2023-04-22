@@ -2,8 +2,9 @@
 from reviews.components.database_requests import get_all_reviews_data_list
 from utils.abstractions.abstract_classes.abs_services import BaseService
 
+
 class AllReviewsPageSerive(BaseService):
-    
+
     def execute(self):
         self._extract_all_reviews_data_list()
 

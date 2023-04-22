@@ -11,6 +11,7 @@ from logging import getLogger
 
 log = getLogger(__name__)
 
+
 def get_user_email_by_pk(pk: int) -> str | bool:
     try:
         usr = SoundHomeUsers.objects.get(pk=pk)
@@ -40,7 +41,8 @@ def get_user_additional_active_status(pk: int) -> str | bool:
         except ObjectDoesNotExist as Excp:
             raise Excp
 
-        usr, created = SoundHomeUsersAdditionalInfo.objects.get_or_create(pk=pk)
+        usr, created = SoundHomeUsersAdditionalInfo.objects.get_or_create(
+            pk=pk)
         active = usr.active
     except Exception as E:
         log.warning(f'{E}')
@@ -49,7 +51,10 @@ def get_user_additional_active_status(pk: int) -> str | bool:
         return active
 
 
-def add_user_ava_and_nickname(pk: int, ava: InMemoryUploadedFile, nickname: str) -> bool:
+def add_user_ava_and_nickname(
+        pk: int,
+        ava: InMemoryUploadedFile,
+        nickname: str) -> bool:
     try:
         try:
             usr = SoundHomeUsers.objects.get(pk=pk)
@@ -57,8 +62,9 @@ def add_user_ava_and_nickname(pk: int, ava: InMemoryUploadedFile, nickname: str)
             raise Excp
 
         with transaction.atomic():
-            usr, created = SoundHomeUsersAdditionalInfo.objects.get_or_create(pk=pk)
-            usr.image = File(ava.open(), name=f'{pk}_{ava.name}') 
+            usr, created = SoundHomeUsersAdditionalInfo.objects.get_or_create(
+                pk=pk)
+            usr.image = File(ava.open(), name=f'{pk}_{ava.name}')
             usr.nickname = nickname
             usr.save()
     except Exception as E:
@@ -75,7 +81,8 @@ def change_user_active(pk: int, active: bool) -> bool:
         except ObjectDoesNotExist as Excp:
             raise Excp
 
-        usr, created = SoundHomeUsersAdditionalInfo.objects.get_or_create(pk=pk)
+        usr, created = SoundHomeUsersAdditionalInfo.objects.get_or_create(
+            pk=pk)
         usr.active = active
         usr.save()
         output = usr
@@ -87,9 +94,9 @@ def change_user_active(pk: int, active: bool) -> bool:
 
 
 def add_user_ava_and_nickname_end_set_user_active(
-    pk: int, 
-    ava: InMemoryUploadedFile,
-    nickname: str) -> bool | Error:
+        pk: int,
+        ava: InMemoryUploadedFile,
+        nickname: str) -> bool | Error:
     try:
         try:
             usr = SoundHomeUsers.objects.get(pk=pk)
@@ -97,8 +104,9 @@ def add_user_ava_and_nickname_end_set_user_active(
             raise Excp
 
         with transaction.atomic():
-            usr, created = SoundHomeUsersAdditionalInfo.objects.get_or_create(pk=pk)
-            usr.image = File(ava.open(), name=f'{pk}_{ava.name}') 
+            usr, created = SoundHomeUsersAdditionalInfo.objects.get_or_create(
+                pk=pk)
+            usr.image = File(ava.open(), name=f'{pk}_{ava.name}')
             usr.nickname = nickname
             usr.active = True
             usr.save()
@@ -134,7 +142,7 @@ def get_user_additional_nickname(pk: int) -> str | bool:
 def update_user_additional_image(pk: int, ava: InMemoryUploadedFile) -> bool:
     try:
         usr = SoundHomeUsersAdditionalInfo.objects.get(pk=pk)
-        usr.image = File(ava.open(), name=f'{pk}_{ava.name}') 
+        usr.image = File(ava.open(), name=f'{pk}_{ava.name}')
         usr.save()
     except Exception as E:
         log.warning(f'{E}')
@@ -182,6 +190,7 @@ def get_user_own_review_ids(pk: int) -> list:
 
     return output
 
+
 def get_user_own_review_album_title(pk: int) -> list:
     try:
         usrv = apps.get_model('reviews', 'userreview')
@@ -208,11 +217,12 @@ def get_user_favourites_reviews(pk: int) -> list:
             score = rv.user_review.score
             image = rv.user_review.image.url
             _id = rv.user_review.pk
-            output.append({'nickname': by_who, 'id': _id, 'score': score, 'image': image})
+            output.append({'nickname': by_who, 'id': _id,
+                          'score': score, 'image': image})
     except Exception as E:
         log.warning(f'{E}')
         return Error(f'Queryset error - {E}', code=500)
-    
+
     return output
 
 
@@ -228,8 +238,9 @@ def get_user_favourites_reviews_images(pk: int) -> list:
     except Exception as E:
         log.warning(f'{E}')
         return Error(f'Queryset error - {E}', code=500)
-    
+
     return output
+
 
 def get_user_favourites_reviews_ids(pk: int) -> list:
     try:
@@ -243,5 +254,5 @@ def get_user_favourites_reviews_ids(pk: int) -> list:
     except Exception as E:
         log.warning(f'{E}')
         return Error(f'Queryset error - {E}', code=500)
-    
+
     return output

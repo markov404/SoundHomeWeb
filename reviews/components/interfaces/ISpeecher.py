@@ -1,6 +1,7 @@
 
 from abc import ABC, abstractmethod
 
+
 class ISpeecher(ABC):
 
     @abstractmethod

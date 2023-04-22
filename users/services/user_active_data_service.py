@@ -2,6 +2,7 @@
 from utils.abstractions.abstract_classes.abs_services import BaseService
 from users.components.database_requests import get_user_additional_active_status
 
+
 class UserActiveDataService(BaseService):
     def execute(self, _id):
         status = self._extract_active_boolean(_id)
@@ -14,5 +15,5 @@ class UserActiveDataService(BaseService):
         if self.get_error(status):
             self.errors.append('Query error')
             return
-        
+
         return status

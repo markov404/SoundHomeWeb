@@ -4,10 +4,10 @@ import requests
 
 from reviews.components.interfaces.ISpeecherClient import ISpeechKitApi
 
+
 class YandexAPISpeechKitV1Client(ISpeechKitApi):
     API_MAP = {
-        'synthesize': 'https://tts.api.cloud.yandex.net/speech/v1/tts:synthesize'
-    }
+        'synthesize': 'https://tts.api.cloud.yandex.net/speech/v1/tts:synthesize'}
 
     def __init__(self) -> None:
         iam_token = os.getenv('YANDEX_CLOUD_IAM_TOKEN')
@@ -18,10 +18,10 @@ class YandexAPISpeechKitV1Client(ISpeechKitApi):
         self.__iam_token = iam_token
         self.__folder_id = folder_id
 
-    def synthesize(self, text: str, lang: str='ru-RU') -> bytes:
+    def synthesize(self, text: str, lang: str = 'ru-RU') -> bytes:
         headers = {
-		    'Authorization': 'Bearer ' + self.__iam_token,
-	    }
+            'Authorization': 'Bearer ' + self.__iam_token,
+        }
         data = {
             'text': text,
             'lang': lang,
@@ -29,11 +29,13 @@ class YandexAPISpeechKitV1Client(ISpeechKitApi):
             'folderId': self.__folder_id,
             'format': 'mp3',
             'sampleRateHertz': 48000,
-	    }
+        }
         url = self.API_MAP['synthesize']
 
         response = requests.post(url=url, headers=headers, data=data)
         if response.status_code != 200:
-            raise RuntimeError("Invalid response received: code: %d, message: %s" % (response.status_code, response.text))
+            raise RuntimeError(
+                "Invalid response received: code: %d, message: %s" %
+                (response.status_code, response.text))
 
         return response.content

@@ -13,6 +13,7 @@ from reviews.components.speecher import Speecher
 from reviews.components.speecher import SpeecherBasedYaCloudTech
 from reviews.components.speecher import SpeecherModifiedForAsync
 
+
 @pytest.fixture
 def review_text() -> str:
     t_inp = """Burnin’ upends many myths orbiting John Lee Hooker ,
@@ -31,6 +32,7 @@ The Funk Brothers helped Hooker hone into his modernity, letting him play off co
 a way that accentuates how he always existed within the moment, letting the times take shape around his elemental boogie."""
     return t_inp
 
+
 @pytest.fixture
 def revew_text_translated(review_text) -> str:
     trnst = Translator()
@@ -40,7 +42,7 @@ def revew_text_translated(review_text) -> str:
 
 def test_translator(review_text):
     trnst = Translator()
-    
+
     assert len(review_text) > 5000
     assert isinstance(trnst.translate(review_text), str)
 
@@ -57,11 +59,11 @@ def test_speecher(revew_text_translated):
     assert total < float(100)
     assert isinstance(file, BytesIO)
 
+
 def test_yandex_based_speecher(revew_text_translated):
     os.environ['YANDEX_CLOUD_IAM_TOKEN'] = 'mok'
     os.environ['YANDEX_CLOUD_FOLDER_ID'] = 'mok'
 
-   
     def mok_service_side_call_realisation_two(data: list[dict]):
         spchr = SpeecherModifiedForAsync()
         threads = []
@@ -69,9 +71,9 @@ def test_yandex_based_speecher(revew_text_translated):
         for i, point in enumerate(data):
             text = point['translation']
             nt = threading.Thread(
-                target=spchr.get_speech_file_object, 
+                target=spchr.get_speech_file_object,
                 args=(text, i, results)
-                )
+            )
             nt.start()
             threads.append(nt)
 
@@ -79,10 +81,10 @@ def test_yandex_based_speecher(revew_text_translated):
             process.join()
 
         del spchr
-        
+
         for rslt, point in zip(results, data):
-            point['audio_bytes'] = rslt 
-        
+            point['audio_bytes'] = rslt
+
         return data[0]['audio_bytes']
 
     def mok_service_side_call_realisation_one(data: list[dict]):
@@ -92,9 +94,9 @@ def test_yandex_based_speecher(revew_text_translated):
         for i, point in enumerate(data):
             text = point['translation']
             nt = threading.Thread(
-                target=spchr.get_speech_file_object, 
+                target=spchr.get_speech_file_object,
                 args=(text, i, results)
-                )
+            )
             nt.start()
             threads.append(nt)
 
@@ -102,12 +104,11 @@ def test_yandex_based_speecher(revew_text_translated):
             process.join()
 
         del spchr
-        
+
         for rslt, point in zip(results, data):
             point['audio_bytes'] = rslt
-        
-        return data[0]['audio_bytes']
 
+        return data[0]['audio_bytes']
 
     _data1 = [{'translation': revew_text_translated}]
 
@@ -125,4 +126,4 @@ def test_yandex_based_speecher(revew_text_translated):
     total = t1 - t0
     print(f'Time using google DevKit - {total}')
 
-    assert type(rslt1) == type(rslt2)
+    assert isinstance(rslt1, type(rslt2))

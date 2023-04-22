@@ -3,8 +3,9 @@
 from utils.abstractions.abstract_classes.abs_services import BaseService
 from users.components.database_requests import get_user_favourites_reviews
 
+
 class UserFavouriteReviewsListingService(BaseService):
-    
+
     def execute(self, _id: int) -> None:
         self._extract_user_favourite_rvws(_id)
 
@@ -14,4 +15,3 @@ class UserFavouriteReviewsListingService(BaseService):
             self.errors.append('Problem with getting favoutire reviews')
             return
         self._got_entities.append({'fav_reviews': fav_revs})
-

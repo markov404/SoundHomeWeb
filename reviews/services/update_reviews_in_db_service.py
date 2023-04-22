@@ -23,7 +23,7 @@ class UpdateReviewsInDBService(ICommand):
 
     def _scrub_new_data(self) -> list[dict]:
         scruber = PitchFScrubberBuilder().build()
-        scruber.update_data()  
+        scruber.update_data()
         data = scruber.get_actual_data()
         scruber.quit_driver()
 
@@ -39,7 +39,7 @@ class UpdateReviewsInDBService(ICommand):
             point['translation'] = translated
 
         del trns
-    
+
     def _make_audio_revs(self, data: list[dict]) -> None:
         spchr = SpeecherBasedYaCloudTech()
         threads = []
@@ -47,9 +47,9 @@ class UpdateReviewsInDBService(ICommand):
         for i, point in enumerate(data):
             text = point['translation']
             nt = threading.Thread(
-                target=spchr.get_speech_file_object, 
+                target=spchr.get_speech_file_object,
                 args=(text, i, results)
-                )
+            )
             nt.start()
             threads.append(nt)
 
@@ -57,18 +57,18 @@ class UpdateReviewsInDBService(ICommand):
             process.join()
 
         del spchr
-        
+
         for rslt, point in zip(results, data):
             point['audio_bytes'] = rslt
 
     def _update_database(self, data: list[dict]) -> None:
-        
+
         delete_all_active_review_objects()
 
         for point in data:
             try:
                 create_new_review_and_extends_records(point)
-            except:
+            except BaseException:
                 pass
 
     def _change_data_structure(self, data: list[dict]) -> list[dict]:
@@ -77,9 +77,9 @@ class UpdateReviewsInDBService(ICommand):
         for record in data:
             new_data_structure.append(
                 {
-                    'record_data': record, 
+                    'record_data': record,
                     'translation': None,
                     'audio_bytes': None
-                    })
+                })
 
         return new_data_structure

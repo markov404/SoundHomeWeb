@@ -6,7 +6,7 @@ from reviews.components.database_requests import (
 
 
 class LatestReviewId(ICommand):
-    
+
     def execute(self) -> int:
         return self._extract_latest_review_id()
 

@@ -10,7 +10,7 @@ from reviews.components.database_requests import (
 class CertainReviewPageService(BaseService):
 
     def execute(self, _id: int) -> dict:
-        self._extract_review_data_by_id(_id)        
+        self._extract_review_data_by_id(_id)
         self._extract_translation_data_by_id(_id)
         self._extract_audio_url_by_id(_id)
         self._extract_oldest_and_lastest_pk_of_review(_id)
@@ -28,7 +28,6 @@ class CertainReviewPageService(BaseService):
             self.errors.append('Problem with getting translation data')
             return
         self._got_entities.append({'translation': translation})
-        
 
     def _extract_audio_url_by_id(self, id: int) -> dict | None:
         audio_url = get_audio_url_by_id(id)
@@ -37,13 +36,13 @@ class CertainReviewPageService(BaseService):
             return
         self._got_entities.append({'audio_url': audio_url})
 
-
-    def _extract_oldest_and_lastest_pk_of_review(self, _id: int) -> dict | None:
+    def _extract_oldest_and_lastest_pk_of_review(
+            self, _id: int) -> dict | None:
         list_of_ids = get_list_of_pk_of_review()
         if self.get_error(list_of_ids):
             self.errors.append('Problem with getting list of ids')
             return
-        
+
         if list_of_ids is not None:
 
             next_id = 0
@@ -55,8 +54,8 @@ class CertainReviewPageService(BaseService):
                 next_id = list_of_ids[1]
                 prev_id = list_of_ids[-1]
             else:
-                next_id = list_of_ids[list_of_ids.index(_id)+1]
-                prev_id = list_of_ids[list_of_ids.index(_id)-1]
+                next_id = list_of_ids[list_of_ids.index(_id) + 1]
+                prev_id = list_of_ids[list_of_ids.index(_id) - 1]
         else:
             next_id = None
             prev_id = None

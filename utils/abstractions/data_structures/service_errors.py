@@ -11,7 +11,8 @@ log = getLogger(__name__)
 class ServiceErrors(list):
     def __init__(self, used_by) -> None:
         if not isinstance(used_by, IUseCase):
-            raise TypeError('Service error should have IUseCase based used_by!')
+            raise TypeError(
+                'Service error should have IUseCase based used_by!')
         self.USED_BY = used_by
 
     def append(self, message: str, code: int = None):
@@ -29,7 +30,7 @@ class ServiceErrors(list):
             if self.__error_code_type_of_server(error['code']):
                 return True
         return False
-    
+
     def __error_code_type_of_server(self, code) -> bool:
         if (code // 100) == 5:
             return True
@@ -37,7 +38,7 @@ class ServiceErrors(list):
 
     def as_json(self) -> str:
         return json.dumps(self)
-    
+
     def as_messages(self) -> list:
         output = []
         for error in self:

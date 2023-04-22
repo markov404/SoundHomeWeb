@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+from logging import getLogger
 import os
 from pathlib import Path
 from dotenv import load_dotenv
@@ -48,7 +49,9 @@ LOGGING = {
     },
     'loggers': {
         '': {
-            'handlers': ['file', 'console'], 
+            'handlers': [
+                'file',
+                'console'],
             'level': 'WARNING',
             'propagate': True,
         },
@@ -57,7 +60,6 @@ LOGGING = {
 
 # Get logger here
 
-from logging import getLogger
 
 log = getLogger(__name__)
 
@@ -66,7 +68,7 @@ log = getLogger(__name__)
 DOT_ENV_PATH = f'{BASE_DIR}/configuration.env'
 if os.path.exists(DOT_ENV_PATH):
     if not load_dotenv(DOT_ENV_PATH):
-       log.exception('Environmental variables is not set upped!')
+        log.exception('Environmental variables is not set upped!')
 
 
 # Application definition
@@ -75,7 +77,7 @@ INSTALLED_APPS = [
     'grappelli',
     'django.contrib.admindocs',
     'django.contrib.admin',
-    
+
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -115,7 +117,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                
+
                 'users.context_processors.user_context.is_logged_in',
                 'reviews.context_processors.latest_review_index.latest_review_index',
             ],
@@ -125,7 +127,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'soundhome.wsgi.application'
 
-# Password validation
+# Password validation ( default - for django auth system )
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -161,7 +163,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-#STATIC_ROOT = f'{BASE_DIR}/static'
+# STATIC_ROOT = f'{BASE_DIR}/static'
 
 STATICFILES_DIRS = [
     BASE_DIR / 'static/',

@@ -6,6 +6,7 @@ from reviews.components.database_requests import (
     get_user_review_author_nickname_by_pk_of_review,
     get_list_of_pk_of_user_review)
 
+
 class CertainUserReviewPageService(BaseService):
 
     def execute(self, _id: int) -> dict:
@@ -25,28 +26,30 @@ class CertainUserReviewPageService(BaseService):
         if self.get_error(list_of_ids):
             self.errors.append('Problem with getting list of ids')
             return
-        
-        if list_of_ids is not None:
 
-            next_id = 0
-            prev_id = 0
-            if _id == list_of_ids[-1]:
-                next_id = list_of_ids[0]
-                prev_id = list_of_ids[-2]
-            elif _id == list_of_ids[0]:
-                next_id = list_of_ids[1]
-                prev_id = list_of_ids[-1]
+        if list_of_ids is not None:
+            if len(list_of_ids) == 1:
+                next_id = _id
+                prev_id = _id
             else:
-                next_id = list_of_ids[list_of_ids.index(_id)+1]
-                prev_id = list_of_ids[list_of_ids.index(_id)-1]
+                if _id == list_of_ids[-1]:
+                    next_id = list_of_ids[0]
+                    prev_id = list_of_ids[-2]
+                elif _id == list_of_ids[0]:
+                    next_id = list_of_ids[1]
+                    prev_id = list_of_ids[-1]
+                else:
+                    next_id = list_of_ids[list_of_ids.index(_id) + 1]
+                    prev_id = list_of_ids[list_of_ids.index(_id) - 1]
         else:
             next_id = None
             prev_id = None
 
         self._got_entities.append({'next_id': next_id, 'prev_id': prev_id})
-    
+
     def _define_author_nickname(self, _id) -> str | None:
-        author_nickname = get_user_review_author_nickname_by_pk_of_review(pk=_id)
+        author_nickname = get_user_review_author_nickname_by_pk_of_review(
+            pk=_id)
         if self.get_error(author_nickname):
             self.errors.append('Problem with getting author nickname')
             return

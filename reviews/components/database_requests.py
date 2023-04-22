@@ -22,8 +22,9 @@ def get_all_reviews_data_list() -> list[dict]:
     except Exception as E:
         log.warning(f'{E}')
         return Error(f'{E}', code=500)
-    
+
     return output
+
 
 def get_all_users_review_data_list() -> list[dict]:
     output = []
@@ -34,14 +35,14 @@ def get_all_users_review_data_list() -> list[dict]:
             data['image'] = record.image.url
             output.append(record.__dict__)
 
-
         if len(output) == 0:
             output = None
     except Exception as E:
         log.warning(f'{E}')
         return Error(f'{E}', code=500)
-    
+
     return output
+
 
 def get_review_data_by_id(pk: int) -> dict | None:
     try:
@@ -49,7 +50,7 @@ def get_review_data_by_id(pk: int) -> dict | None:
     except Exception as E:
         log.warning(f'{E}')
         return Error(f'{E}', code=500)
-    
+
     return record.__dict__
 
 
@@ -60,7 +61,7 @@ def get_translation_text_by_id(pk: int) -> str | None:
     except Exception as E:
         log.warning(f'{E}')
         return Error(f'{E}', code=500)
-    
+
     return translation
 
 
@@ -71,7 +72,7 @@ def get_audio_url_by_id(pk: int) -> str | None:
     except Exception as E:
         log.warning(f'{E}')
         return Error(f'{E}', code=500)
-    
+
     return audio_url
 
 
@@ -86,20 +87,21 @@ def get_oldest_and_lates_pk_of_review() -> dict | None:
     except Exception as E:
         log.warning(f'{E}')
         return Error(f'{E}', code=500)
-    
+
     return output
+
 
 def get_list_of_pk_of_review() -> dict | None:
     try:
         qs1 = Review.objects.all().filter(active=True)
-        output = []        
+        output = []
         for rv in qs1:
             output.append(rv.pk)
 
     except Exception as E:
         log.warning(f'{E}')
         return Error(f'{E}', code=500)
-    
+
     return output
 
 
@@ -112,7 +114,7 @@ def get_latest_review_id() -> int | None:
         return Error(f'{E}', code=500)
 
     return latest
-    
+
 
 def delete_all_active_review_objects() -> None:
     try:
@@ -121,7 +123,7 @@ def delete_all_active_review_objects() -> None:
     except Exception as E:
         log.warning(f'{E}')
         return Error(f'{E}', code=500)
-    
+
     return True
 
 
@@ -144,7 +146,7 @@ def create_new_review_and_extends_records(point: dict) -> None:
     except Exception as E:
         log.warning(f'{E}')
         return Error(f'{E}', code=500)
-    
+
     return True
 
 
@@ -156,13 +158,13 @@ def create_user_review_and_get_it_pk(pk, data) -> int | None:
             user = md.objects.get(pk=pk)
 
             rvw = UserReview(
-                user=user, 
+                user=user,
                 score=data['score'],
                 image=File(img.open(), name=f'{pk}_{img.name}'),
-                album_title = data['album_title'],
-                album_author = data['album_author'],
-                review_title = data['review_title'],
-                review_text = data['review_text'],
+                album_title=data['album_title'],
+                album_author=data['album_author'],
+                review_title=data['review_title'],
+                review_text=data['review_text'],
                 active=True)
             rvw.save()
             output = rvw.pk
@@ -188,7 +190,7 @@ def get_user_nickname_by_pk(pk: int) -> str | None:
 def get_user_review_author_nickname_by_pk_of_review(pk: int) -> str | None:
     try:
         rvw = UserReview.objects.get(pk=pk)
-        usr_id = rvw.user_id 
+        usr_id = rvw.user_id
         md = apps.get_model('users', 'SoundHomeUsers')
         user = md.objects.get(pk=usr_id)
         output = user.soundhomeusersadditionalinfo.nickname
@@ -199,7 +201,6 @@ def get_user_review_author_nickname_by_pk_of_review(pk: int) -> str | None:
     return output
 
 
-
 def get_user_review_data_by_id(pk: int) -> dict | None:
     try:
         record = UserReview.objects.get(pk=pk)
@@ -208,7 +209,7 @@ def get_user_review_data_by_id(pk: int) -> dict | None:
     except Exception as E:
         log.warning(f'{E}')
         return Error(f'{E}', code=500)
-    
+
     return output
 
 
@@ -223,7 +224,7 @@ def get_oldest_and_lates_pk_of_user_review() -> dict | None:
     except Exception as E:
         log.warning(f'{E}')
         return Error(f'{E}', code=500)
-    
+
     return output
 
 
@@ -237,15 +238,15 @@ def get_list_of_pk_of_user_review() -> dict | None:
     except Exception as E:
         log.warning(f'{E}')
         return Error(f'{E}', code=500)
-    
+
     return output
 
 
-def is_user_like_review(_user_id: iter, _rvw_id: int)  -> Error | bool:
+def is_user_like_review(_user_id: iter, _rvw_id: int) -> Error | bool:
     try:
         usr_md = apps.get_model('users', 'SoundHomeUsersWhatUsersLikes')
         qs = usr_md.objects.filter(user=_user_id, user_review=_rvw_id)
-        
+
         if len(qs) == 0:
             output = False
         elif len(qs) == 1:
@@ -259,13 +260,13 @@ def is_user_like_review(_user_id: iter, _rvw_id: int)  -> Error | bool:
     return output
 
 
-def like_or_unlike_user_review(_user_id: iter, _rvw_id: int)  -> Error | bool:
+def like_or_unlike_user_review(_user_id: iter, _rvw_id: int) -> Error | bool:
     try:
         usr_likes_md = apps.get_model('users', 'SoundHomeUsersWhatUsersLikes')
         usr_md = apps.get_model('users', 'SoundHomeUsers')
         rvw_md = apps.get_model('reviews', 'UserReview')
         qs = usr_likes_md.objects.filter(user=_user_id, user_review=_rvw_id)
-        
+
         if len(qs) == 0:
             usr = usr_md.objects.get(pk=_user_id)
             rvw = rvw_md.objects.get(pk=_rvw_id)

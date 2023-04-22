@@ -22,6 +22,7 @@ from reviews.serializers import UsersReviewAllForm
 
 # Create your views here.
 
+
 @require_http_methods(["GET"])
 @logged_in_user_only()
 def index_reviews(request: WSGIRequest, pk: int):
@@ -33,7 +34,7 @@ def index_reviews(request: WSGIRequest, pk: int):
 
     else:
         response = service.response.as_one_dictionary()
-    
+
         data = response['data']
         translation = response['translation']
         next_id = response['next_id']
@@ -41,10 +42,10 @@ def index_reviews(request: WSGIRequest, pk: int):
         audio_url = response['audio_url']
 
         return render(
-            request, 'reviews/review.html', 
+            request, 'reviews/review.html',
             context={
-                'data': data, 
-                'additional_info': {'next_id': next_id, 'prev_id': prev_id}, 
+                'data': data,
+                'additional_info': {'next_id': next_id, 'prev_id': prev_id},
                 'translation': translation, 'audio_url': audio_url,
                 'PRO': True})
 
@@ -59,12 +60,12 @@ def all_reviews(request: WSGIRequest):
         status = 'error'
     else:
         status = 'success'
-        
+
     return render(
-        request, 
-        'reviews/all_reviews.html', 
+        request,
+        'reviews/all_reviews.html',
         context={
-            'data': service.response.as_one_dictionary()['data'], 
+            'data': service.response.as_one_dictionary()['data'],
             'status': status, 'title': 'PRO Reviews', 'PRO': True})
 
 
@@ -74,8 +75,9 @@ def post_user_review(request: WSGIRequest):
     form = UserReviewForm(data=request.POST, files=request.FILES)
 
     if not form.is_valid():
-        return JsonResponse({'status': 'form_validation_error', 'info': f'{form.errors.as_json()}'})
-    
+        return JsonResponse(
+            {'status': 'form_validation_error', 'info': f'{form.errors.as_json()}'})
+
     else:
         service = CreateUserReviewService()
         service.execute(_id=user_id(request), data=form.clean())
@@ -83,10 +85,14 @@ def post_user_review(request: WSGIRequest):
         if service.is_error:
 
             if service.errors.type_of_server:
-                return JsonResponse({'status': 'error', 'info': f'{service.errors.as_json()}'})
-            return JsonResponse({'status': 'message', 'info': f'{service.errors.as_json()}'})
-        
-        return JsonResponse({'status': 'success', 'data': f'{service.response.as_json()}', 'flag': 'potato'})
+                return JsonResponse(
+                    {'status': 'error', 'info': f'{service.errors.as_json()}'})
+            return JsonResponse(
+                {'status': 'message', 'info': f'{service.errors.as_json()}'})
+
+        return JsonResponse({'status': 'success',
+                             'data': f'{service.response.as_json()}',
+                             'flag': 'potato'})
 
 
 @require_http_methods(["GET"])
@@ -94,7 +100,7 @@ def post_user_review(request: WSGIRequest):
 def all_users_reviews(request: WSGIRequest):
 
     form = UsersReviewAllForm(data=request.GET)
-    
+
     if not form.is_valid():
         return HttpResponseBadRequest('400')
 
@@ -108,11 +114,17 @@ def all_users_reviews(request: WSGIRequest):
             page_obj = None
         else:
             status = 'success'
-            pagination = Paginator(service.response.as_one_dictionary()['data'], 6)
+            pagination = Paginator(
+                service.response.as_one_dictionary()['data'], 6)
             page_obj = pagination.get_page(form.clean()['page'])
-        
-        return render(request, 'reviews/all_reviews.html', 
-        context={'data': page_obj, 'status': status, 'title': 'Amateur Reviews'})
+
+        return render(
+            request,
+            'reviews/all_reviews.html',
+            context={
+                'data': page_obj,
+                'status': status,
+                'title': 'Amateur Reviews'})
 
 
 @require_http_methods(["GET"])
@@ -132,9 +144,14 @@ def index_user_reviews(request: WSGIRequest, pk: int):
         nickname = response['author_nickname']
 
         return render(
-            request, 'reviews/review.html', 
-            context={'data': data, 
-                'additional_info': {'next_id': next_id, 'prev_id': prev_id, 'nickname': nickname}})
+            request,
+            'reviews/review.html',
+            context={
+                'data': data,
+                'additional_info': {
+                    'next_id': next_id,
+                    'prev_id': prev_id,
+                    'nickname': nickname}})
 
 
 @require_http_methods(["GET"])
@@ -144,9 +161,11 @@ def is_user_like_it(request: WSGIRequest, pk: int):
     service.execute(_id=user_id(request), _rv_id=pk)
 
     if service.is_error:
-        return JsonResponse({'status': 'error', 'info': f'{service.errors.as_json()}'})
+        return JsonResponse(
+            {'status': 'error', 'info': f'{service.errors.as_json()}'})
     else:
-        return JsonResponse({'status': 'success', 'data': f'{service.response.as_json()}'})
+        return JsonResponse({'status': 'success',
+                             'data': f'{service.response.as_json()}'})
 
 
 @require_http_methods(["GET"])
@@ -156,6 +175,7 @@ def like_or_unlike_it(request: WSGIRequest, pk: int):
     service.execute(_id=user_id(request), _rv_id=pk)
 
     if service.is_error:
-        return JsonResponse({'status': 'error', 'info': f'{service.errors.as_json()}'})
+        return JsonResponse(
+            {'status': 'error', 'info': f'{service.errors.as_json()}'})
     else:
         return JsonResponse({'status': 'success'})

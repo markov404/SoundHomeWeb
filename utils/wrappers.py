@@ -71,7 +71,7 @@ def non_active_user_only():
             if service.is_error:
                 return HttpResponseServerError('Error - 500')
 
-            else:                
+            else:
                 status = service.response[0]['active']
             if status:
 

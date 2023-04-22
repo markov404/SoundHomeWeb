@@ -15,17 +15,44 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='SoundHomeUsers',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('email', models.EmailField(max_length=254, unique=True)),
-                ('password', models.CharField(max_length=254)),
+                ('id',
+                 models.BigAutoField(
+                     auto_created=True,
+                     primary_key=True,
+                     serialize=False,
+                     verbose_name='ID')),
+                ('email',
+                 models.EmailField(
+                     max_length=254,
+                     unique=True)),
+                ('password',
+                 models.CharField(
+                     max_length=254)),
             ],
         ),
         migrations.CreateModel(
             name='SoundHomeUsersAdditionalInfo',
             fields=[
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, primary_key=True, serialize=False, to='users.soundhomeusers')),
-                ('image', models.FileField(blank=True, null=True, upload_to='auatars/', verbose_name='Auatar')),
-                ('nickname', models.CharField(blank=True, default='anonim', max_length=50, null=True, unique=True, verbose_name='Name')),
+                ('user',
+                 models.OneToOneField(
+                     on_delete=django.db.models.deletion.CASCADE,
+                     primary_key=True,
+                     serialize=False,
+                     to='users.soundhomeusers')),
+                ('image',
+                 models.FileField(
+                     blank=True,
+                     null=True,
+                     upload_to='auatars/',
+                     verbose_name='Auatar')),
+                ('nickname',
+                 models.CharField(
+                     blank=True,
+                     default='anonim',
+                     max_length=50,
+                     null=True,
+                     unique=True,
+                     verbose_name='Name')),
             ],
         ),
     ]

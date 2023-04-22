@@ -13,4 +13,3 @@ class IScruber(ABC):
     def get_actual_data():
         """Getting actual data from database."""
         pass
-

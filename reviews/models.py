@@ -43,11 +43,16 @@ class ReviewTranslation(models.Model):
     one to one relationship.
     """
 
-    review = models.OneToOneField(Review, on_delete=models.CASCADE, primary_key=True)
-    translated_review_text = models.TextField("Translation", max_length=50_000, null=True, blank=True)
+    review = models.OneToOneField(
+        Review,
+        on_delete=models.CASCADE,
+        primary_key=True)
+    translated_review_text = models.TextField(
+        "Translation", max_length=50_000, null=True, blank=True)
 
     def __str__(self) -> str:
         return f'Review: {self.review.pk} | ReviewAlbumName: {self.review.album_title} | Score: {self.review.album_score}'
+
 
 class ReviewAudio(models.Model):
     """
@@ -55,13 +60,25 @@ class ReviewAudio(models.Model):
     one to one relationship.
     """
 
-    review = models.OneToOneField(Review, on_delete=models.CASCADE, primary_key=True)
-    
-    name = models.CharField(max_length=50, blank=False, null=False, default="empty_rev")
-    audio_review = models.FileField("Audio Review", upload_to='audio_reviews/', null=True, blank=True)
+    review = models.OneToOneField(
+        Review,
+        on_delete=models.CASCADE,
+        primary_key=True)
+
+    name = models.CharField(
+        max_length=50,
+        blank=False,
+        null=False,
+        default="empty_rev")
+    audio_review = models.FileField(
+        "Audio Review",
+        upload_to='audio_reviews/',
+        null=True,
+        blank=True)
 
     def __str__(self) -> str:
         return f'Review: {self.review.pk} | ReviewAlbumName: {self.review.album_title} | Score: {self.review.album_score}'
+
 
 class UserReview(ReviewBase):
     """
@@ -71,7 +88,11 @@ class UserReview(ReviewBase):
 
     user = models.ForeignKey('users.SoundHomeUsers', on_delete=models.CASCADE)
     score = models.FloatField()
-    image = models.ImageField('AlbumCover', upload_to='users_review_images', null=True, blank=True)
+    image = models.ImageField(
+        'AlbumCover',
+        upload_to='users_review_images',
+        null=True,
+        blank=True)
 
     def __str__(self) -> str:
         return f'User: {self.user.pk} | ReviewAlbumName: {self.album_title} | Score: {self.score}'

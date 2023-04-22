@@ -14,6 +14,14 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='soundhomeusersadditionalinfo',
             name='nickname',
-            field=models.CharField(blank=True, default='anonim', max_length=50, null=True, unique=True, validators=[users.components.validators.UserNicknameValidator.is_valid], verbose_name='Name'),
+            field=models.CharField(
+                blank=True,
+                default='anonim',
+                max_length=50,
+                null=True,
+                unique=True,
+                validators=[
+                    users.components.validators.UserNicknameValidator.is_valid],
+                verbose_name='Name'),
         ),
     ]

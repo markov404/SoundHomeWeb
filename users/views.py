@@ -33,9 +33,10 @@ from users.serializers import UsersFavouriteReviewListingForm
 @not_logged_in_user_only()
 def auth(request: WSGIRequest):
     form = UserAARForm(data=request.POST)
-    
+
     if not form.is_valid():
-        return JsonResponse({'status': 'form_validation_error', 'info': f'{form.errors.as_json()}'})
+        return JsonResponse(
+            {'status': 'form_validation_error', 'info': f'{form.errors.as_json()}'})
 
     else:
         service = AuthenticateAndAuthOrRegistrUser()
@@ -43,10 +44,12 @@ def auth(request: WSGIRequest):
 
         if service.is_error:
             if service.errors.type_of_server:
-                return JsonResponse({'status': 'error', 'info': f'{service.errors.as_json()}'})
-            
-            return JsonResponse({'status': 'message', 'info': f'{service.errors.as_json()}'})
-        
+                return JsonResponse(
+                    {'status': 'error', 'info': f'{service.errors.as_json()}'})
+
+            return JsonResponse(
+                {'status': 'message', 'info': f'{service.errors.as_json()}'})
+
         return JsonResponse({'status': 'success'})
 
 
@@ -58,21 +61,24 @@ def logout(request: WSGIRequest):
 
     if service.is_error:
         return HttpResponseServerError('500')
-        
+
     return redirect("index_page")
 
 
 @require_http_methods(["GET"])
 @logged_in_user_only()
 @active_user_only()
-def profile_page(request: WSGIRequest):    
+def profile_page(request: WSGIRequest):
     service = UserBasicDataService()
     service.execute(_id=user_id(request))
 
     if service.is_error:
         return HttpResponseServerError(service.errors.as_messages())
     else:
-        return render(request, 'users/profile.html', context=service.response.as_one_dictionary())
+        return render(
+            request,
+            'users/profile.html',
+            context=service.response.as_one_dictionary())
 
 
 @require_http_methods(["POST", "GET"])
@@ -83,23 +89,25 @@ def set_up_profile(request: WSGIRequest):
         form = UserAdditionalInfoForm(data=request.POST, files=request.FILES)
         if not form.is_valid():
             return JsonResponse(
-                {'status': 'form_validation_error', 
-                'info': f'{form.errors.as_json()}'})
+                {'status': 'form_validation_error',
+                 'info': f'{form.errors.as_json()}'})
 
         else:
             service = SetUpProfileService()
             service.execute(data=form.clean(), _id=user_id(request))
-            
+
             if service.is_error:
                 if service.errors.type_of_server:
-                    return JsonResponse({'status': 'error', 'info': f'{service.errors.as_json()}'})
+                    return JsonResponse(
+                        {'status': 'error', 'info': f'{service.errors.as_json()}'})
 
-                return JsonResponse({'status': 'message', 'info': f'{service.errors.as_json()}'})     
-            
+                return JsonResponse(
+                    {'status': 'message', 'info': f'{service.errors.as_json()}'})
+
             return JsonResponse({'status': 'success'})
     elif request.method == "GET":
         pass
-    
+
     return render(request, 'users/set_up_profile.html', context={})
 
 
@@ -110,7 +118,8 @@ def change_user_ava(request: WSGIRequest):
     form = ChangeUserImageForm(files=request.FILES)
 
     if not form.is_valid():
-        return JsonResponse({'status': 'form_validation_error', 'info': f'{form.errors.as_json()}'})
+        return JsonResponse(
+            {'status': 'form_validation_error', 'info': f'{form.errors.as_json()}'})
 
     else:
         service = ChangeUserAvaService()
@@ -118,9 +127,11 @@ def change_user_ava(request: WSGIRequest):
 
         if service.is_error:
             if service.errors.type_of_server:
-                return JsonResponse({'status': 'error', 'info': f'{service.errors.as_json()}'})
+                return JsonResponse(
+                    {'status': 'error', 'info': f'{service.errors.as_json()}'})
 
-            return JsonResponse({'status': 'message', 'info': f'{service.errors.as_json()}'})
+            return JsonResponse(
+                {'status': 'message', 'info': f'{service.errors.as_json()}'})
 
         return JsonResponse({'status': 'success'})
 
@@ -132,18 +143,21 @@ def change_user_nickname(request: WSGIRequest):
     form = ChangeUserNicknameForm(data=request.POST)
 
     if not form.is_valid():
-        return JsonResponse({'status': 'form_validation_error', 'info': f'{form.errors.as_json()}'})
-        
+        return JsonResponse(
+            {'status': 'form_validation_error', 'info': f'{form.errors.as_json()}'})
+
     else:
         service = ChangeUserNicknameService()
         service.execute(data=form.clean(), _id=user_id(request))
 
         if service.is_error:
             if service.errors.type_of_server:
-                return JsonResponse({'status': 'error', 'info': f'{service.errors.as_json()}'})
+                return JsonResponse(
+                    {'status': 'error', 'info': f'{service.errors.as_json()}'})
 
-            return JsonResponse({'status': 'message', 'info': f'{service.errors.as_json()}'})
-        
+            return JsonResponse(
+                {'status': 'message', 'info': f'{service.errors.as_json()}'})
+
         return JsonResponse({'status': 'success'})
 
 
@@ -152,28 +166,33 @@ def change_user_nickname(request: WSGIRequest):
 def user_reviews_listing(request: WSGIRequest):
     form = UsersOwnReviewListingForm(data=request.GET)
     if not form.is_valid():
-        return JsonResponse({'status': 'form_validation_error', 'info': f'{form.errors.as_json()}'})
-    
+        return JsonResponse(
+            {'status': 'form_validation_error', 'info': f'{form.errors.as_json()}'})
+
     else:
 
         service = UserOwnReviewsListingService()
         service.execute(_id=user_id(request))
 
         if service.is_error:
-            return JsonResponse({'status': 'error', 'info': f'{service.errors.as_json()}'})
+            return JsonResponse(
+                {'status': 'error', 'info': f'{service.errors.as_json()}'})
 
         else:
             data = form.clean()
-            pagination = Paginator(service.response.as_one_dictionary()['own_rvws'], 4)
+            pagination = Paginator(
+                service.response.as_one_dictionary()['own_rvws'], 4)
             page_obj = pagination.get_page(data['page'])
 
             service = UsersReviewPageObjectParser()
             service.execute(page_obj)
 
             if service.is_error:
-                return JsonResponse({'status': 'error', 'info': f'{service.errors.as_json()}'})
+                return JsonResponse(
+                    {'status': 'error', 'info': f'{service.errors.as_json()}'})
             else:
-                return JsonResponse({'status': 'success', 'data': f'{service.response.as_json_v2()}'})
+                return JsonResponse(
+                    {'status': 'success', 'data': f'{service.response.as_json_v2()}'})
 
 
 @require_http_methods(["GET"])
@@ -182,7 +201,8 @@ def fav_user_reviews(request: WSGIRequest):
     form = UsersFavouriteReviewListingForm(data=request.GET)
 
     if not form.is_valid():
-        return JsonResponse({'status': 'form_validation_error', 'info': f'{form.errors.as_json()}'})
+        return JsonResponse(
+            {'status': 'form_validation_error', 'info': f'{form.errors.as_json()}'})
 
     else:
 
@@ -190,17 +210,21 @@ def fav_user_reviews(request: WSGIRequest):
         service.execute(_id=user_id(request))
 
         if service.is_error:
-            return JsonResponse({'status': 'error', 'info': f'{service.errors.as_json()}'})
-        
+            return JsonResponse(
+                {'status': 'error', 'info': f'{service.errors.as_json()}'})
+
         else:
             data = form.clean()
-            pagination = Paginator(service.response.as_one_dictionary()['fav_reviews'], 4)
+            pagination = Paginator(
+                service.response.as_one_dictionary()['fav_reviews'], 4)
             page_obj = pagination.get_page(data['page'])
 
             service = UsersReviewPageObjectParser()
             service.execute(page_obj)
 
             if service.is_error:
-                return JsonResponse({'status': 'error', 'info': f'{service.errors.as_json()}'})
+                return JsonResponse(
+                    {'status': 'error', 'info': f'{service.errors.as_json()}'})
             else:
-                return JsonResponse({'status': 'success', 'data': f'{service.response.as_json_v2()}'})
+                return JsonResponse(
+                    {'status': 'success', 'data': f'{service.response.as_json_v2()}'})

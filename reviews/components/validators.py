@@ -9,11 +9,12 @@ class ReviewTextValidator(TextValidator):
     def is_valid(self, text: str) -> bool:
         if not super().is_valid(text):
             return False
-        
+
         if not (len(text) < self.max_lenght):
-            return False 
+            return False
 
         return True
+
 
 class ReviewTitleValidator(ReviewTextValidator):
     def __init__(self) -> None:

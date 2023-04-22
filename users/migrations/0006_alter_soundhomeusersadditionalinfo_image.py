@@ -14,6 +14,12 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='soundhomeusersadditionalinfo',
             name='image',
-            field=models.ImageField(blank=True, null=True, upload_to='auatars/', validators=[users.components.validators.UserAvaValidator.is_valid], verbose_name='Auatar'),
+            field=models.ImageField(
+                blank=True,
+                null=True,
+                upload_to='auatars/',
+                validators=[
+                    users.components.validators.UserAvaValidator.is_valid],
+                verbose_name='Auatar'),
         ),
     ]

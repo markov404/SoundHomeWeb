@@ -10,7 +10,7 @@ from users.components.database_requests import (
 
 
 class UserBasicDataService(BaseService):
-    
+
     def execute(self, _id: int):
         if _id is None:
             raise Exception(f'{self.execute} should get _id of user.')
@@ -20,7 +20,6 @@ class UserBasicDataService(BaseService):
         self._extract_user_ava_url(_id)
         self._extract_user_reviews(_id)
         self._extract_user_fav_reviews(_id)
-
 
     def _extract_basic_user_data(self, _id: int) -> None:
         email = get_user_email_by_pk(_id)
@@ -54,9 +53,11 @@ class UserBasicDataService(BaseService):
         if len(output) == 0:
             return None
         elif len(output) > 4:
-            self._got_entities.append({'reviews': True, 'reviews_type_make': True})    
+            self._got_entities.append(
+                {'reviews': True, 'reviews_type_make': True})
         else:
-            self._got_entities.append({'reviews': output, 'reviews_amount': len(output)})
+            self._got_entities.append(
+                {'reviews': output, 'reviews_amount': len(output)})
 
     def _extract_users_own_review_image_ids(self, _id: int) -> list | bool:
         ids = get_user_own_review_ids(pk=_id)
@@ -69,7 +70,6 @@ class UserBasicDataService(BaseService):
         if self.get_error(links):
             self.errors.append('Problem with getting user reveiws')
         return links
-    
 
     def _extract_user_fav_reviews(self, _id: int) -> None:
         rvws = get_user_favourites_reviews(_id)
@@ -80,6 +80,7 @@ class UserBasicDataService(BaseService):
         if len(rvws) == 0:
             return None
         elif len(rvws) > 6:
-            self._got_entities.append({'fav_reviews': True, 'fav_reviews_alot': True})    
+            self._got_entities.append(
+                {'fav_reviews': True, 'fav_reviews_alot': True})
         else:
-            self._got_entities.append({'fav_reviews': rvws})         
+            self._got_entities.append({'fav_reviews': rvws})

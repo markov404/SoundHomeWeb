@@ -5,6 +5,7 @@
 __pycache__
 db.sqlite3
 media
+prod_settings.py
 
 # Backup files # 
 *.bak 
@@ -104,7 +105,8 @@ env/
 venv/ 
 ENV/ 
 env.bak/ 
-venv.bak/ 
+venv.bak/
+bin/ 
 
 # mkdocs documentation 
 /site 
@@ -136,3 +138,7 @@ GitHub.sublime-settings
 !.vscode/launch.json 
 !.vscode/extensions.json 
 .history
+
+# logs #
+*.log
+.VSCodeCounter/

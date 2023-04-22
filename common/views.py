@@ -11,12 +11,18 @@ from utils.wrappers import not_logged_in_user_only
 def index_page(request: WSGIRequest):
     return render(request, 'common_app/index.html')
 
+
 @require_http_methods(["GET"])
 def error_page(request: WSGIRequest):
     try:
         code = request.GET['code']
         message = request.GET['message']
-    except:
+    except BaseException:
         code = 500
-    
-    return render(request, 'common_app/error.html', context={'code': code, 'message': message})
+
+    return render(
+        request,
+        'common_app/error.html',
+        context={
+            'code': code,
+            'message': message})

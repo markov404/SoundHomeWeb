@@ -1,11 +1,12 @@
 
 from abc import ABC, abstractmethod
 
+
 class IUseCase(ABC):
     @abstractmethod
     def execute():
         raise NotImplementedError()
-    
+
     @property
     @abstractmethod
     def is_error():

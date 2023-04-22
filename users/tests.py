@@ -31,11 +31,11 @@ class VirginUser(TestCase):
 
         self.TEST_DATA = {
             'email': 'UsamaBenLaden@yandex.ru',
-            'password': 'btufn262osn8F'   
+            'password': 'btufn262osn8F'
         }
 
         self.make_user()
-    
+
     def tearDown(self) -> None:
         del self.test_user
         self.make_user()
@@ -43,7 +43,7 @@ class VirginUser(TestCase):
     def make_user(self) -> None:
         component = Registration()
         self.test_user = component.create_user(
-            email=self.TEST_DATA['email'], 
+            email=self.TEST_DATA['email'],
             password=self.TEST_DATA['password'])
 
 
@@ -52,26 +52,37 @@ class UserWithSomePotentialData(VirginUser):
         super().setUp()
         image_content_type = 'png'
         img_good = io.BytesIO()
-        Image.new(mode='RGB', size=(999, 999)).save(img_good, format=image_content_type)
-        
+        Image.new(
+            mode='RGB',
+            size=(
+                999,
+                999)).save(
+            img_good,
+            format=image_content_type)
+
         img_bad = io.BytesIO()
-        Image.new(mode='RGB', size=(1001, 1000)).save(img_bad, format=image_content_type)
+        Image.new(
+            mode='RGB',
+            size=(
+                1001,
+                1000)).save(
+            img_bad,
+            format=image_content_type)
 
         self.mok_img_good = self.mok_InMemoryUploadedFile(
             img=img_good,
             field_name='ImageField',
-            file_name='pic'+ f'{uuid.uuid4()}',
+            file_name='pic' + f'{uuid.uuid4()}',
             content=image_content_type,
             size=sys.getsizeof(img_good)
         )
         self.mok_img_bad = self.mok_InMemoryUploadedFile(
             img=img_bad,
             field_name='ImageField',
-            file_name='pic'+ f'{uuid.uuid4()}',
+            file_name='pic' + f'{uuid.uuid4()}',
             content=image_content_type,
             size=sys.getsizeof(img_bad)
-        ) 
-
+        )
 
         self.test_nickname_good = '@JorjoJiovanni'
         self.test_nickname_bad = '@JorjoJi@ovanni'
@@ -83,13 +94,18 @@ class UserWithSomePotentialData(VirginUser):
             'test_nickname_bad': self.test_nickname_bad,
         })
         self.DO_DELETE = False
-    
+
     @staticmethod
     def mok_InMemoryUploadedFile(
-        img, field_name, file_name, content, size, charset=None) -> InMemoryUploadedFile:
+            img,
+            field_name,
+            file_name,
+            content,
+            size,
+            charset=None) -> InMemoryUploadedFile:
 
         return InMemoryUploadedFile(
-            file=img, 
+            file=img,
             field_name=field_name,
             name=file_name,
             content_type=content,
@@ -109,10 +125,10 @@ class UserWithSomeDataCases(UserWithSomePotentialData):
     def test_setting_up_account_positive(self) -> None:
         pk = self.test_user.pk
         response = dbq.add_user_ava_and_nickname_end_set_user_active(
-            pk=pk, 
+            pk=pk,
             ava=self.TEST_DATA['test_image_good'],
             nickname=self.TEST_DATA['test_nickname_good'])
-        
+
         try:
             self.assertEqual(response, True)
         except Exception as E:
@@ -123,10 +139,10 @@ class UserWithSomeDataCases(UserWithSomePotentialData):
     def test_setting_up_account_negative(self) -> None:
         pk = self.test_user.pk
         response = dbq.add_user_ava_and_nickname_end_set_user_active(
-            pk=666, 
+            pk=666,
             ava=self.TEST_DATA['test_image_bad'],
             nickname=self.TEST_DATA['test_nickname_good'])
-        
+
         try:
             self.assertIsInstance(response, Error)
         except Exception as E:
@@ -137,33 +153,34 @@ class UserWithSomeDataCases(UserWithSomePotentialData):
 
 
 class VirginUserCases(VirginUser):
-    def test_check_active_posititve(self, _result_status: bool = False) -> None:
+    def test_check_active_posititve(
+            self, _result_status: bool = False) -> None:
         pk = self.test_user.pk
         status = dbq.get_user_additional_active_status(pk)
-        
+
         self.assertEqual(status, _result_status)
-    
+
     def test_check_active_negative(self) -> None:
         pk = self.test_user.pk
         status = dbq.get_user_additional_active_status(666)
-        
+
         self.assertIsInstance(status, Error)
 
     def test_user_email_positive(self) -> None:
         pk = self.test_user.pk
         email = dbq.get_user_email_by_pk(pk)
-        
+
         self.assertEqual(email, self.TEST_DATA['email'])
 
     def test_user_email_negative(self) -> None:
         pk = self.test_user.pk
         email = dbq.get_user_email_by_pk(666)
-        
+
         self.assertIsInstance(email, Error)
 
     def test_change_user_active_positive(self) -> None:
         pk = self.test_user.pk
-        
+
         respone = dbq.change_user_active(pk=pk, active=True)
         self.assertIsInstance(respone, SoundHomeUsersAdditionalInfo)
         self.test_check_active_posititve(_result_status=True)
@@ -171,19 +188,19 @@ class VirginUserCases(VirginUser):
 
     def test_change_user_active_negative(self) -> None:
         pk = self.test_user.pk
-        
+
         respone = dbq.change_user_active(pk=666, active=True)
         self.assertIsInstance(respone, Error)
 
     def test_user_own_reviews(self) -> None:
         pk = self.test_user.pk
         rvws = dbq.get_user_own_review_ids(pk=pk)
-        
+
         self.assertEqual(rvws, [])
 
     def test_user_favourite_reviews(self) -> None:
         pk = self.test_user.pk
-        
+
         rvws = dbq.get_user_favourites_reviews_ids(pk=pk)
         self.assertEqual(rvws, [])
 
@@ -197,7 +214,8 @@ class UserDataServiceTestCase(TestCase):
         password = 'btufn262osn8F'
 
         self.helpful_component = Registration()
-        self.test_user = self.helpful_component.create_user(email=email, password=password)
+        self.test_user = self.helpful_component.create_user(
+            email=email, password=password)
 
     def tearDown(self) -> None:
         super().tearDown()
@@ -205,13 +223,13 @@ class UserDataServiceTestCase(TestCase):
 
     def test_positive_getting_basic_user_data(self):
         self.test_service = UserBasicDataService()
-        
+
         pk = self.test_user.pk
         self.test_service._extract_basic_user_data(_id=pk)
         self.assertEqual(
             self.test_service.response.as_one_dictionary(),
             {'email': self.test_user.email})
-    
+
     def test_negative_getting_basic_user_data(self):
         self.test_service = UserBasicDataService()
 
@@ -223,10 +241,9 @@ class UserDataServiceTestCase(TestCase):
 
     def test_positive_getting_basic_user_data(self):
         self.test_service = UserBasicDataService()
-        
+
         pk = self.test_user.pk
         self.test_service._extract_basic_user_data(_id=pk)
         self.assertEqual(
             self.test_service.response.as_one_dictionary(),
-                {'email': self.test_user.email})
-    
+            {'email': self.test_user.email})

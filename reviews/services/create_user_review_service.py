@@ -6,8 +6,8 @@ from reviews.components.database_requests import create_user_review_and_get_it_p
 
 class CreateUserReviewService(BaseService):
     MANDATORY_FIELDS = {
-        'score', 'image', 
-        'album_title', 'album_author', 
+        'score', 'image',
+        'album_title', 'album_author',
         'review_title', 'review_text'
     }
 
@@ -18,7 +18,7 @@ class CreateUserReviewService(BaseService):
         if self.get_error(review_id):
             self.errors.append('Database error')
             return
-        
+
         self._got_entities.append({'review_id': review_id})
 
     def _make_user_review(self, data: dict, _id: int) -> None:
