@@ -52,7 +52,14 @@ def current_token(request: WSGIRequest) -> JsonResponse:
 
 @api_view(['POST'])
 def get_warnings_logs(request: WSGIRequest) -> JsonResponse:
-    """ uuid4 code should be sent in headers """
+    """ uuid4 code should be sent in headers 
+        :body:
+            {
+                'token': str,
+                'type': ('warning', 'access', 'error')
+            }
+    """
+    
     service = ProvideLogsService()
     service.execute(request.POST.dict())
 
