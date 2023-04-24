@@ -90,6 +90,7 @@ INSTALLED_APPS = [
     'users',
     'common',
     'reviews',
+    'apistuff',
 ]
 
 MIDDLEWARE = [

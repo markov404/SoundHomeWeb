@@ -26,6 +26,8 @@ urlpatterns = [
     path('soundhome/', include('common.urls'), name="index_app"),
     path('soundhome/users/', include('users.urls'), name="user_app"),
     path('soundhome/reviews/', include('reviews.urls'), name="reviews_app"),
+
+    path('soundhome/api/v3/stuff/', include('apistuff.urls')),
 ]
 
 if settings.DEBUG:
