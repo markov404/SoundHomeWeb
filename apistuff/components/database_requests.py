@@ -29,6 +29,7 @@ def update_stuff_token_by_stuff_id(_id: int, token: str):
             target_record = StuffAndTokens.objects.get(user=user)
             target_record.token = token
             target_record.duration_field = datetime.timedelta(hours=24)
+            target_record.save()
         except StuffAndTokens.DoesNotExist:
             target_record = StuffAndTokens(
                 user=user, token=token,

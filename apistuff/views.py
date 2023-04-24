@@ -7,6 +7,7 @@ from rest_framework.throttling import UserRateThrottle
 
 from apistuff.services.check_if_user_is_stuff_service import CheckIfUserIsStuffService
 from apistuff.services.update_stuff_token_service import UpdateStuffTokenService
+from apistuff.services.provide_logs_service import ProvideLogsService
 
 # Create your views here.
 
@@ -52,4 +53,17 @@ def current_token(request: WSGIRequest) -> JsonResponse:
 @api_view(['POST'])
 def get_warnings_logs(request: WSGIRequest) -> JsonResponse:
     """ uuid4 code should be sent in headers """
-    pass
+    service = ProvideLogsService()
+    service.execute(request.POST.dict())
+
+    if service.is_error:
+            if service.errors.type_of_server:
+                return Response(
+                    {'status': 'error', 'info': f'{service.errors.as_json()}'})
+
+            return Response(
+                {'status': 'message', 'info': f'{service.errors.as_json()}'})
+
+    return Response(
+        {'status': 'success', 'info': service.response.as_one_dictionary()}
+    )
