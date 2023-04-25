@@ -17,7 +17,6 @@ class OncePerDayUserUserThrottle(UserRateThrottle):
 
 
 @api_view(['GET'])
-@throttle_classes([OncePerDayUserUserThrottle])
 def current_token(request: WSGIRequest) -> JsonResponse:
     """ Username and Password should be sended in base64 """
     service = CheckIfUserIsStuffService()
