@@ -17,7 +17,6 @@ class OncePerDayUserUserThrottle(UserRateThrottle):
 
 
 @api_view(['GET'])
-@throttle_classes([OncePerDayUserUserThrottle])
 def current_token(request: WSGIRequest) -> JsonResponse:
     """ Username and Password should be sended in base64 """
     service = CheckIfUserIsStuffService()
@@ -26,11 +25,10 @@ def current_token(request: WSGIRequest) -> JsonResponse:
     if service.is_error:
             if service.errors.type_of_server:
                 return Response(
-                    {'status': 'error', 'info': f'{service.errors.as_json()}'})
+                    {'status': 'error', 'info': service.errors.as_one_dictionary()})
 
             return Response(
-                {'status': 'message', 'info': f'{service.errors.as_json()}'})
-
+                {'status': 'message', 'info': service.errors.as_one_dictionary()})
     
     target_stuff_id = service.response.as_one_dictionary()['user']
     
@@ -40,10 +38,10 @@ def current_token(request: WSGIRequest) -> JsonResponse:
     if service.is_error:
             if service.errors.type_of_server:
                 return Response(
-                    {'status': 'error', 'info': f'{service.errors.as_json()}'})
+                    {'status': 'error', 'info': service.errors.as_one_dictionary()})
 
             return Response(
-                {'status': 'message', 'info': f'{service.errors.as_json()}'})
+                {'status': 'message', 'info': service.errors.as_one_dictionary()})
     
     return Response(
         {'status': 'success', 'info': service.response.as_one_dictionary()}
