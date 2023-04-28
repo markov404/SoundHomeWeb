@@ -29,10 +29,6 @@ def current_token(request: WSGIRequest) -> JsonResponse:
 
             return Response(
                 {'status': 'message', 'info': service.errors.as_one_dictionary()})
-<<<<<<< HEAD
-=======
-
->>>>>>> 8a42f184bbb3886fc31f703d583aa01cc99bceaf
     
     target_stuff_id = service.response.as_one_dictionary()['user']
     
