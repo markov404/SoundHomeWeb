@@ -6,3 +6,5 @@ user = 'www'
 limit_request_fields = 32000
 limit_request_fields_size = 0
 raw_env = 'DJANGO_SETTINGS_MODULE=soundhome.settings'
+accesslog = '/home/web/code/my_web_apps/soundhomeweb/gunicorn.access.log'
+errorlog = '/home/web/code/my_web_apps/soundhomeweb/gunicorn.errors.log'

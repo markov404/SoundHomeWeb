@@ -44,3 +44,9 @@ class ServiceErrors(list):
         for error in self:
             output.append(error['message'])
         return output
+
+    def as_one_dictionary(self) -> dict:
+        output = {}
+        for datapoint in self:
+            output.update(datapoint)
+        return output
